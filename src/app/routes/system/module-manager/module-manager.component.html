@@ -1,0 +1,61 @@
+<pro-header [title]=""></pro-header>
+
+    <nz-card>
+      <div class = "table-operations">
+        <button nz-button  (click)="refresh($event)">刷新</button>
+        <button nz-button  (click)="add($event)">新增</button>
+        <button nz-button  (click)="update($event)">修改</button>
+        <button nz-button  (click)="delete($event)">删除</button>
+      </div>
+      <nz-table #nzTable
+                [nzPageSizeSelectorValues]="[1, 2, 3, 5, 10]"
+                [nzAjaxData]="_dataSet"
+                nzShowSizeChanger
+                [nzLoading]="_loading"
+                [nzTotal]="_total"
+                [(nzPageIndex)]="_current"
+                (nzPageIndexChange)="loadData(false,$event)"
+                [nzPageSize]="_pageSize"
+                (nzPageSizeChange)="loadData(true,$event)"
+                [nzBordered] = "true"
+                nzSize = "small" >
+        <thead nz-thead>
+        <tr>
+          <th nz-th ><span>名称</span></th>
+          <th nz-th ><span>地址</span></th>
+          <th nz-th ><span>有效</span></th>
+          <th nz-th ><span>排序</span></th>
+          <th nz-th><span>项目ID</span></th>
+          <th nz-th><span>ApplyId</span></th>
+          <th nz-th><span>客户ID</span></th>
+          <th nz-th><span>备注</span></th>
+          <th nz-th><span>创建时间</span></th>
+        </tr>
+        </thead>
+        <tbody nz-tbody>
+        <ng-template ngFor let-data [ngForOf]="nzTable.data">
+          <ng-template ngFor let-item [ngForOf]="expandDataCache[data.id]">
+            <tr nz-tbody-tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)">
+              <td nz-td>
+                <nz-row-indent [nzIndentSize]="item.level"></nz-row-indent>
+                <nz-row-expand-icon [(nzExpand)]="item.expand"
+                                    (nzExpandChange)="collapse(expandDataCache[data.id],item,$event)"
+                                    [nzShowExpand]="!!item.children">
+                </nz-row-expand-icon>
+                {{item.text}}
+              </td>
+              <td nz-td>{{item.link}}</td>
+              <td nz-td>{{item.hide}}</td>
+              <td nz-td>{{item.order}}</td>
+              <td nz-td>{{item.projid}}</td>
+              <td nz-td>{{item.applyid}}</td>
+              <td nz-td>{{item.platcustomerid}}</td>
+              <td nz-td>{{item.remark}}</td>
+              <td nz-td>{{item.createtime | date}}</td>
+            </tr>
+          </ng-template>
+        </ng-template>
+        </tbody>
+      </nz-table>
+    </nz-card>
+

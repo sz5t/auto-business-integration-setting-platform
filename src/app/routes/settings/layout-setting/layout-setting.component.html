@@ -1,0 +1,78 @@
+<!--<div class="content__title">
+  <h1>布局设置</h1>
+</div>-->
+<page-header [title]=""></page-header>
+<div nz-row [nzGutter]="24">
+    <nz-card nzTitle="模版选择">
+        <form nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
+            <nz-form-item>
+              <nz-form-control [nzSm]="24" [nzXs]="24">
+                <nz-cascader
+                  [ngModelOptions]="{standalone: true}"
+                  [class.class123]="true"
+                  [nzOptions]="_funcOptions"
+                  [(ngModel)]="_funcValue"
+                  (nzChange)="_changeModuleValue($event)"
+                  (nzSelectionChange)="_onSelectionChange($event)"
+                  [nzPlaceHolder]="'请选择功能模块'"
+                  [nzExpandTrigger]="'hover'">
+                </nz-cascader>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-control [nzSm]="24" [nzXs]="24">
+                <nz-select [(ngModel)]="_layoutValue"
+                           (ngModelChange)="_changeLayout($event)"
+                           [nzPlaceHolder]="'请选择布局类型'"
+                           [ngModelOptions]="{standalone: true}">
+                  <nz-option
+                    *ngFor="let option of _layoutOptions"
+                    [nzLabel]="option.label"
+                    [nzValue]="option">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-control [nzSm]="24" [nzXs]="24">
+                <input nz-input [(ngModel)]="_configName"
+                          placeholder="请输入配置名称"
+                          [ngModelOptions]="{standalone: true}" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-control [nzSm]="24" [nzXs]="24">
+                <nz-tabset *ngIf="_editorConfig" [nzTabPosition]="'left'" [nzType]="'line'">
+                  <nz-tab *ngFor="let tab of _editorConfig" [nzTitle]="tab.title">
+                    <ng-container
+                      *ngFor="let field of tab.data"
+                      cnFormResolverDirective
+                      [config]="field"
+                      [formGroup]="_formGroup"
+                    ></ng-container>
+                  </nz-tab>
+                </nz-tabset>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item [formGroup]="_formGroup">
+              <nz-form-control [nzOffset]="6" [nzSpan]="14" >
+                <button nz-button [nzType]="'primary'" [nzSize]="'default'">保存</button>
+                <button nz-button [nzSize]="'default'" (click)="resetForm($event)">取消</button>
+              </nz-form-control>
+            </nz-form-item>
+          </form>
+    </nz-card>
+</div>
+
+
+<div nz-row [nzGutter]="24">
+  <nz-card nzTitle="模版预览">
+    <cn-layout-setting-resolver *ngIf="_layoutValue" [config]="_layoutValue.value"></cn-layout-setting-resolver>
+  </nz-card>
+</div>
+
+<div nz-row [nzGutter]="24">
+    <nz-card nzTitle="{{_selectedModuleText}}布局列表">
+        <bsn-data-table [config]="_tableHeader" [dataList]="_tableDataSource"></bsn-data-table>
+    </nz-card>
+</div>

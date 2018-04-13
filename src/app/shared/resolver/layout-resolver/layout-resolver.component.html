@@ -1,0 +1,29 @@
+<ng-container *ngIf="config.rows">
+  <div nz-row [nzGutter]="8" *ngFor="let row of config.rows">
+    <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs" [nzMd]="c.size.nzMd"
+      [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
+      <cn-layout-resolver [config]="c"></cn-layout-resolver>
+    </div>
+  </div>
+</ng-container>
+
+<nz-card *ngIf="config.tabs">
+    <nz-tabset [nzType]="'line'">
+        <nz-tab *ngFor="let tab of config.tabs" [nzTitle]="titleTemplate">
+          <ng-template #titleTemplate>
+            <i [ngClass]="tab.icon"></i>
+            {{tab.title}}
+          </ng-template>
+          <ng-container *ngFor="let cfg of tab.viewCfg">
+            <cn-layout-resolver *ngIf="cfg.tabs" [config]="cfg"></cn-layout-resolver>
+            <cn-component-resolver *ngIf="!cfg.tabs" [config]="cfg"></cn-component-resolver>
+  
+          </ng-container>
+          <!-- <cn-layout-resolver [config]="tab.viewCfg"></cn-layout-resolver>-->
+        </nz-tab>
+      </nz-tabset>
+</nz-card>
+
+<nz-card *ngIf="!config.rows && !config.tabs" nzTitle="{{config.title}}">
+    <cn-component-resolver [config]="config"></cn-component-resolver>
+</nz-card>
