@@ -16,6 +16,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges {
 
   @Input() config = {
+    keyId: 'Id',
     ajaxConfig: {
     },
     componentType: {
@@ -206,7 +207,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     private relativeMessage: RelativeService
   ) {
     super();
-   }
+  }
 
   get controls() {
     return this.config.forms.filter(({ type }) => {
@@ -238,7 +239,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         if (!this.config.componentType.child) {
           this.load();
         }
-      }else {
+      } else {
         this.load();
       }
     }
@@ -325,26 +326,26 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
               if (type === 'load') {
                 if (this.tempParameters[param.valueName]) {
                   params[param.name] = this.tempParameters[param.valueName];
-                }else {
+                } else {
                   console.log('参数不全不能加载');
                   tag = false;
                   return;
                 }
-              }else {
+              } else {
                 params[param.name] = this.tempParameters[param.valueName];
               }
-            }else {
+            } else {
               params[param.name] = this.tempParameters[param.valueName];
             }
 
-          }else if (param.type === 'value') {
+          } else if (param.type === 'value') {
 
             params[param.name] = param.value;
 
-          }else if (param.type === 'GUID') {
+          } else if (param.type === 'GUID') {
             const fieldIdentity = CommonUtility.uuID(10);
             params[param.name] = fieldIdentity;
-          }else if (param.type === 'componentValue') {
+          } else if (param.type === 'componentValue') {
             params[param.name] = componentValue[param.valueName];
           }
         });
@@ -352,7 +353,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
       if (this.isString(p.url)) {
         url = APIResource[p.url];
-      }else {
+      } else {
         let pc = 'null';
         p.url.params.forEach(param => {
           if (param['type'] === 'value') {
@@ -373,14 +374,14 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     if (p.ajaxType === 'get' && tag) {
       console.log('get参数', params);
       return this._http.getProj(url, params).toPromise();
-    }else if (p.ajaxType === 'put') {
+    } else if (p.ajaxType === 'put') {
       console.log('put参数', params);
       return this._http.putProj(url, params).toPromise();
-    }else if (p.ajaxType === 'post') {
+    } else if (p.ajaxType === 'post') {
       console.log('post参数', params);
       console.log(url);
       return this._http.postProj(url, params).toPromise();
-    }else {
+    } else {
       return null;
     }
   }
@@ -400,22 +401,36 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       if (ajaxData.Data) {
         console.log('待赋值的表单数据', ajaxData.Data);
         this.setFormValue(ajaxData.Data[0]);
+
+        // 给主键赋值
+        if (this.config.keyId) {
+          this.tempParameters['_id'] = ajaxData.Data[0][this.config.keyId];
+        } else {
+          if (ajaxData.Data[0]['Id']) {
+            this.tempParameters['_id'] = ajaxData.Data[0]['Id'];
+          }
+        }
+
+      } else {
+        this.tempParameters['_id'] && delete this.tempParameters['_id'];
       }
+    } else {
+      this.tempParameters['_id'] && delete this.tempParameters['_id'];
     }
   }
   async saveForm() {
 
-    const testValue = {
-      operationActionType: 'operation',
-      operationDefaultStatus: 'true',
-      operationIcon: '1',
-      operationName: '操作名称',
-      operationNullData: 'true',
-      operationOrder: '3',
-      operationStatus: 'normal',
-      operationType: 'refresh',
-    };
-    this.setFormValue(testValue);
+    // const testValue = {
+    //   operationActionType: 'operation',
+    //   operationDefaultStatus: 'true',
+    //   operationIcon: '1',
+    //   operationName: '操作名称',
+    //   operationNullData: 'true',
+    //   operationOrder: '3',
+    //   operationStatus: 'normal',
+    //   operationType: 'refresh',
+    // };
+   // this.setFormValue(testValue);
     console.log('执行保存方法', this.value);
 
     if (this.config.toolbar) {
@@ -430,7 +445,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             // this.tempParameters['_id'] = ajaxData.Data[0].Id;
 
           }
-        }else {
+        } else {
           // 新增保存
           if (Array.isArray(pconfig['add'])) {
             for (let i = 0; i < pconfig['add'].length; i++) {
@@ -468,8 +483,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   execFun(name?) {
     switch (name) {
       case 'saveForm':
-        this.saveForm();
-        break;
+      this.saveForm();
+      break;
+      case 'initParametersLoad':
+      this.initParametersLoad();
+      break;
       default:
         break;
     }
@@ -480,6 +498,14 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       this.tempParameters[d] = data[d];
     }
     console.log('初始化参数', this.tempParameters);
+  }
+
+  initParametersLoad(data?) {
+    for (const d in data) {
+      this.tempParameters[d] = data[d];
+    }
+    this.load();
+    console.log('初始化参数并load', this.tempParameters);
   }
 
 }

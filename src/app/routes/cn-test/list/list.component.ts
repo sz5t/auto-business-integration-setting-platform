@@ -828,6 +828,7 @@ export class ListComponent implements OnInit {
      *表单配置
      */
     configForm = {
+        'keyId': 'Id',
         ajaxConfig: {
             'url': 'AppModuleConfig',
             'ajaxType': 'get',
