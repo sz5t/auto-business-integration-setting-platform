@@ -34,6 +34,8 @@ import { CnContextMenuComponent } from '@shared/components/cn-context-menu/cn-co
 import { CnFormSelectComponent } from '@shared/components/cn-form-select/cn-form-select.component';
 import { FormResolverDirective } from '@shared/resolver/form-resolver/form-resolver.directive';
 import { GridEditorDirective } from '@shared/resolver/grid-resolver/grid-editor.directive';
+import { SqlEditorComponent } from './business/sql-editor/sql-editor.component';
+import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -54,24 +56,26 @@ const COMPONENTS = [
   CnFormInputComponent,
   CnFormSubmitComponent,
   CnFormSelectComponent,
-  //CnDatePickerComponent,
-  //CnTimePickerComponent,
-  //CnFormRangePickerComponent,
+  // CnDatePickerComponent,
+  // CnTimePickerComponent,
+  // CnFormRangePickerComponent,
   CnFormCheckboxComponent,
   CnFormCheckboxGroupComponent,
   CnFormRadioGroupComponent,
   CnGridInputComponent,
   CnGridSelectComponent,
-  //CnGridDatePickerComponent,
-  //CnGridTimePickerComponent,
-  //CnGridRangePickerComponent,
-  //CnGridCheckboxComponent,
+  // CnGridDatePickerComponent,
+  // CnGridTimePickerComponent,
+  // CnGridRangePickerComponent,
+  // CnGridCheckboxComponent,
   BsnDataTableComponent,
   BsnTableComponent,
   CnContextMenuComponent,
-  //CnCodeEditComponent,
+  // CnCodeEditComponent,
   TabsResolverComponent,
-  FormResolverComponent
+  FormResolverComponent,
+  CnCodeEditComponent,
+  SqlEditorComponent
   
 ];
 const DIRECTIVES = [
@@ -95,7 +99,8 @@ const DIRECTIVES = [
     declarations: [
         // your components
         ...COMPONENTS,
-        ...DIRECTIVES
+        ...DIRECTIVES,
+        SqlEditorComponent
     ],
     exports: [
         CommonModule,
@@ -113,7 +118,7 @@ const DIRECTIVES = [
         ...COMPONENTS,
         ...DIRECTIVES
     ],
-    entryComponents:[
+    entryComponents: [
         ...COMPONENTS
     ]
 })

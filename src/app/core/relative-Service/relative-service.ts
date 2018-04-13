@@ -31,7 +31,7 @@ export class RelativeResolver {
   // 临时关系对象
   private _tempParameter = {};
   // 事件列表
-  //private _selfEvent = {};
+  // private _selfEvent = {};
   // 关系配置集合
   private _relations = [];
   // 组件引用
@@ -39,7 +39,7 @@ export class RelativeResolver {
   // 已注册接收消息的集合
   private _subscribeArr = [];
   // 消息对象
-  //private subject = new Subject<any>();
+  // private subject = new Subject<any>();
 
   private _relativeService;
 
@@ -64,7 +64,7 @@ export class RelativeResolver {
    * 1、
    */
   resolverRelation() {
-    console.log('relation config',this._reference.config.viewId);
+    console.log('relation config', this._reference.config.viewId);
     this._relations && this._relations.forEach(relation => {
       relation.relationSendContent && relation.relationSendContent.forEach(sendContent => {
         this.setMessage(sendContent);
@@ -72,7 +72,7 @@ export class RelativeResolver {
           this._reference[sendContent.aop](this._reference, sendContent.name, (e) => {
             this._reference.selfEvent[sendContent.name].forEach(sendEvent => {
               if (sendEvent.isRegister) {
-                let parent = {};
+                const parent = {};
                 sendEvent.data.params.forEach(param => {
                   parent[param['cid']] = e[0].node[param['pid']];
                 });
@@ -120,7 +120,7 @@ export class RelativeResolver {
             receiver: data.receiver,
             data: data.relationData
           }
-        )
+        );
       }
     }
   }
@@ -142,25 +142,25 @@ export class RelativeResolver {
   }
 
   private refreshAsChild(parent) {
-    for (let d in parent) {
+    for (const d in parent) {
       this._tempParameter[d] = parent[d];
     }
     // call load treeNode
   }
 
   private initParameters(data) {
-    for (let d in data) {
+    for (const d in data) {
       this._tempParameter[d] = data[d];
     }
-    //call load treeNode
+    // call load treeNode
   }
 
   private initComponentValue(data) {
-    for (let d in data) {
+    for (const d in data) {
       this._tempParameter[d] = data[d];
     }
 
-    //call load
+    // call load
   }
 
   unsubscribe() {

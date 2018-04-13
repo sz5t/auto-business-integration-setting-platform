@@ -26,7 +26,7 @@ export class ApiService {
     }
   }
 
-  //region 操作配置平台的相关资源
+  // region 操作配置平台的相关资源
   post(resource, body?, params?) {
    
     return this.httpClient.request(
@@ -73,15 +73,15 @@ export class ApiService {
       });
   }
 
-  //endregion
+  // endregion
 
-  //region  操作项目配置的相关api
+  // region  操作项目配置的相关api
 
-  postProj(resource, body?, params?){
+  postProj(resource, body?, params?) {
     body['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
     body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
     body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
-    //let param: HttpParams = this.setParamsProj(params)
+    // let param: HttpParams = this.setParamsProj(params)
     return this.httpClient.post(
       resource,
       {
@@ -131,12 +131,12 @@ export class ApiService {
    * @returns {HttpParams}
    */
   setParamsProj(param?): HttpParams {
-    var httpParam = new HttpParams()
-      .set('ProjId', '002905c7bf57c54c9e5e65ec0e5fafe8') //项目ID
-      .set('ApplyId', '3935eb43532d435398d5189d5ece0f5d') //ApplyId
-      .set('PlatCustomerId', 'f2771e4c90db29439e3c986d9859dc74');// PlatCutomerId
+    let httpParam = new HttpParams()
+      .set('ProjId', '002905c7bf57c54c9e5e65ec0e5fafe8') // 项目ID
+      .set('ApplyId', '3935eb43532d435398d5189d5ece0f5d') // ApplyId
+      .set('PlatCustomerId', 'f2771e4c90db29439e3c986d9859dc74'); // PlatCutomerId
 
-    for (let p in param) {
+    for (const p in param) {
       httpParam = httpParam.set(p, param[p]);
     }
     console.log(httpParam);
@@ -149,7 +149,7 @@ export class ApiService {
    * @returns {HttpParams}
    */
   setParamsObjProj(param?) {
-    if(param) {
+    if (param) {
       param['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
       param['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
       param['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
@@ -162,6 +162,6 @@ export class ApiService {
       return paramObj;
     }
   }
-  //endregion
+  // endregion
 
 }

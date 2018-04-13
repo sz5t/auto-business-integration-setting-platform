@@ -1,0 +1,86 @@
+<nz-card>
+    <nz-row nzGutter="8">
+        <nz-col nzSpan="24">
+            <button nz-button  nzType="'primary'" [nzSize]="'default'">新增</button>
+            <button nz-button  nzType="'default'" [nzSize]="'default'">保存</button>
+        </nz-col>
+    </nz-row>
+</nz-card>
+<nz-card>
+    <nz-row nzGutter="8">
+        <nz-col nzSpan="24">
+            <cn-code-edit #editor></cn-code-edit>
+        </nz-col>
+    </nz-row>
+    <nz-divider></nz-divider>
+    <nz-row [nzGutter]="8">
+        <nz-col nzSpan="24">
+            <nz-table #sqlTable 
+            [nzData]="tableData" 
+            [nzPageSize]="10" 
+            [nzSize]="'small'"  
+            [nzLoading]="loading"
+            [nzTotal]="total"
+            [(nzPageIndex)]="pageIndex"
+            [(nzPageSize)]="pageSize"
+            >
+                <thead>
+                    <tr>
+                        <th nzShowExpand></th>
+                        <th>名称</th>
+                        <th>类别</th>
+                        <th>脚本内容</th>
+                        <th>引用类型</th>
+                        <th>发布状态</th>
+                        <th>作用域</th>
+                        <th>是否启用</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-template ngFor let-data [ngForOf]="tableData">
+                        <tr (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+                            <td nzShowExpand [(nzExpand)]="data.expand"></td>
+                            <td>{{data.Name}}</td>
+                            <td>{{data.DbObjType}}</td>
+                            <td>{{data.ScriptText}}</td>
+                            <td>{{data.References}}</td>
+                            <td>{{data.IssueFlag}}</td>
+                            <td>{{data.ShareScope}}</td>
+                            <td>{{data.Enabled}}</td>
+                        </tr>
+                        <tr [nzExpand]="data.expand">
+                            <td></td>
+                            <td colspan="7">
+                                <nz-table #innerTable [nzData]="data.ParameterList" nzSize="middle" [nzShowPagination]="false">
+                                    <thead>
+                                        <tr>
+                                            <th>参数名称</th>
+                                            <th>数据类型</th>
+                                            <th>长度</th>
+                                            <th>默认值</th>
+                                            <th>参数类型</th>
+                                            <th>赋值来源</th>
+                                            <th>赋值参数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of innerTable.data">
+                                            <td>{{data.ParameterName}}</td>
+                                            <td>{{data.DbType}}</td>
+                                            <td>{{data.Length}}</td>
+                                            <td>{{data.DefaultValue}}</td>
+                                            <td>{{data.Direction}}</td>
+                                            <td>{{data.ValueSourece}}</td>
+                                            <td>{{data.ValueParam}}</td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </nz-table>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </tbody>
+            </nz-table>
+        </nz-col>
+    </nz-row>
+</nz-card>
