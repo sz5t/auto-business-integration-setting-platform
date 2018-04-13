@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
@@ -189,15 +189,15 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     relations: [
 
     ]
-  }
+  };
 
   @Input() dataList;
   form: FormGroup;
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
   _relativeResolver;
   selfEvent = {
-    initParameters:[]
-  }
+    initParameters: []
+  };
   constructor(
     private http: _HttpClient,
     private formBuilder: FormBuilder,
@@ -238,8 +238,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         if (!this.config.componentType.child) {
           this.load();
         }
-      }
-      else {
+      }else {
         this.load();
       }
     }
@@ -321,87 +320,74 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     if (p) {
       if (p.params) {
         p.params.forEach(param => {
-          if (param.type == 'tempValue') {
+          if (param.type === 'tempValue') {
             if (type) {
               if (type === 'load') {
                 if (this.tempParameters[param.valueName]) {
                   params[param.name] = this.tempParameters[param.valueName];
-                }
-                else {
-                  console.log("参数不全不能加载");
+                }else {
+                  console.log('参数不全不能加载');
                   tag = false;
                   return;
                 }
-              }
-              else {
+              }else {
                 params[param.name] = this.tempParameters[param.valueName];
               }
-            }
-            else {
+            }else {
               params[param.name] = this.tempParameters[param.valueName];
             }
 
-          }
-          else if (param.type == 'value') {
+          }else if (param.type === 'value') {
 
             params[param.name] = param.value;
 
-          }
-          else if (param.type == 'GUID') {
+          }else if (param.type === 'GUID') {
             const fieldIdentity = CommonUtility.uuID(10);
             params[param.name] = fieldIdentity;
-          }
-          else if (param.type == 'componentValue') {
+          }else if (param.type === 'componentValue') {
             params[param.name] = componentValue[param.valueName];
           }
         });
       }
 
       if (this.isString(p.url)) {
-        url = APIResource[p.url]
-      }
-      else {
+        url = APIResource[p.url];
+      }else {
         let pc = 'null';
         p.url.params.forEach(param => {
-          if (param["type"] === 'value') {
+          if (param['type'] === 'value') {
             pc = param.value;
-          }
-          else if (param.type == 'GUID') {
+          } else if (param.type === 'GUID') {
             const fieldIdentity = CommonUtility.uuID(10);
             pc = fieldIdentity;
-          }
-          else if (param.type == 'componentValue') {
+          } else if (param.type === 'componentValue') {
             pc = componentValue[param.valueName];
-          }
-          else if (param.type == 'tempValue') {
+          } else if (param.type === 'tempValue') {
             pc = this.tempParameters[param.valueName];
           }
         });
 
-        url = APIResource[p.url["parent"]] + "/" + pc + "/" + APIResource[p.url["child"]];
+        url = APIResource[p.url['parent']] + '/' + pc + '/' + APIResource[p.url['child']];
       }
     }
     if (p.ajaxType === 'get' && tag) {
-      console.log("get参数", params);
+      console.log('get参数', params);
       return this._http.getProj(url, params).toPromise();
-    }
-    else if (p.ajaxType === 'put') {
-      console.log("put参数", params);
+    }else if (p.ajaxType === 'put') {
+      console.log('put参数', params);
       return this._http.putProj(url, params).toPromise();
-    }
-    else if (p.ajaxType === 'post') {
-      console.log("post参数", params);
+    }else if (p.ajaxType === 'post') {
+      console.log('post参数', params);
       console.log(url);
       return this._http.postProj(url, params).toPromise();
-    }
-    else {
+    }else {
       return null;
     }
   }
 
 
-  isString(obj) { //判断对象是否是字符串
-    return Object.prototype.toString.call(obj) === "[object String]";
+  isString(obj) { // 判断对象是否是字符串
+    return Object.prototype.toString.call(obj) === '[object String]';
   }
 
   /**
@@ -410,63 +396,62 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   async load() {
     const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
     if (ajaxData) {
-      console.log("异步加载表单数据load", ajaxData);
+      console.log('异步加载表单数据load', ajaxData);
       if (ajaxData.Data) {
-        console.log("待赋值的表单数据", ajaxData.Data);
+        console.log('待赋值的表单数据', ajaxData.Data);
         this.setFormValue(ajaxData.Data[0]);
       }
     }
   }
   async saveForm() {
 
-    let testValue = {
-      operationActionType: "operation",
-      operationDefaultStatus: "true",
-      operationIcon: "1",
-      operationName: "操作名称",
-      operationNullData: "true",
-      operationOrder: "3",
-      operationStatus: "normal",
-      operationType: "refresh",
-    }
+    const testValue = {
+      operationActionType: 'operation',
+      operationDefaultStatus: 'true',
+      operationIcon: '1',
+      operationName: '操作名称',
+      operationNullData: 'true',
+      operationOrder: '3',
+      operationStatus: 'normal',
+      operationType: 'refresh',
+    };
     this.setFormValue(testValue);
-    console.log("执行保存方法", this.value);
+    console.log('执行保存方法', this.value);
 
     if (this.config.toolbar) {
-      const index = this.config.toolbar.findIndex(item => item.name === "saveForm");
+      const index = this.config.toolbar.findIndex(item => item.name === 'saveForm');
       if (this.config.toolbar[index].ajaxConfig) {
         const pconfig = JSON.parse(JSON.stringify(this.config.toolbar[index].ajaxConfig));
-        if (this.tempParameters["_id"]) {
-          //修改保存
-          const ajaxData = await this.execAjax(pconfig["update"], this.value);
+        if (this.tempParameters['_id']) {
+          // 修改保存
+          const ajaxData = await this.execAjax(pconfig['update'], this.value);
           if (ajaxData) {
-            console.log("修改保存成功", ajaxData);
-            // this.tempParameters["_id"] = ajaxData.Data[0].Id;
+            console.log('修改保存成功', ajaxData);
+            // this.tempParameters['_id'] = ajaxData.Data[0].Id;
 
           }
-        }
-        else {
-          //新增保存
-          if (Array.isArray(pconfig["add"])) {
-            for (let i = 0; i < pconfig["add"].length; i++) {
-              const ajaxData = await this.execAjax(pconfig["add"][i], this.value);
+        }else {
+          // 新增保存
+          if (Array.isArray(pconfig['add'])) {
+            for (let i = 0; i < pconfig['add'].length; i++) {
+              const ajaxData = await this.execAjax(pconfig['add'][i], this.value);
               if (ajaxData) {
 
-                //console.log(ajaxData, pconfig["add"][i]);
-                if (pconfig["add"][i]["output"]) {
-                  pconfig["add"][i]["output"].forEach(out => {
-                    this.tempParameters[out.name] = ajaxData.Data[out["dataName"]];
+                // console.log(ajaxData, pconfig['add'][i]);
+                if (pconfig['add'][i]['output']) {
+                  pconfig['add'][i]['output'].forEach(out => {
+                    this.tempParameters[out.name] = ajaxData.Data[out['dataName']];
                   });
                 }
 
-                console.log("新增保存成功循环", ajaxData);
+                console.log('新增保存成功循环', ajaxData);
 
               }
             }
           } else {
-            const ajaxData = await this.execAjax(pconfig["add"], this.value);
+            const ajaxData = await this.execAjax(pconfig['add'], this.value);
             if (ajaxData) {
-              console.log("新增保存成功", ajaxData);
+              console.log('新增保存成功', ajaxData);
 
             }
           }
@@ -483,7 +468,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   execFun(name?) {
     switch (name) {
       case 'saveForm':
-        this.saveForm()
+        this.saveForm();
         break;
       default:
         break;
@@ -494,7 +479,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     for (const d in data) {
       this.tempParameters[d] = data[d];
     }
-    console.log("初始化参数", this.tempParameters);
+    console.log('初始化参数', this.tempParameters);
   }
 
 }

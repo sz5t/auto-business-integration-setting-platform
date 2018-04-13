@@ -28,22 +28,22 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 })
 export class BsnDataTableComponent extends CnComponentBase implements OnInit {
 
-    @Input() config; //dataTables 的配置参数
-    @Input() dataList = []; // 表格数据集合
+    @Input() config; // dataTables 的配置参数
+    @Input() dataList = []; //  表格数据集合
 
 
     pi = 1;
     ps = 10;
-    total = 0; // mock total
+    total = 0; //  mock total
     loading = false;
     args: any = {};
     _indeterminate = false;
     _allChecked = false;
     events: any[] = [];
-    rowContent = {}; //行填充
+    rowContent = {}; //  行填充
 
     tempParameters = {
-    };//临时参数，如从外部进出值，均从此处走
+    }; //  临时参数，如从外部进出值，均从此处走
 
     /**
      * 当前组件属性【作为主表、作为子表、单表】优先级：子表-》主表-》单表；
@@ -85,31 +85,29 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
             this.dataList = data.results;
         });
         */
-        if (type == "load") {
+        if (type === 'load') {
             const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
             if (ajaxData) {
-                console.log("异步加载表数据load", ajaxData);
+                console.log('异步加载表数据load', ajaxData);
                 this.loading = true;
                 if (ajaxData.Data.length > 0) {
                     if (ajaxData.Data[0].Metadata) {
                         this.updateEditCacheByLoad(JSON.parse(ajaxData.Data[0].Metadata));
                         this.dataList = JSON.parse(ajaxData.Data[0].Metadata);
                         this.total = this.dataList.length;
-                    }
-                    else {
+                    } else {
                         this.dataList = [];
                         this.updateEditCacheByLoad([]);
                         this.total = this.dataList.length;
                     }
-                    this.tempParameters["_id"] = ajaxData.Data[0].Id;
-                }
-                else {
+                    this.tempParameters['_id'] = ajaxData.Data[0].Id;
+                } else {
                     this.dataList = [];
                     this.updateEditCacheByLoad([]);
-                    this.tempParameters["_id"] && delete this.tempParameters["_id"];
+                    this.tempParameters['_id'] && delete this.tempParameters['_id'];
 
                 }
-                console.log("当前记录id", this.tempParameters["_id"]);
+                console.log('当前记录id', this.tempParameters['_id']);
             } else {
                 this.dataList = [];
                 this.updateEditCacheByLoad([]);
@@ -117,17 +115,17 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
             this.loading = false;
         }
 
-        // this.updateEditCache();
+        //  this.updateEditCache();
         /*   this._http.getProj(APIResource[p.url], params).subscribe(data => {
-              console.log("异步加载表数据", data);
+              console.log('异步加载表数据', data);
               this.loading = false;
-              //this.dataList = data.Data.Metadata;
-              //this.total=data.Data.Metadata.length;
+              // this.dataList = data.Data.Metadata;
+              // this.total=data.Data.Metadata.length;
           }); */
 
     }
-    isString(obj) { //判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === "[object String]";
+    isString(obj) { // 判断对象是否是字符串
+        return Object.prototype.toString.call(obj) === '[object String]';
     }
     /**
      * 执行异步数据
@@ -151,80 +149,67 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         let tag = true;
         if (p) {
             p.params.forEach(param => {
-                if (param.type == 'tempValue') {
+                if (param.type === 'tempValue') {
                     if (type) {
                         if (type === 'load') {
                             if (this.tempParameters[param.valueName]) {
                                 params[param.name] = this.tempParameters[param.valueName];
-                            }
-                            else {
-                                console.log("参数不全不能加载");
+                            }else {
+                                console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
-                        }
-                        else {
+                        } else {
                             params[param.name] = this.tempParameters[param.valueName];
                         }
-                    }
-                    else {
+                    }else {
                         params[param.name] = this.tempParameters[param.valueName];
                     }
 
-                }
-                else if (param.type == 'value') {
+                }else if (param.type === 'value') {
 
                     params[param.name] = param.value;
 
-                }
-                else if (param.type == 'GUID') {
+                }else if (param.type === 'GUID') {
                     const fieldIdentity = CommonUtility.uuID(10);
                     params[param.name] = fieldIdentity;
-                }
-                else if (param.type == 'componentValue') {
+                } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue.value;
                 }
             });
 
 
             if (this.isString(p.url)) {
-                url = APIResource[p.url]
-            }
-            else {
+                url = APIResource[p.url];
+            }else {
                 let pc = 'null';
                 p.url.params.forEach(param => {
-                    if (param["type"] === 'value') {
+                    if (param['type'] === 'value') {
                         pc = param.value;
-                    }
-                    else if (param.type == 'GUID') {
+                    } else if (param.type === 'GUID') {
                         const fieldIdentity = CommonUtility.uuID(10);
                         pc = fieldIdentity;
-                    }
-                    else if (param.type == 'componentValue') {
+                    }else if (param.type === 'componentValue') {
                         pc = componentValue.value;
-                    }
-                    else if (param.type == 'tempValue') {
+                    }else if (param.type === 'tempValue') {
                         pc = this.tempParameters[param.valueName];
                     }
                 });
 
-                url = APIResource[p.url["parent"]] + "/" + pc + "/" + APIResource[p.url["child"]];
+                url = APIResource[p.url['parent']] + '/' + pc + '/' + APIResource[p.url['child']];
             }
         }
         if (p.ajaxType === 'get' && tag) {
-            console.log("get参数", params);
+            console.log('get参数', params);
 
             return this._http.getProj(url, params).toPromise();
-        }
-        else if (p.ajaxType === 'put') {
-            console.log("put参数", params);
+        } else if (p.ajaxType === 'put') {
+            console.log('put参数', params);
             return this._http.putProj(url, params).toPromise();
-        }
-        else if (p.ajaxType === 'post') {
-            console.log("post参数", params);
+        }else if (p.ajaxType === 'post') {
+            console.log('post参数', params);
             return this._http.postProj(url, params).toPromise();
-        }
-        else {
+        }else {
             return null;
         }
     }
@@ -243,7 +228,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         this._allChecked = checkedCount === this.dataList.length;
         this._indeterminate = this._allChecked ? false : checkedCount > 0;
     }
-    //private _randomUser: RandomUserService,
+    // private _randomUser: RandomUserService,
     constructor(private http: _HttpClient, private _http: ApiService,
         private message: NzMessageService, private modalService: NzModalService,
         private relativeMessage: RelativeService,
@@ -256,11 +241,10 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
-                    this.load("load");
+                    this.load('load');
                 }
-            }
-            else {
-                this.load("load");
+            } else {
+                this.load('load');
             }
         } else {
             this.updateEditCache();
@@ -273,7 +257,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         this._relativeResolver.relativeService = this.relativeMessage;
         this._relativeResolver.resolverRelation();
         console.log(this._relativeResolver);
-        //  this.http.get('/chart/visit').subscribe((res: any) => this.events = res);
+        //   this.http.get('/chart/visit').subscribe((res: any) => this.events = res);
         this.getContent();
 
 
@@ -322,7 +306,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         this.dataList = dataSet;
     }
     updateEditCache(): void {
-        // const datadataList=JSON.parse(JSON.stringify(this.dataList));
+        //  const datadataList=JSON.parse(JSON.stringify(this.dataList));
         this.dataList.forEach(item => {
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
@@ -333,7 +317,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         });
     }
     updateEditCacheByLoad(dataList): void {
-        // const datadataList=JSON.parse(JSON.stringify(this.dataList));
+        //  const datadataList=JSON.parse(JSON.stringify(this.dataList));
         dataList.forEach(item => {
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
@@ -346,7 +330,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     /**排序 */
     sortName = null;
     sortValue = null;
-    // copyData = [...this.dataList];
+    //  copyData = [...this.dataList];
     sortMap = {};
     /**
      * 排序
@@ -380,10 +364,10 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     }
 
     getContent() {
-        this.rowContent["key"] = null;
+        this.rowContent['key'] = null;
         this.config.columns.forEach(element => {
             const colsname = element.field.toString();
-            this.rowContent[colsname] = "";
+            this.rowContent[colsname] = '';
         });
     }
 
@@ -391,10 +375,10 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     addRow(): void {
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
         const fieldIdentity = CommonUtility.uuID(6);
-        rowContentNew["key"] = fieldIdentity;
-        rowContentNew["checked"] = true;
+        rowContentNew['key'] = fieldIdentity;
+        rowContentNew['checked'] = true;
         this.dataList = [...this.dataList, rowContentNew];
-        //this.dataList.push(this.rowContent);
+        // this.dataList.push(this.rowContent);
         this.updateEditCache();
         this.startEdit(fieldIdentity.toString());
 
@@ -409,19 +393,19 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     }
     /**删除 */
     deleteRow(): void {
-        // this.modalService.confirm({
-        //     title: '确认框',
-        //     content: '确认要删除？',
-        //     onOk: () => {
-        //         this.dataList.forEach(item => {
-        //             if (item.checked === true) {
-        //                 this.deleteEdit(item.key);
-        //             }
-        //         });
-        //     },
-        //     onCancel() {
-        //     }
-        // });
+        //  this.modalService.confirm({
+        //      title: '确认框',
+        //      content: '确认要删除？',
+        //      onOk: () => {
+        //          this.dataList.forEach(item => {
+        //              if (item.checked === true) {
+        //                  this.deleteEdit(item.key);
+        //              }
+        //          });
+        //      },
+        //      onCancel() {
+        //      }
+        //  });
     }
     /**保存 */
     async  saveRow() {
@@ -435,34 +419,33 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         const dataList = JSON.parse(JSON.stringify(this.dataList));
         const newdataList = [];
         dataList.forEach(element => {
-            let row = {};
+            const row = {};
             for (const d in element) {
-                if (d != 'checked' && d != 'selected') {
+                if (d !== 'checked' && d !== 'selected') {
                     row[d] = element[d];
                 }
             }
             newdataList.push(row);
         });
-        this.tempParameters["dataList"] = JSON.stringify(newdataList);
-        this.tempParameters["arrayDataList"] = newdataList;
-        console.log(this.tempParameters["dataList"]);
+        this.tempParameters['dataList'] = JSON.stringify(newdataList);
+        this.tempParameters['arrayDataList'] = newdataList;
+        console.log(this.tempParameters['dataList']);
         if (this.config.toolbar) {
-            const index = this.config.toolbar.findIndex(item => item.name === "saveRow");
+            const index = this.config.toolbar.findIndex(item => item.name === 'saveRow');
             if (this.config.toolbar[index].ajaxConfig) {
                 const pconfig = JSON.parse(JSON.stringify(this.config.toolbar[index].ajaxConfig));
-                if (this.tempParameters["_id"]) {
-                    //修改保存
-                    const ajaxData = await this.execAjax(pconfig["update"], null);
+                if (this.tempParameters['_id']) {
+                    // 修改保存
+                    const ajaxData = await this.execAjax(pconfig['update'], null);
                     if (ajaxData) {
-                        console.log("修改保存成功", ajaxData);
+                        console.log('修改保存成功', ajaxData);
                         this.dataList = JSON.parse(JSON.stringify(this.dataList));
                     }
-                }
-                else {
-                    //新增保存
-                    const ajaxData = await this.execAjax(pconfig["add"], null);
+                } else {
+                    // 新增保存
+                    const ajaxData = await this.execAjax(pconfig['add'], null);
                     if (ajaxData) {
-                        console.log("新增保存成功", ajaxData);
+                        console.log('新增保存成功', ajaxData);
                         this.dataList = JSON.parse(JSON.stringify(this.dataList));
                     }
                 }
@@ -490,49 +473,49 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         this.dataList.forEach(item => {
             item.selected = false;
         });
-        data.selected = true;// 行选中
+        data.selected = true; //  行选中
 
-        // 单选(check=select)，如果是未勾选，第一次点击选中，再次点击取消选中
-        // 多选（check=select），如果是未勾选，第一次点击选中，再次点击取消选中
-        // 多勾选单选中行（check》select）勾选和行选中各自独立，互不影响
+        //  单选(check=select)，如果是未勾选，第一次点击选中，再次点击取消选中
+        //  多选（check=select），如果是未勾选，第一次点击选中，再次点击取消选中
+        //  多勾选单选中行（check》select）勾选和行选中各自独立，互不影响
 
-        console.log("注册api事件", this.selfEvent);
-        console.log("行选中selectRowdata", data);
+        console.log('注册api事件', this.selfEvent);
+        console.log('行选中selectRowdata', data);
         this.selfEvent['selectRow'].forEach(sendEvent => {
             if (sendEvent.isRegister === true) {
 
-                console.log("关系描述", sendEvent);
-                let parent = {};
+                console.log('关系描述', sendEvent);
+                const parent = {};
                 sendEvent.data.params.forEach(element => {
-                    parent[element["cid"]] = data[element["pid"]];
+                    parent[element['cid']] = data[element['pid']];
                 });
 
                 console.log('主子关系字段', parent);
                 const receiver = { name: 'refreshAsChild', receiver: sendEvent.receiver, parent: parent };
-                console.log("选中行发消息事件", receiver);
+                console.log('选中行发消息事件', receiver);
                 this.relativeMessage.sendMessage({ type: 'relation' }, receiver);
-                console.log("选中行发消息事件over");
+                console.log('选中行发消息事件over');
             }
         });
         this.selfEvent['selectRowBySetValue'].forEach(sendEvent => {
             if (sendEvent.isRegister === true) {
-                console.log("关系描述", sendEvent);
-                let parent = {};
+                console.log('关系描述', sendEvent);
+                const parent = {};
                 sendEvent.data.params.forEach(element => {
-                    parent[element["cid"]] = data[element["pid"]];
+                    parent[element['cid']] = data[element['pid']];
                 });
 
                 console.log('主子关系字段', parent);
                 const receiver = { name: 'initComponentValue', receiver: sendEvent.receiver, parent: parent };
-                console.log("选中行发消息事件", receiver);
+                console.log('选中行发消息事件', receiver);
                 this.relativeMessage.sendMessage({ type: 'relation' }, receiver);
-                console.log("选中行发消息事件over");
+                console.log('选中行发消息事件over');
             }
         });
     }
 
     valueChange(data?) {
-        //console.log('子页面', data);
+        // console.log('子页面', data);
         const index = this.dataList.findIndex(item => item.key === data.key);
         this.editCache[data.key].data[data.name] = data.data;
     }
@@ -544,25 +527,25 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     execFun(name?) {
         switch (name) {
             case 'refresh':
-                this.refresh()
+                this.refresh();
                 break;
             case 'addRow':
-                this.addRow()
+                this.addRow();
                 break;
             case 'updateRow':
-                this.updateRow()
+                this.updateRow();
                 break;
             case 'deleteRow':
-                this.deleteRow()
+                this.deleteRow();
                 break;
             case 'saveRow':
-                this.saveRow()
+                this.saveRow();
                 break;
             case 'cancelRow':
-                this.cancelRow()
+                this.cancelRow();
                 break;
             case 'showDialog':
-                this.showDialog()
+                this.showDialog();
                 break;
 
             default:
@@ -580,24 +563,24 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
 
     /** 刷新，作为子表的刷新*/
     refreshAsChild(parentId?) {
-        console.log("刷新，作为子表的刷新", parentId);
+        console.log('刷新，作为子表的刷新', parentId);
         for (const d in parentId) {
             this.tempParameters[d] = parentId[d];
         }
-        this.load("load");//调用子表的刷新
-        console.log("子表刷新是取到主表的值", this.tempParameters);
+        this.load('load'); // 调用子表的刷新
+        console.log('子表刷新是取到主表的值', this.tempParameters);
     }
 
-    //初始化参数列表，参数列表初始化后load（当前参数的取值）
+    // 初始化参数列表，参数列表初始化后load（当前参数的取值）
     initParameters(data?) {
         for (const d in data) {
             this.tempParameters[d] = data[d];
         }
-        console.log("初始化参数", this.tempParameters);
-        this.load('load');//参数完成后加载刷新
+        console.log('初始化参数', this.tempParameters);
+        this.load('load'); // 参数完成后加载刷新
     }
 
-    //初始化组件值
+    // 初始化组件值
     initComponentValue(data?) {
         for (const d in data) {
             if (d === 'dataList') {
@@ -608,15 +591,14 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     const _dataList = data[d];
                     _dataList.forEach(item => {
                         const fieldIdentity = CommonUtility.uuID(6);
-                        item["key"] = fieldIdentity;
+                        item['key'] = fieldIdentity;
                     });
                     this.updateEditCacheByLoad(_dataList);
                     this.dataList = _dataList;
                 }
 
                 this.total = this.dataList.length;
-            }
-            else {
+            }else {
                 this.tempParameters[d] = data[d];
             }
         }
@@ -631,7 +613,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         }
     }
 
-    // 接收消息
+    //  接收消息
     formReceiveMessage(data?) {
         console.log('表单接收消息', data);
         if (data) {
@@ -649,7 +631,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         }
     }
 
-    // 解析关系
+    //  解析关系
     analysisRelation(data?) {
         if (this.config.relation) {
             this.config.relation.forEach(relation => {
@@ -687,10 +669,11 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
 
         console.log('解析关系信息', data);
 
-    };
+    }
 
-    // 销毁
+    //  销毁
     _subscribArr: any[] = [];
+    // tslint:disable-next-line:use-life-cycle-interface
     ngOnDestroy() {
         if (this._subscribArr.length > 0) {
             this._subscribArr.forEach(sub => {
@@ -706,28 +689,28 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         nzTitle: '标题',
         nzClosable: true,
         nzBody: '这是内容',
-        nzWidth: "520",
-        nzContent: null,//"modalContent"
+        nzWidth: '520',
+        nzContent: null, // 'modalContent'
         nzOkText: '确定',
         nzCancelText: '取消',
         nzMaskClosable: true,
-        nzZIndex: "1000",
-        // [nzStyle]="{}"
-        // [nzWrapClassName]="''"
-        // (nzOnCancel)="handleCancel($event)"
-        // (nzOnOk)="handleOk($event)"
+        nzZIndex: '1000',
+        //  [nzStyle]='{}'
+        //  [nzWrapClassName]=''''
+        //  (nzOnCancel)='handleCancel($event)'
+        //  (nzOnOk)='handleOk($event)'
         config: {
             'viewId': 'operation_sqlColumns1',
             'component': 'bsnDataTable',
             'config': {
                 'viewId': 'operation_sqlColumns1',
                 'keyId': 'key',
-                'nzIsPagination': false, // 是否分页
-                'nzShowTotal': true,// 是否显示总数据量
-                'pageSize': 5, //默认每页数据条数
+                'nzIsPagination': false, //  是否分页
+                'nzShowTotal': true, //  是否显示总数据量
+                'pageSize': 5, // 默认每页数据条数
                 'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
-                'nzLoading': false, // 是否显示加载中
-                'nzBordered': false,// 是否显示边框
+                'nzLoading': false, //  是否显示加载中
+                'nzBordered': false, //  是否显示边框
                 'columns': [
                     {
                         title: '主键', field: 'key', width: 80, hidden: true, editor: {
@@ -902,7 +885,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
             },
             'dataList': []
         }
-    }
+    };
 
 
     _editorConfig = {
@@ -920,7 +903,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                                 ngXl: 24
                             },
 
-                           // 'title': '基本属性',
+                           //  'title': '基本属性',
                             'viewId': 'opt_base',
                             'component': 'form_view',
                             'config': [
@@ -1132,50 +1115,50 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      */
     showDialog(data?) {
 
-        // [(nzVisible)]="modal.isVisible"
-        // [nzConfirmLoading]="true|false"
-        // [nzTitle]="'标题'"
-        // [nzClosable]="false|true"
-        // [nzBody]="'这是内容'"
-        // [nzWidth]="520"
-        // [nzContent]="modalContent"
-        // [nzOkText]="'确定'"
-        // [nzCancelText]="'取消'"
-        // [nzMaskClosable]="false|true"
-        // [nzZIndex]="1000"
-        // [nzStyle]="{}"
-        // [nzWrapClassName]="''"
-        // (nzOnCancel)="handleCancel($event)"
-        // (nzOnOk)="handleOk($event)"
-        // this.isVisible = true;
-        //  this.modal.config=
+        //  [(nzVisible)]='modal.isVisible'
+        //  [nzConfirmLoading]='true|false'
+        //  [nzTitle]=''标题''
+        //  [nzClosable]='false|true'
+        //  [nzBody]=''这是内容''
+        //  [nzWidth]='520'
+        //  [nzContent]='modalContent'
+        //  [nzOkText]=''确定''
+        //  [nzCancelText]=''取消''
+        //  [nzMaskClosable]='false|true'
+        //  [nzZIndex]='1000'
+        //  [nzStyle]='{}'
+        //  [nzWrapClassName]=''''
+        //  (nzOnCancel)='handleCancel($event)'
+        //  (nzOnOk)='handleOk($event)'
+        //  this.isVisible = true;
+        //   this.modal.config=
         this.showModalForComponent();
 
     }
 
     showModalForComponent() {
-        // const subscription = this.modalService.open({
-        //     title: '弹出表单测试-liu',
-        //     content: LayoutResolverComponent,
-        //     width: 800,
-        //     okText: '确定',
-        //     cancelText: '取消',
-        //     onOk() {
-        //         console.log('Click ok');
-        //     },
-        //     onCancel() {
-        //         console.log('Click cancel');
-        //     },
-        //     footer: true,
-        //     componentParams: {
-        //         config: this._editorConfig //dataTables 的配置参数
-        //     }
-        // });
-        // subscription.subscribe(result => {
-        //     console.log(result);
-        //     //onCancel 、 onOk
+        //  const subscription = this.modalService.open({
+        //      title: '弹出表单测试-liu',
+        //      content: LayoutResolverComponent,
+        //      width: 800,
+        //      okText: '确定',
+        //      cancelText: '取消',
+        //      onOk() {
+        //          console.log('Click ok');
+        //      },
+        //      onCancel() {
+        //          console.log('Click cancel');
+        //      },
+        //      footer: true,
+        //      componentParams: {
+        //          config: this._editorConfig // dataTables 的配置参数
+        //      }
+        //  });
+        //  subscription.subscribe(result => {
+        //      console.log(result);
+        //      // onCancel 、 onOk
           
-        // })
+        //  })
     }
 
 }
