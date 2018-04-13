@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { _HttpClient } from '@delon/theme';
 import { map } from 'rxjs/operators';
-//import { TreeNode, TreeModel, TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
+// import { TreeNode, TreeModel, TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 import { RelativeService } from '@core/relative-Service/relative-service';
 
-//import { RandomUserService } from '../randomUser.service';
+// import { RandomUserService } from '../randomUser.service';
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',
@@ -59,7 +59,7 @@ export class ListComponent implements OnInit {
                 this.list = data.results;
             }); */
 
-        this.list = []; //liu
+        this.list = []; // liu
     }
 
     clear() {
@@ -76,7 +76,7 @@ export class ListComponent implements OnInit {
         this._allChecked = checkedCount === this.list.length;
         this._indeterminate = this._allChecked ? false : checkedCount > 0;
     }
-    //private _randomUser: RandomUserService,
+    // private _randomUser: RandomUserService,
     constructor(private http: _HttpClient, private message: NzMessageService,
         private modalService: NzModalService,
         //  private relativeMessage: RelativeService
@@ -257,13 +257,13 @@ export class ListComponent implements OnInit {
      */
     selectRow(data?, edit?) {
 
-        // data.checked="true"; // 行勾选
+        // data.checked='true'; // 行勾选
 
 
         this.list.forEach(item => {
             item.selected = false;
         });
-        data.selected = true;// 行选中
+        data.selected = true; // 行选中
         // 单选(check=select)，如果是未勾选，第一次点击选中，再次点击取消选中
         // 多选（check=select），如果是未勾选，第一次点击选中，再次点击取消选中
         // 多勾选单选中行（check》select）勾选和行选中各自独立，互不影响
@@ -287,11 +287,11 @@ export class ListComponent implements OnInit {
         'component': 'form_view',
         'keyId': 'key',
         'nzIsPagination': false, // 是否分页
-        'nzShowTotal': true,// 是否显示总数据量
-        'pageSize': 5, //默认每页数据条数
+        'nzShowTotal': true, // 是否显示总数据量
+        'pageSize': 5, // 默认每页数据条数
         'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
         'nzLoading': false, // 是否显示加载中
-        'nzBordered': false,// 是否显示边框
+        'nzBordered': false, // 是否显示边框
         'relation': [{
             'relationViewId': '0002',
             'relationSendContent': [
@@ -393,7 +393,7 @@ export class ListComponent implements OnInit {
             { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
         ]
 
-    }
+    };
     dataList = [
         {
             key: `key0`,
@@ -426,11 +426,11 @@ export class ListComponent implements OnInit {
         'component': 'form_view',
         'keyId': 'key',
         'nzIsPagination': false, // 是否分页
-        'nzShowTotal': true,// 是否显示总数据量
-        'pageSize': 5, //默认每页数据条数
+        'nzShowTotal': true, // 是否显示总数据量
+        'pageSize': 5, // 默认每页数据条数
         'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
         'nzLoading': false, // 是否显示加载中
-        'nzBordered': false,// 是否显示边框
+        'nzBordered': false, // 是否显示边框
         'ajaxConfig': {
             'url': 'AppConfigPack',
             'ajaxType': 'get',
@@ -561,7 +561,7 @@ export class ListComponent implements OnInit {
             { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
         ]
 
-    }
+    };
     dataList1 = [];
     /**
      * 动态执行方法
@@ -570,22 +570,22 @@ export class ListComponent implements OnInit {
     execFun(name?) {
         switch (name) {
             case 'refresh':
-                this.refresh()
+                this.refresh();
                 break;
             case 'addRow':
-                this.addRow()
+                this.addRow();
                 break;
             case 'updateRow':
-                this.updateRow()
+                this.updateRow();
                 break;
             case 'deleteRow':
-                this.deleteRow()
+                this.deleteRow();
                 break;
             case 'saveRow':
-                this.saveRow()
+                this.saveRow();
                 break;
             case 'cancelRow':
-                this.cancelRow()
+                this.cancelRow();
                 break;
             default:
                 break;
@@ -724,9 +724,9 @@ export class ListComponent implements OnInit {
     // nzShowLine 显示连接线
 
     treeconfig = {
-        nzAutoExpandParent: true, //是否自动展开父节点，当数字时展开最大节点 false
-        nzAllowChildLinkage: true,// 是否开启父节点的checkbox状态的会影响子节点状态 true
-        nzAllowParentLinkage: true,// 是否开启子节点的checkbox状态的会影响父节点状态 true
+        nzAutoExpandParent: true, // 是否自动展开父节点，当数字时展开最大节点 false
+        nzAllowChildLinkage: true, // 是否开启父节点的checkbox状态的会影响子节点状态 true
+        nzAllowParentLinkage: true, // 是否开启子节点的checkbox状态的会影响父节点状态 true
         nzCheckable: false, //  在节点之前添加一个复选框 false
         nzShowLine: false, // 显示连接线 false
     };
@@ -737,22 +737,22 @@ export class ListComponent implements OnInit {
     }
 
 
-    //气泡
+    // 气泡
     visible = false;
 
     nodestree = [
-        { "id": 2, "title": "第一级1", "parentid": 0 },
-        { "id": 3, "title": "第二级1", "parentid": 2 },
-        { "id": 4, "title": "第二级2", "parentid": 2 },
-        { "id": 5, "title": "第三级1", "parentid": 4 },
-        { "id": 6, "title": "第三级2", "parentid": 3 }
+        { 'id': 2, 'title': '第一级1', 'parentid': 0 },
+        { 'id': 3, 'title': '第二级1', 'parentid': 2 },
+        { 'id': 4, 'title': '第二级2', 'parentid': 2 },
+        { 'id': 5, 'title': '第三级1', 'parentid': 4 },
+        { 'id': 6, 'title': '第三级2', 'parentid': 3 }
     ];
     fn(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].parentid == parentid) {
-                const obj = { "text": data[i].name, "id": data[i].id };
+            if (data[i].parentid === parentid) {
+                const obj = { 'text': data[i].name, 'id': data[i].id };
                 temp = this.fn(data, data[i].id);
                 if (temp.length > 0) {
                     obj['children'] = temp;
@@ -770,11 +770,11 @@ export class ListComponent implements OnInit {
         'component': 'form_view',
         'keyId': 'key',
         'nzIsPagination': true, // 是否分页
-        'nzShowTotal': true,// 是否显示总数据量
-        'pageSize': 5, //默认每页数据条数
+        'nzShowTotal': true, // 是否显示总数据量
+        'pageSize': 5, // 默认每页数据条数
         'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
         'nzLoading': false, // 是否显示加载中
-        'nzBordered': false,// 是否显示边框
+        'nzBordered': false, // 是否显示边框
         'ajaxConfig': {
             'url': 'DbCommonConfig',
             'ajaxType': 'get',
@@ -818,7 +818,7 @@ export class ListComponent implements OnInit {
             { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
         ]
 
-    }
+    };
 
 
 
@@ -1051,9 +1051,9 @@ export class ListComponent implements OnInit {
             {
               relationViewId: 'viewId_testList',
               relationSendContent: [],
-              relationReceiveContent:[]
+              relationReceiveContent: []
             }
           ]
-    }
+    };
 
 }
