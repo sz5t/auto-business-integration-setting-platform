@@ -81,9 +81,9 @@ export class BaseManagerComponent implements OnInit {
   tempEditObject = {};
   rowLine=null;
 
-  sort(field , value) {
-    this._sortValue = (value === 'descend') ? 'DESC' : 'ASC';
-    this._sortField = field;
+  sort(sort) {
+    this._sortValue = (sort.value === 'descend') ? 'DESC' : 'ASC';
+    this._sortField = sort.key;
     this.refreshData();
   }
 
@@ -181,7 +181,7 @@ export class BaseManagerComponent implements OnInit {
    * 按钮刷新操作
    * @param event
    */
-  refresh(event) {
+  refresh(event?) {
       this.refreshData();
     }
 
@@ -189,7 +189,7 @@ export class BaseManagerComponent implements OnInit {
    * 按钮新增操作
    * @param event
    */
-  add(event) {
+  add(event?) {
       let data={
         "ParentId": "0854a1ddc42d493e8e8aa41117924d08",
         "Order": 0,
@@ -216,8 +216,11 @@ export class BaseManagerComponent implements OnInit {
    * 行内新增操作 拿到服务器返回来新插入的数据进行编辑
    * @param event
    */
-  add1(event) {
+  add1(event?) {
+     console.log()
+
     this._randomBase.addModule().subscribe(response => {
+
       response.Data.ConfigData = JSON.stringify({group: false, link: 'system', icon: 'icon-speedometer'});
       this._dataSet = [ ...this._dataSet, response.Data];
       this.cacheMapData.set(response.Data.Id, {checked: false, dataItem: response.Data});
@@ -230,7 +233,7 @@ export class BaseManagerComponent implements OnInit {
    * 行内新增操作 本地先进行数据组织，然后post如数据库中
    * @param event
    */
-  add2(event) {
+  add2(event?) {
     let data = {
       ApplyId : "3935eb43532d435398d5189d5ece0f5d",
       CategoryId: "测试模块",
@@ -258,7 +261,7 @@ export class BaseManagerComponent implements OnInit {
    * 按钮编辑
    * @param event
    */
-    update(event) {
+    update(event?) {
       const data = this.getSelectItem();
       if(data.length === 1) {
         this._randomBase.updateModule(data);
@@ -278,7 +281,7 @@ export class BaseManagerComponent implements OnInit {
    * 按钮删除
    * @param event
    */
-  delete(event) {
+  delete(event?) {
       const name = this.getSelectId();
       if(name.length >= 1) {
         this._randomBase.deleteModule(name).subscribe(response => {
@@ -303,7 +306,7 @@ export class BaseManagerComponent implements OnInit {
    * 编辑按钮操作
    * @param data
    */
-  edit(data){
+  edit(data?){
       this.tempEditObject[ data.Id ] = { ...data };
       this.editRow = data.Id;
     }
@@ -312,7 +315,7 @@ export class BaseManagerComponent implements OnInit {
    * 编辑状态取消操作
    * @param data
    */
-  cancel(data){
+  cancel(data?){
       if(this.rowLine === 'INSERT'){
         this._dataSet.pop(); //移除最后一条记录
         this._randomBase.deleteModule([data.Id]).subscribe( () =>{ this.rowLine = null}); //删除数据库新增的数据
@@ -329,7 +332,7 @@ export class BaseManagerComponent implements OnInit {
    * 保存数据
    * @param data
    */
-  save(data){
+  save(data?){
     if(data.Id && this.rowLine !== 'CACHE') {
       this._randomBase.updateModule(this.tempEditObject[data.Id]).subscribe(response => {
         this.msgSrv.success(response.Message ? response.Message : '操作成功');
@@ -351,7 +354,7 @@ export class BaseManagerComponent implements OnInit {
    * 行内删除数据
    * @param data
    */
-    delete1(data) {
+    delete1(data?) {
       this._randomBase.deleteModule([data.Id]).subscribe( response => {
         this.msgSrv.success(response.Message);
         this.refreshData();
@@ -399,75 +402,65 @@ export class BaseManagerComponent implements OnInit {
 
     confirmAddData()
     {
-      // const subscription = this.modalService.open({
-      //   title          : '新增数据',
-      //   content        : ModalBaseComponent,
-      //   onOk() {
-      //   },
-      //   onCancel() {
-      //     console.log('Click cancel');
-      //   },
-      //   footer         : false,
-      //   componentParams: {
-      //     name: '',
-      //     tree: this._dataTree
-      //   }
-      // });
-      // subscription.subscribe((result) => {
-      //   // console.log(result);
-      //   // console.log( typeof result);
-      //   if(typeof result === 'object')
-      //       this._randomBase.addModule(result).subscribe( response => {
-      //         if(response.Status === 200){
-      //           this.msgSrv.success(response.Message ? response.Message : '添加成功！');
-      //           this.refreshData();
-      //         }else {
-      //           this.msgSrv.error(response.Message);
-      //     }
-      //   });
-      // });
+      const subscription = this.modalService.create({
+        nzTitle          : '新增数据',
+        nzContent        : ModalBaseComponent,
+        nzFooter         : null,
+        nzComponentParams: {
+          name: '',
+          tree: this._dataTree
+        }
+      });
+      subscription.afterClose.subscribe((result) => {
+        console.log(result);
+        console.log( typeof result);
+        if(typeof result === 'object')
+            this._randomBase.addModule(result).subscribe( response => {
+              if(response.Status === 200){
+                this.msgSrv.success(response.Message ? response.Message : '添加成功！');
+                this.refreshData();
+              }else {
+                this.msgSrv.error(response.Message);
+          }
+        });
+      });
     }
 
     confirmEditData()
     {
-      // let data = this.getSelectItem();
-      // if( data.length === 1) {
-      //   // this._randomBase.updateModule(data);
-      //   this.refreshData();
-      //   const subscription = this.modalService.open({
-      //     title          : '修改数据',
-      //     content        : ModalBaseComponent,
-      //     onOk() {
-      //     },
-      //     onCancel() {
-      //       // console.log('Click cancel');
-      //     },
-      //     footer         : false,
-      //     componentParams: {
-      //       name: data[0],
-      //       tree: this._dataTree
-      //     }
-      //   });
-      //   subscription.subscribe(result => {
-      //     if(typeof result === 'object'){
-      //       result['Id'] = data[0].Id;
-      //       this._randomBase.updateModule(result).subscribe( response => {
-      //         if(response.Status === 200){
-      //           this.msgSrv.success(response.Message ? response.Message : '修改成功！');
-      //           this.refreshData();
-      //         }else {
-      //           this.msgSrv.error(response.Message);
-      //         }
-      //       });}
-      //   });
-      // }else if (data.length > 1 ){
-      //   this.msgSrv.warning('不能修改多条记录！');
-      //   //处理缓存选中的数据
-      //   this.cacheMapData.forEach( item => {
-      //     item.dataItem.checked = false;
-      //     item.checked = false;
-      //   });} else {
-      //   this.msgSrv.warning('请选中要修改的记录！');
-      // }
+      let data = this.getSelectItem();
+      if( data.length === 1) {
+        // this._randomBase.updateModule(data);
+        this.refreshData();
+        const subscription = this.modalService.create({
+          nzTitle          : '修改数据',
+          nzContent        : ModalBaseComponent,
+          nzFooter         : null,
+          nzComponentParams: {
+            name: data[0],
+            tree: this._dataTree
+          }
+        });
+        subscription.afterClose.subscribe(result => {
+          if(typeof result === 'object'){
+            result['Id'] = data[0].Id;
+            this._randomBase.updateModule(result).subscribe( response => {
+              if(response.Status === 200){
+                this.msgSrv.success(response.Message ? response.Message : '修改成功！');
+                this.refreshData();
+              }else {
+                this.msgSrv.error(response.Message);
+              }
+            });}
+        });
+      }else if (data.length > 1 ){
+        this.msgSrv.warning('不能修改多条记录！');
+        //处理缓存选中的数据
+        this.cacheMapData.forEach( item => {
+          item.dataItem.checked = false;
+          item.checked = false;
+        });} else {
+        this.msgSrv.warning('请选中要修改的记录！');
+      }
     }
 }

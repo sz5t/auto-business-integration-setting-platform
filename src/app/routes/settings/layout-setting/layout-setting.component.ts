@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {ApiService} from "@core/utility/api-service";
-import {APIResource} from "@core/utility/api-resource";
-import {NzMessageService} from "ng-zorro-antd";
-import {AppConfigPack_ConfigType} from "../../../model/APIModel/AppConfigPack";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
+import { NzMessageService } from 'ng-zorro-antd';
+import { AppConfigPack_ConfigType } from '../../../model/APIModel/AppConfigPack';
 /**
  * 功能设计：
  * 1、用户的所有布局设置统一为添加新布局
@@ -16,7 +16,7 @@ import {AppConfigPack_ConfigType} from "../../../model/APIModel/AppConfigPack";
 })
 export class LayoutSettingComponent implements OnInit {
   // 加载模块数据
-  _funcOptions:any[] = [];
+  _funcOptions: any[] = [];
   // 定义布局模版
   _layoutOptions = [
     {
@@ -932,18 +932,18 @@ export class LayoutSettingComponent implements OnInit {
   _tableHeader = {
     'keyId': 'key',
     'nzIsPagination': false, // 是否分页
-    'nzShowTotal': true,// 是否显示总数据量
-    'pageSize': 5, //默认每页数据条数
+    'nzShowTotal': true, // 是否显示总数据量
+    'pageSize': 5, // 默认每页数据条数
     'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
     'nzLoading': false, // 是否显示加载中
-    'nzBordered': false,// 是否显示边框
+    'nzBordered': false, // 是否显示边框
     'columns': [
       { title: '主键', field: 'key', width: 'auto', hidden: true },
       { title: 'ID', field: 'Id', width: 'auto', hidden: true },
       { title: '布局名称', field: 'Name', width: 'auto' },
       { title: '模版名称', field: 'TagB', width: 'auto', hidden: false },
       { title: '是否启用', field: 'ShareScope', width: 'auto', hidden: false },
-      { title: '创建时间', field: 'CreateTime', width: 'auto', hidden: false}
+      { title: '创建时间', field: 'CreateTime', width: 'auto', hidden: false }
     ],
     'toolbar': [
       { 'name': 'status', 'class': 'editable-add-btn', 'text': '启用/禁用' },
@@ -955,11 +955,11 @@ export class LayoutSettingComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private formBuilder: FormBuilder,
-    private message: NzMessageService) {}
+    private message: NzMessageService) { }
 
   async ngOnInit() {
     this._formGroup = this.formBuilder.group({});
-    //const params = new HttpParams().set();
+    // const params = new HttpParams().set();
     const params = { _select: 'Id,Name,ParentId' };
     const moduleData = await this.getModuleData(params);
     // 初始化模块列表，将数据加载到及联下拉列表当中
@@ -972,20 +972,20 @@ export class LayoutSettingComponent implements OnInit {
   }
 
   // 获取布局设置列表
-  getLayoutConfigData (params) {
-    return this.apiService.getProj(APIResource.AppConfigPack,params).toPromise();
+  getLayoutConfigData(params) {
+    return this.apiService.getProj(APIResource.AppConfigPack, params).toPromise();
   }
 
   // 改变模块选项
   _changeModuleValue($event?) {
     // 选择功能模块，首先加载服务端配置列表
-    //const params = new HttpParams().set('TagA', this._funcValue.join(','));
-    if(this._funcValue.length >0) {
+    // const params = new HttpParams().set('TagA', this._funcValue.join(','));
+    if (this._funcValue.length > 0) {
       const params = {
-        ParentId: this._funcValue[this._funcValue.length -1]
+        ParentId: this._funcValue[this._funcValue.length - 1]
       };
       this.getLayoutConfigData(params).then(serverLayoutData => {
-        if(serverLayoutData.Status === 200 && serverLayoutData.Data.length > 0){
+        if (serverLayoutData.Status === 200 && serverLayoutData.Data.length > 0) {
           this._tableDataSource = serverLayoutData.Data;
         } else {
           this._tableDataSource = [];
@@ -1017,11 +1017,11 @@ export class LayoutSettingComponent implements OnInit {
   _submitForm($event) {
     event.preventDefault();
     event.stopPropagation();
-    const loadingMessage = this.message.loading('正在执行中...', {nzDuration:0}).messageId;
+    const loadingMessage = this.message.loading('正在执行中...', { nzDuration: 0 }).messageId;
     // 为每个区域设置标题
     this.overrideLayoutTitle(this._layoutValue.value.rows, this.value);
     // 获取模块ID，格式为将按照模块层级依次保存为数组形式，后续按照模块加载时，层级最后的ID即为对应加载模块ID
-    const moduleID = this._funcValue[this._funcValue.length-1];
+    const moduleID = this._funcValue[this._funcValue.length - 1];
     const layoutName = this._layoutValue.label;
     const copyLayout = JSON.parse(JSON.stringify(this._layoutValue.value));
     this.overrideLayoutId(copyLayout);
@@ -1031,26 +1031,26 @@ export class LayoutSettingComponent implements OnInit {
     const configData = {
       ParentId: moduleID,
       TagA: this.uuID(10),
-      TagB: AppConfigPack_ConfigType.LAYOUT + '.' +layoutName,
+      TagB: AppConfigPack_ConfigType.LAYOUT + '.' + layoutName,
       Name: configName,
       Metadata: metadata
     };
     this.apiService.postProj(
       APIResource.AppConfigPack,
-      configData).subscribe(response =>{
-      this.message.remove(loadingMessage);
-      if(response && response.Status === 200) {
-        this.message.create('success', '执行成功');
-        this._changeModuleValue();
-      }else {
-        this.message.create('warning', `出现异常：${response.Message}`);
-      }
-    });
+      configData).subscribe(response => {
+        this.message.remove(loadingMessage);
+        if (response && response.Status === 200) {
+          this.message.create('success', '执行成功');
+          this._changeModuleValue();
+        } else {
+          this.message.create('warning', `出现异常：${response.Message}`);
+        }
+      });
   }
 
-  private uuID(w){
-    let s="";
-    let str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  private uuID(w) {
+    let s = '';
+    const str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     for (let i = 0; i < w; i++) {
       s += str.charAt(Math.round(Math.random() * (str.length - 1)));
     }
@@ -1060,12 +1060,12 @@ export class LayoutSettingComponent implements OnInit {
   overrideLayoutId(layoutValue) {
     layoutValue.rows.forEach(row => {
       row.row.cols.forEach(col => {
-        col.id =this.uuID(10);
-        if(col.rows) {
+        col.id = this.uuID(10);
+        if (col.rows) {
           this.overrideLayoutId(col);
         }
       });
-    })
+    });
   }
 
   overrideLayoutTitle(rows, formData) {
@@ -1073,10 +1073,10 @@ export class LayoutSettingComponent implements OnInit {
       rowItem.row.cols.forEach(col => {
         // 根据ID与布局区域对应名称，更新表单提交的区域标题
         col.title = this.value[`${col.id}_title`];
-        if(col.rows) {
+        if (col.rows) {
           this.overrideLayoutTitle(col.rows, formData);
         }
-      })
+      });
     });
   }
 
@@ -1084,13 +1084,13 @@ export class LayoutSettingComponent implements OnInit {
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId == parentid) {
-        const obj = { "label": data[i].Name, "value": data[i].Id };
+      if (data[i].ParentId === parentid) {
+        const obj = { 'label': data[i].Name, 'value': data[i].Id };
         temp = this.arrayToTree(data, data[i].Id);
         if (temp.length > 0) {
           obj['children'] = temp;
         } else {
-          obj["isLeaf"] = true;
+          obj['isLeaf'] = true;
         }
         result.push(obj);
       }
@@ -1099,13 +1099,13 @@ export class LayoutSettingComponent implements OnInit {
   }
 
   get controlsData() {
-    return this._editorConfig.filter(({type}) => {
+    return this._editorConfig.filter(({ type }) => {
       return type !== 'button';
     });
   }
 
   get controls() {
-    return this._editorConfig.filter(({type}) => {
+    return this._editorConfig.filter(({ type }) => {
       return type !== 'button';
     });
   }
@@ -1134,7 +1134,7 @@ export class LayoutSettingComponent implements OnInit {
   }
 
   createControl(config) {
-    const {disabled, validation, value} = config;
-    return this.formBuilder.control({disabled, value}, validation);
+    const { disabled, validation, value } = config;
+    return this.formBuilder.control({ disabled, value }, validation);
   }
 }

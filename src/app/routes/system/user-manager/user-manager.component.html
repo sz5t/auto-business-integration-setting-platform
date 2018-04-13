@@ -1,15 +1,17 @@
 
-<pro-header [title]=""></pro-header>
+<page-header [title]=""></page-header>
 <nz-card>
   <div class = "table-operations">
-    <button nz-button  (click)="refresh($event)">刷新</button>
-    <button nz-button  (click)="add($event)">新增</button>
-    <button nz-button  (click)="update($event)">修改</button>
-    <button nz-button  (click)="delete($event)">删除</button>
+    <button nz-button>刷新 </button>
+    <button nz-button>新增</button>
+    <button nz-button>修改</button>
+    <button nz-button>删除</button>
   </div>
   <nz-table #nzTable
-            [nzAjaxData]="_dataSet"
-            [nzShowSizeChanger]="true"
+            [nzData]="_dataSet"
+            [nzPageSizeOptions]="[1, 2, 3, 5, 10]"
+            [nzFrontPagination]="false"
+            nzShowSizeChanger
             [nzLoading]="_loading"
             [nzTotal]="_total"
             [(nzPageIndex)]="_current"
@@ -17,41 +19,18 @@
             [(nzPageSize)]="_pageSize"
             (nzPageSizeChange)="refreshData(true)"
             [nzBordered] = "true"
+            [nzShowTotal]="totalTemplate"
             nzSize = "small">
-    <thead nz-thead>
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
     <tr>
-      <th nz-th>
-        <span>用户名</span>
-        <nz-table-sort (nzValueChange)="sort('Name',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>主键</span>
-        <nz-table-sort (nzValueChange)="sort('Id',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>编码</span>
-        <nz-table-sort (nzValueChange)="sort('Code',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>性别</span>
-        <nz-table-sort (nzValueChange)="sort('Gender',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>身份标识</span>
-        <nz-table-sort (nzValueChange)="sort('IdCardNumber',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>Email</span>
-        <nz-table-sort (nzValueChange)="sort('MailAddress',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>昵称</span>
-        <nz-table-sort (nzValueChange)="sort('NickName',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>创建时间</span>
-        <nz-table-sort (nzValueChange)="sort('CreateTime',$event)"></nz-table-sort>
-      </th>
+        <th nzShowSort nzSortKey="Name"><span>用户名</span></th>
+        <!--<th nzShowSort nzSortKey="Id"><span>主键</span></th>-->
+        <th nzShowSort nzSortKey="Code"><span>编码</span></th>
+        <th nzShowSort nzSortKey="Gender"><span>性别</span></th>
+        <th nzShowSort nzSortKey="IdCardNumber"><span>身份标识</span></th>
+        <th nzShowSort nzSortKey="MailAddress"><span>Email</span></th>
+        <th nzShowSort nzSortKey="NickName"><span>昵称</span></th>
+        <th nzShowSort nzSortKey="CreateTime"><span>创建时间</span></th>
     </tr>
     </thead>
     <tbody nz-tbody>
@@ -59,7 +38,7 @@
       <td nz-td>
         <a>{{data.Name}}</a>
       </td>
-      <td nz-td>{{data.Id}}</td>
+      <!--<td nz-td>{{data.Id}}</td>-->
       <td nz-td>{{data.Code}}</td>
       <td nz-td>{{Gender[data.Gender]}}</td>
       <td nz-td>{{data.IdCardNumber}}</td>
@@ -69,14 +48,17 @@
     </tr>
     </tbody>
   </nz-table>
+    <ng-template #totalTemplate let-total let-range="range">
+        {{range[0]}}-{{range[1]}} / {{total}} 条
+    </ng-template>
 </nz-card>
 
-<nz-card>
-  <nz-collapseset>
-  <nz-collapse nzTitle = "api交互实例" >
+
+<nz-collapse>
+  <nz-collapse-panel nzHeader='Api交互示例'>
 
     <div class="content__title">
-      <div ns-row>
+      <div>
       <input type="button" value="点我获取用户信息"  (click)="getUser()">
       <h4>{{content}}</h4>
       </div>
@@ -90,7 +72,7 @@
       </div>
     </div>
     <div class="content__title">
-      <div ns-row>
+      <div>
         <input type="button" value="点我添加用户信息"  (click)="addUser()">
         <h4>{{addcontent}}</h4>
       </div>
@@ -105,7 +87,7 @@
     </div>
 
     <div class="content__title">
-      <div ns-row>
+      <div>
         <input type="button" value="点我修改用户信息"  (click)="putUser()">
         <h4>{{putcontent}}</h4>
       </div>
@@ -121,7 +103,7 @@
     </div>
 
     <div class="content__title">
-      <div ns-row>
+      <div>
         <input type="button" value="点我删除用户信息"  (click)="delUser()">
         <h4>{{delcontent}}</h4>
       </div>
@@ -135,6 +117,5 @@
       </div>
     </div>
 
-  </nz-collapse>
-</nz-collapseset>
-</nz-card>
+  </nz-collapse-panel>
+</nz-collapse>

@@ -1,7 +1,8 @@
-<pro-header [title]=""></pro-header>
+<page-header [title]=""></page-header>
 <nz-card>
   <nz-table #nzTable
-            [nzAjaxData]="_dataSet"
+            [nzData]="_dataSet"
+            [nzFrontPagination]="false"
             [nzShowSizeChanger]="true"
             [nzLoading]="_loading"
             [nzTotal]="_total"
@@ -10,58 +11,57 @@
             [(nzPageSize)]="_pageSize"
             (nzPageSizeChange)="refreshData(true)"
             [nzBordered] = "true"
+            [nzShowTotal]="totalTemplate"
             nzSize = "small">
-    <thead nz-thead>
+    <thead >
     <tr>
-      <th nz-th>
+
+      <th >
         <span>角色名称</span>
-        <nz-table-sort (nzValueChange)="sort('Name',$event)"></nz-table-sort>
+
       </th>
-      <th nz-th>
+      <th >
         <span>角色配置</span>
-        <nz-table-sort (nzValueChange)="sort('AppPermission',$event)"></nz-table-sort>
+
       </th>
-      <th nz-th>
-        <span>主键</span>
-        <nz-table-sort (nzValueChange)="sort('Id',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>项目ID</span>
-        <nz-table-sort (nzValueChange)="sort('ProjId',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
-        <span>ApplyId</span>
-        <nz-table-sort (nzValueChange)="sort('ApplyId',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
+      <!--<th >-->
+        <!--<span>主键</span>-->
+      <!--</th>-->
+      <!--<th >-->
+        <!--<span>项目ID</span>-->
+      <!--</th>-->
+      <!--<th >-->
+        <!--<span>ApplyId</span>-->
+      <!--</th>-->
+      <th >
         <span>备注</span>
-        <nz-table-sort (nzValueChange)="sort('Remark',$event)"></nz-table-sort>
       </th>
-      <th nz-th>
-        <span>客户ID</span>
-        <nz-table-sort (nzValueChange)="sort('PlatCustomerId',$event)"></nz-table-sort>
-      </th>
-      <th nz-th>
+      <!--<th >-->
+        <!--<span>客户ID</span>-->
+      <!--</th>-->
+      <th >
         <span>创建时间</span>
-        <nz-table-sort (nzValueChange)="sort('CreateTime',$event)"></nz-table-sort>
       </th>
     </tr>
     </thead>
-    <tbody nz-tbody>
-    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
-      <td nz-td>
+    <tbody >
+    <tr *ngFor="let data of nzTable.data">
+      <td >
         <a>{{data.Name}}</a>
       </td>
-      <td nz-td>{{data.AppPermission}}</td>
-      <td nz-td>{{data.Id}}</td>
-      <td nz-td>{{data.ProjId}}</td>
-      <td nz-td>{{data.ApplyId}}</td>
-      <td nz-td>{{data.Remark}}</td>
-      <td nz-td>{{data.PlatCustomerId}}</td>
-      <td nz-td>{{data.CreateTime | date}}</td>
+      <td >{{data.AppPermission}}</td>
+      <!--<td >{{data.Id}}</td>-->
+      <!--<td >{{data.ProjId}}</td>-->
+      <!--<td >{{data.ApplyId}}</td>-->
+      <td >{{data.Remark}}</td>
+      <!--<td >{{data.PlatCustomerId}}</td>-->
+      <td >{{data.CreateTime | date}}</td>
     </tr>
     </tbody>
   </nz-table>
+    <ng-template #totalTemplate let-total let-range="range">
+        {{range[0]}}-{{range[1]}} 共 {{total}} 条
+    </ng-template>
 </nz-card>
 
 

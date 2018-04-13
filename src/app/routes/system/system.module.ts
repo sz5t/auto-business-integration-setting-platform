@@ -1,11 +1,12 @@
 import {NgModule} from '@angular/core';
-import {SharedModule} from '@shared/shared.module';
 import {UserManagerComponent} from './user-manager/user-manager.component';
 import {RoleManagerComponent} from './role-manager/role-manager.component';
 import {ModuleManagerComponent} from './module-manager/module-manager.component';
 import {BaseManagerComponent} from './base-manager/base-manager.component';
-import {RouterModule, Routes} from "@angular/router";
-import { ModalBaseComponent } from './base-manager/modal-base.component';
+import {RouterModule, Routes} from '@angular/router';
+import {CanLeaveProvide} from '../delon/guard/can-leave.provide';
+import {SharedModule} from '@shared/shared.module';
+import {ModalBaseComponent} from './base-manager/modal-base.component';
 
 const routes: Routes = [
     {path: 'base-manager', component: BaseManagerComponent},
@@ -17,7 +18,8 @@ const COMPONENT_NOROUNT = [
     UserManagerComponent,
     RoleManagerComponent,
     ModuleManagerComponent,
-    BaseManagerComponent
+    BaseManagerComponent,
+    ModalBaseComponent
 ];
 
 @NgModule({
@@ -25,14 +27,8 @@ const COMPONENT_NOROUNT = [
         SharedModule,
         RouterModule.forChild(routes)
     ],
-    exports: [
-        RouterModule
-    ],
-    declarations: [
-        ...COMPONENT_NOROUNT,
-        ModalBaseComponent
-    ],
-    entryComponents: [COMPONENT_NOROUNT,ModalBaseComponent]
+    declarations: [...COMPONENT_NOROUNT],
+    entryComponents: COMPONENT_NOROUNT,
 })
 export class SystemModule {
 }

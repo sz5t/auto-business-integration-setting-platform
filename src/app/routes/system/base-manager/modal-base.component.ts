@@ -1,8 +1,9 @@
 import {Component, OnInit, Input} from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import {FormBuilder,  FormGroup, Validators} from '@angular/forms';
-//import {NzModalSubject} from 'ng-zorro-antd';
 import {CacheService} from '@delon/cache';
+import { NzModalRef } from 'ng-zorro-antd';
+import {SysResource} from '@core/utility/sys-resource';
 
 
 @Component({
@@ -11,7 +12,9 @@ import {CacheService} from '@delon/cache';
 })
 export class ModalBaseComponent implements OnInit{
 
-
+    data = SysResource.data;
+    isVisible = false;
+    iconFlag = null;
   validateForm: FormGroup;
     _name: any;
     _parentId: string;
@@ -23,16 +26,36 @@ export class ModalBaseComponent implements OnInit{
   set name(value: any) {
     this._name = value;
   }
+    showModal(): void {
+        this.isVisible = true;
+    }
+
+    handleOk(): void {
+        console.log('Button ok clicked!');
+        this.isVisible = false;
+    }
+
+    handleCancel1(): void {
+        console.log('Button cancel clicked!');
+        this.isVisible = false;
+    }
+
+    copy(group?:any, item?: any)
+    {
+        this.iconFlag = group.prefix + item.k;
+        console.log(this.iconFlag);
+
+    }
 
   constructor(
     private http: _HttpClient,
-    //private subject: NzModalSubject,
     private cacheService: CacheService,
-    private fb: FormBuilder) {
-    // this.subject.on('onDestory' ,() => {
-    // })
+    private fb: FormBuilder,
+    private modal: NzModalRef) {
+
   }
   emitDataOutside() {
+
     if(!this.validateForm.valid)
       return;
     const data = {
@@ -49,12 +72,12 @@ export class ModalBaseComponent implements OnInit{
       Remark: this.validateForm.controls['Remark'].value,
       ShareScope: 'Project'
     };
-    //this.subject.next(data);
-    this.handleCancel('');
+
+      this.modal.destroy(data);
   }
 
   handleCancel(e) {
-    //this.subject.destroy('onCancel');
+      this.modal.destroy();
   }
 
 
@@ -79,7 +102,8 @@ export class ModalBaseComponent implements OnInit{
           this.validateForm.controls['Name'].setValue(this._name.Name);
           this.validateForm.controls['Group'].setValue(JSON.parse(this._name.ConfigData).group);
           this.validateForm.controls['Link'].setValue(JSON.parse(this._name.ConfigData).link);
-          this.validateForm.controls['Icon'].setValue(JSON.parse(this._name.ConfigData).icon);
+          // this.validateForm.controls['Icon'].setValue(JSON.parse(this._name.ConfigData).icon);
+            this.iconFlag = JSON.parse(this._name.ConfigData).icon
           this.validateForm.controls['Order'].setValue(this._name.Order);
           this.validateForm.controls['Remark'].setValue(this._name.Remark);
           this.values = JSON.parse(this._name.ConfigData).ids;

@@ -10,7 +10,7 @@ export class RandomUserService {
 
   getUsers(pageIndex = 1, pageSize = 2, sortField, sortOrder, genders) {
     return this.http.get(`${this.randomUserUrl}`, {
-      _page: pageIndex, _rows: pageSize//, _orderBy: `${sortField} ${sortOrder}`
+      _page: pageIndex, _rows: pageSize, _orderBy: `${sortField} ${sortOrder}`
     });
   }
   constructor(private http: ApiService) {
@@ -64,13 +64,14 @@ export class UserManagerComponent implements OnInit {
   _dataSet = [];
   _loading = true;
   _sortValue = 'asc';
-  _sortField = 'order';
+  _sortField = 'CreateTime';
   _filterGender = [];
 
   Gender= {Unknown: '未知', Male: '男', Female: '女'};
-  sort(field , value) {
-    this._sortValue = (value === 'descend') ? 'DESC' : 'ASC';
-    this._sortField = field;
+  sort(sort) {
+      console.log(111,sort.value === 'descend')
+    this._sortValue = (sort.value == 'descend') ? 'DESC' : 'ASC';
+    this._sortField = sort.key;
     this.refreshData();
   }
 
@@ -133,7 +134,10 @@ export class UserManagerComponent implements OnInit {
       }
     );
   }
+    currentPageDataChange($event: Array<{ name: string; age: number; address: string; checked: boolean }>)
+    {
 
+    }
   getModule()
   {
     this.clear();
