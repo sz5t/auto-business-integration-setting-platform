@@ -7,7 +7,7 @@ declare let CodeMirror: any;
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['./cn-code-edit.component.css']
 })
-export class CnCodeEditComponent implements OnInit,AfterViewInit {
+export class CnCodeEditComponent implements OnInit , AfterViewInit {
     @ViewChild('CodeMirror') codeEditor: ElementRef;
     @Input() config;
 
@@ -36,8 +36,12 @@ export class CnCodeEditComponent implements OnInit,AfterViewInit {
           }
         });
       }
-      getValue(){
+      getValue() {
         return this.editor.getValue();
+      }
+
+      setValue(data?) {
+        this.editor.setValue(data);
       }
 
 }
