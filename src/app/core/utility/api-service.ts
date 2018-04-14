@@ -84,8 +84,9 @@ export class ApiService {
     // let param: HttpParams = this.setParamsProj(params)
     return this.httpClient.post(
       resource,
+      body,
+      params,
       {
-        body: body,
         headers: this.setHeaders()
       });
   }
@@ -107,9 +108,9 @@ export class ApiService {
     params = this.setParamsObjProj(params);
     return this.httpClient.put(
       resource,
+      body,
       params,
       {
-        body: body,
         headers: this.setHeaders()
       });
   }

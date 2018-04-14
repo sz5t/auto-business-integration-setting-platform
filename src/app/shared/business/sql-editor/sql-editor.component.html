@@ -1,29 +1,26 @@
+
 <nz-card>
-    <nz-row nzGutter="8">
-        <nz-col nzSpan="24">
-            <button nz-button  nzType="'primary'" [nzSize]="'default'">新增</button>
-            <button nz-button  nzType="'default'" [nzSize]="'default'">保存</button>
-        </nz-col>
-    </nz-row>
-</nz-card>
-<nz-card>
-    <nz-row nzGutter="8">
-        <nz-col nzSpan="24">
-            <cn-code-edit #editor></cn-code-edit>
-        </nz-col>
-    </nz-row>
-    <nz-divider></nz-divider>
+    <nz-card>
+        <nz-row nzGutter="8">
+            <nz-col nzSpan="24" class="example-input">
+                脚本名称: <input nz-input type="text" [(ngModel)]="scriptName" nzSize="default"/>
+                <nz-divider></nz-divider>
+                <cn-code-edit #editor></cn-code-edit>
+            </nz-col>
+        </nz-row>
+    </nz-card>
+    <nz-card>
+        <nz-row nzGutter="8">
+            <nz-col nzSpan="24" class="table-operations">
+                <button nz-button nzType="primary" (click)="add()" [nzSize]="'default'">新增</button>
+                <button nz-button nzType="default" (click)="save()" [nzSize]="'default'">保存</button>
+            </nz-col>
+        </nz-row>
+    </nz-card>
     <nz-row [nzGutter]="8">
         <nz-col nzSpan="24">
-            <nz-table #sqlTable 
-            [nzData]="tableData" 
-            [nzPageSize]="10" 
-            [nzSize]="'small'"  
-            [nzLoading]="loading"
-            [nzTotal]="total"
-            [(nzPageIndex)]="pageIndex"
-            [(nzPageSize)]="pageSize"
-            >
+            <nz-table #sqlTable [nzData]="tableData" [nzPageSize]="10" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex"
+                [(nzPageSize)]="pageSize">
                 <thead>
                     <tr>
                         <th nzShowExpand></th>
@@ -72,7 +69,7 @@
                                             <td>{{data.Direction}}</td>
                                             <td>{{data.ValueSourece}}</td>
                                             <td>{{data.ValueParam}}</td>
-                                            
+
                                         </tr>
                                     </tbody>
                                 </nz-table>
