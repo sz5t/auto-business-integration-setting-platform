@@ -6,6 +6,7 @@ import { APIResource } from '@core/utility/api-resource';
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { RelativeResolver, RelativeService } from '@core/relative-Service/relative-service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 
 @Component({
     selector: 'cn-sql-editor',
@@ -52,7 +53,7 @@ import { NzMessageService } from 'ng-zorro-antd';
   }
   `]
 })
-export class SqlEditorComponent implements OnInit, OnDestroy {
+export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDestroy {
     total = 1;
     pageIndex = 1;
     pageSize = 15;
@@ -68,17 +69,19 @@ export class SqlEditorComponent implements OnInit, OnDestroy {
         private _http: ApiService,
         private _relativeService: RelativeService,
         private _message: NzMessageService
-    ) { }
+    ) { 
+        super();
+    }
 
     ngOnInit() {
-        this._relativeResolver = new RelativeResolver(),
-        // this._tempValue['_moduleId'] = '647d11660882564f88051e9141a42220';
-        this._relativeResolver.reference = this;
-        this._relativeResolver.relations = this.config.relations;
-        this._relativeResolver.relativeService = this._relativeService;
-        this._relativeResolver.initParameterEvents = [this.load];
-        this._relativeResolver.resolverRelation();
-        // this.load();
+        if (this.config.relations) {
+            this._relativeResolver = new RelativeResolver(),
+            this._relativeResolver.reference = this;
+            this._relativeResolver.relations = this.config.relations;
+            this._relativeResolver.relativeService = this._relativeService;
+            this._relativeResolver.initParameterEvents = [this.load];
+            this._relativeResolver.resolverRelation();
+        }
     }
 
     async load(condition?) {

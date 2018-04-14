@@ -1,15 +1,17 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Input } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
-import { ApiService } from '@core/utility/api-service';
-import { NzMessageService } from 'ng-zorro-antd';
+import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { APIResource } from '@core/utility/api-resource';
+import { ApiService } from '@core/utility/api-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
+import { APIResource } from '@core/utility/api-resource';
+
 @Component({
-    selector: 'cn-bsn-tree',
-    templateUrl: './bsn-tree.component.html',
+  selector: 'cn-bsn-async-tree',
+  templateUrl: './bsn-async-tree.component.html',
 })
-export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDestroy {
+export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, OnDestroy {
+
     @Input() config;
     treeData;
     _relativeResolver;
@@ -39,7 +41,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         this.loadTreeData();
     }
 
-    async getTreeData() {
+    async getAsyncTreeData() {
         let params = {};
         if (this.config.ajax.params) {
             this.config.ajax.params.map(p => {
@@ -54,34 +56,52 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
 
     loadTreeData() {
         (async () => {
-            const data = await this.getTreeData();
+            const data = await this.getAsyncTreeData();
             if (data.Data && data.Status === 200) {
-                this.treeData = this.listToTreeData(data.Data, '');
+                this.treeData = this.listToAsyncTreeData(data.Data, '');
             }
         })();
     }
 
-    listToTreeData(data, parentid) {
+    listToAsyncTreeData(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid) {
-                temp = this.listToTreeData(data, data[i].key);
-                if (temp.length > 0) {
-                    data[i]['children'] = temp;
-                } else {
-                    data[i]['isLeaf'] = true;
-                }
-                result.push(data[i]);
+          if (data[i].ParentId === parentid) {
+            temp = this.listToAsyncTreeData(data, data[i].key);
+            if (temp.length > 0) {
+              data[i]['children'] = temp;
+            } else {
+              data[i]['isLeaf'] = true;
             }
+            result.push(data[i]);
+          }
         }
         return result;
-    }
+      }
 
     onMouseAction(actionName, $event) {
         console.log(actionName);
         this[actionName]($event);
     }
+
+    
+    expandNode = (e) => {
+        console.log('expandNode');
+        (async () => {
+          if (e.node.getChildren().length === 0 && e.node.isExpanded) {
+    
+            const data = await this.getAsyncTreeData();
+            if (data.Data && data.Status === 200) {
+              data.Data.forEach(item => {
+                item['isLeaf'] = false;
+                item['children'] = [];
+              });
+              e.node.addChildren(data.Data);
+            }
+          }
+        })();
+      }
 
     clickNode = (e) => {
         console.log('node click', e);
@@ -92,4 +112,5 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             this._messageService.clearMessage();
         }
     }
+
 }

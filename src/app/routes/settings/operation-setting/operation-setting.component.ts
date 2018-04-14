@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/c
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzDropdownContextComponent, NzDropdownService, NzMenuItemDirective } from 'ng-zorro-antd';
 import { APIResource } from '@core/utility/api-resource';
-import { RelativeService, RelativeResolver } from "@core/relative-Service/relative-service";
+import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 
 @Component({
@@ -284,11 +284,11 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
                         'viewId': 'operation_sqlColumns',
                         'keyId': 'key',
                         'nzIsPagination': false, // 是否分页
-                        'nzShowTotal': true,// 是否显示总数据量
-                        'pageSize': 5, //默认每页数据条数
+                        'nzShowTotal': true, // 是否显示总数据量
+                        'pageSize': 5, // 默认每页数据条数
                         'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
                         'nzLoading': false, // 是否显示加载中
-                        'nzBordered': false,// 是否显示边框
+                        'nzBordered': false, // 是否显示边框
                         'ajaxConfig': {
                           'url': 'AppConfigPack',
                           'ajaxType': 'get',
@@ -308,7 +308,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
                             {
                               name: 'selectRow',
                               sender: 'operation_sqlColumns',
-                              aop:'after',
+                              aop: 'after',
                               receiver: 'operation_sqlParams',
                               relationData: {
                                 name: 'refreshAsChild',
@@ -470,11 +470,11 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
                         'viewId': 'operation_sqlParams',
                         'keyId': 'key',
                         'nzIsPagination': false, // 是否分页
-                        'nzShowTotal': true,// 是否显示总数据量
-                        'pageSize': 5, //默认每页数据条数
+                        'nzShowTotal': true, // 是否显示总数据量
+                        'pageSize': 5, // 默认每页数据条数
                         'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
                         'nzLoading': false, // 是否显示加载中
-                        'nzBordered': false,// 是否显示边框
+                        'nzBordered': false, // 是否显示边框
                         'ajaxConfig': {
                           'url': 'AppConfigPack',
                           'ajaxType': 'get',
@@ -1484,11 +1484,40 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     ]
   };
   treeconfig = {
-    nzAutoExpandParent: true, //是否自动展开父节点，当数字时展开最大节点 false
-    nzAllowChildLinkage: false,// 是否开启父节点的checkbox状态的会影响子节点状态 true
-    nzAllowParentLinkage: false,// 是否开启子节点的checkbox状态的会影响父节点状态 true
+    nzAutoExpandParent: true, // 是否自动展开父节点，当数字时展开最大节点 false
+    nzAllowChildLinkage: false, // 是否开启父节点的checkbox状态的会影响子节点状态 true
+    nzAllowParentLinkage: false, // 是否开启子节点的checkbox状态的会影响父节点状态 true
     nzCheckable: false, //  在节点之前添加一个复选框 false
     nzShowLine: false, // 显示连接线 false
+  };
+  treeConfig = {
+    'viewId': 'viewId_tree',
+    'ajax': {
+        'url': 'AppModuleConfig',
+        'params': [
+            {
+                '_select': 'Id as key,Name as title,ParentId'
+            }
+        ]
+    },
+    'relations': [{
+        'relationViewId': 'viewId_tree',
+        'relationSendContent': [
+          {
+            'name': 'clickNode',
+            'sender': 'viewId_tree',
+            'aop': 'after',
+            'receiver': 'operation_sqlColumns',
+            'relationData': {
+              'name': 'initParameter',
+              'params': [
+                { 'pid': 'key', 'cid': '_parentId' }
+              ]
+            },
+          }
+        ],
+        'relationReceiveContent': []
+      }]
   };
   nodes = [
     {
@@ -1535,16 +1564,15 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   _isConfirmLoading = false;
 
   private dropdown: NzDropdownContextComponent;
-  @ViewChild("addTemplate") addTemplate: TemplateRef<void>;
-  @ViewChild("editTemplate") editTemplate: TemplateRef<void>;
+  @ViewChild('addTemplate') addTemplate: TemplateRef<void>;
+  @ViewChild('editTemplate') editTemplate: TemplateRef<void>;
 
   private _relativeResolver;
   constructor(
     private _http: ApiService,
     private message: NzMessageService,
     private relativeMessage: RelativeService,
-    private nzDropdownService: NzDropdownService,
-    //private _relativeResolver: RelativeResolver
+    private nzDropdownService: NzDropdownService
   ) {
     super();
   }
@@ -1555,16 +1583,16 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     // 初始化模块列表，将数据加载到及联下拉列表当中
     this._funcOptions = this.arrayToTree(moduleData.Data, '');
 
-    this.SetTreeData();
-    this.setAsyncData();
+    // this.SetTreeData();
+    // this.setAsyncData();
 
-    //this.resolveRelation();
     this._relativeResolver = new RelativeResolver();
-    this._relativeResolver.relations = this.config.relations;
-    this._relativeResolver.reference = this;
-    this._relativeResolver.relativeService = this.relativeMessage;
-    //this._relativeResolver.viewId = 'viewId_operationTree';
-    this._relativeResolver.resolverRelation();
+    if (this.config.relations && this.config.relations.length > 0) {
+      this._relativeResolver.reference = this;
+      this._relativeResolver.relativeService = this.relativeMessage;
+      this._relativeResolver.relations = this.config.relations;
+      this._relativeResolver.resolverRelation();
+    }
   }
   // region: func
   // 获取布局设置列表
@@ -1596,7 +1624,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         }
         // $event.metadata 布局结构
         // componentJson 节点数据
-        //this.nodes = this.arrayToTreeBylayout(this.dataToArray($event.metadata, componentJson, ''), '');
+        // this.nodes = this.arrayToTreeBylayout(this.dataToArray($event.metadata, componentJson, ''), '');
         if ($event.metadata.rows) {
           const treeNodeJson = [];
           $event.metadata.rows.forEach(row => {
@@ -1607,7 +1635,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
                 // 获取区域ID，通过区域ID查找相应组件
                 componentJson.forEach(comp => {
                   if (col.id === comp.Name) {
-                    let type = comp.TagB.substring(comp.TagB.lastIndexOf('.') + 1, comp.TagB.length);
+                    const type = comp.TagB.substring(comp.TagB.lastIndexOf('.') + 1, comp.TagB.length);
                     const node = {
                       key: col.id,
                       title: col.title,
@@ -1634,7 +1662,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
                             tabNode['children'].push(optNode);
                           }
                         });
-                        //查找操作
+                        // 查找操作
 
                         node['children'].push(tabNode);
                       });
@@ -1649,6 +1677,18 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         }
       })();
     }
+
+    const receiver = {
+      name: 'initParameters',
+      receiver: 'viewId_tree',
+      parent: {
+        // _Id: event.node.key,
+        _optType: 'opt_sqlList',
+        _moduleId: this._funcValue[this._funcValue.length - 1]
+      }
+    };
+    console.log('选中行发消息事件', receiver);
+    this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
 
   }
 
@@ -1677,13 +1717,13 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
       data.rows.forEach(rdata => {
         if (rdata.row.cols) {
           rdata.row.cols.forEach(cdata => {
-            const obj = { "Name": cdata.title, "Id": cdata.id, "ParentId": pid };
+            const obj = { 'Name': cdata.title, 'Id': cdata.id, 'ParentId': pid };
             if (cdata.rows) {
-              temp = this.dataToArray(cdata, component, pid) //递归调用行
+              temp = this.dataToArray(cdata, component, pid); // 递归调用行
             }
             if (temp) {
               if (temp.length > 0) {
-                result = [...result, ...temp]
+                result = [...result, ...temp];
                 console.log(result);
               }
             }
@@ -1692,7 +1732,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
               result.push(obj);
               const cobj = this.componentToArray(component, cdata.id, '');
               if (cobj) {
-                result = [...result, ...cobj]
+                result = [...result, ...cobj];
                 console.log(result);
               }
             }
@@ -1702,11 +1742,11 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     }
     if (data.tabs) {
       data.tabs.forEach(tab => {
-        const obj = { "Name": tab.name, "Id": tab.id, ParentId: pid, type: 'tab' };
+        const obj = { 'Name': tab.name, 'Id': tab.id, ParentId: pid, type: 'tab' };
         result.push(obj);
         const cobj = this.componentToArray([], tab.id, component);
         if (cobj) {
-          result = [...result, ...cobj]
+          result = [...result, ...cobj];
         }
       });
     }
@@ -1730,15 +1770,15 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         const index = data.findIndex(item => item.Name === pid);
         // 组件名称
         const comp = data[index].TagB.substring(data[index].TagB.lastIndexOf('.') + 1, data[index].TagB.length);
-        obj["Id"] = data[index].Id;
-        obj["Name"] = '标签页';//data[index].Name;
-        obj["ParentId"] = data[index].Name; // blockID
+        obj['Id'] = data[index].Id;
+        obj['Name'] = '标签页'; // data[index].Name;
+        obj['ParentId'] = data[index].Name; // blockID
         obj['type'] = comp; // componet type
         objs.push(obj);
         if (component === 'tabs') {
-          temp = this.dataToArray({ tabs: JSON.parse(data[index].Metadata) }, 'tab', data[index].Id) //递归调用行
+          temp = this.dataToArray({ tabs: JSON.parse(data[index].Metadata) }, 'tab', data[index].Id); // 递归调用行
           if (temp) {
-            objs = [...objs, ...temp]
+            objs = [...objs, ...temp];
           }
         }
       } else {
@@ -1749,7 +1789,6 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
           type: 'component'
         };
         objs.push(optObj);
-        console.log('push times')
       }
     }
     return objs;
@@ -1773,7 +1812,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   _changeModuleValue($event?) {
     this._layoutList = [];
     // 选择功能模块，首先加载服务端配置列表
-    //const params = new HttpParams().set('TagA', this._funcValue.join(','));
+    // const params = new HttpParams().set('TagA', this._funcValue.join(','));
     if (this._funcValue.length > 0) {
       const params = {
         ParentId: this._funcValue[this._funcValue.length - 1],
@@ -1811,13 +1850,12 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         if (temp.length > 0) {
           obj['children'] = temp;
         } else {
-          //obj["isLeaf"] = true;
+          // obj['isLeaf'] = true;
           obj['children'] = [];
         }
         result.push(obj);
       }
     }
-    console.log(result)
     return result;
   }
 
@@ -1825,13 +1863,13 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId == parentid) {
-        const obj = { "label": data[i].Name, "value": data[i].Id };
+      if (data[i].ParentId === parentid) {
+        const obj = { 'label': data[i].Name, 'value': data[i].Id };
         temp = this.arrayToTree(data, data[i].Id);
         if (temp.length > 0) {
           obj['children'] = temp;
         } else {
-          obj["isLeaf"] = true;
+          obj['isLeaf'] = true;
         }
         result.push(obj);
       }
@@ -1851,7 +1889,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         _moduleId: this._funcValue[this._funcValue.length - 1]
       }
     };
-    console.log("选中行发消息事件", receiver);
+    console.log('选中行发消息事件', receiver);
     this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
 
   }
@@ -1872,7 +1910,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         type: 'operation'
       };
 
-      //1、新增树节点
+      // 1、新增树节点
       this._currentNode.data['children'].push(newNodeData);
       this._currentNode.treeModel.update();
       this._isConfirmLoading = false;
@@ -1881,11 +1919,11 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     } else {
       this._isConfirmLoading = false;
     }
-  };
+  }
 
   async saveNewNode(body) {
     return this._http.postProj(APIResource.AppConfigPack, body).toPromise();
-  };
+  }
 
   // 删除操作
   delOptConfirm = (node) => {
@@ -1893,7 +1931,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     this._http.deleteProj(APIResource.AppConfigPack, { id: node.id }).subscribe(result => {
       if (result.Status === 200) {
         this.message.success(`删除：【${node.data.name}】成功`);
-        //删除父节点的数据
+        // 删除父节点的数据
         for (let i = 0, len = node.parent.children.length; i < len; i++) {
           if (node.parent.children[i].id === node.id) {
             node.parent.children.splice(i, 1);
@@ -1913,16 +1951,16 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         node.treeModel.update();
       }
     );
-  };
+  }
 
   delOptCancel = () => {
     // 取消
     this.message.info('你取消了要删除的操作');
-  };
+  }
 
   uuID(w) {
-    let s = "";
-    let str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let s = '';
+    const str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     for (let i = 0; i < w; i++) {
       s += str.charAt(Math.round(Math.random() * (str.length - 1)));
     }
@@ -1951,7 +1989,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     clickNode: [],
     expandNode: [],
     load: []
-  }
+  };
   _tempParameter = {};
   // 销毁
   _subscribArr: any[] = [];
@@ -2033,7 +2071,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   //                     // _tempValue
   //                     // _value
   //                     // component 当前模式获取未组件值
-  //                     parent[element["cid"]] = e[0].node[element["pid"]];
+  //                     parent[element['cid']] = e[0].node[element['pid']];
   //                   });
   //                   const receiver = {
   //                     name: 'initParameters',
@@ -2079,7 +2117,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
             receiver: data.receiver,
             data: data.relationData
           }
-        )
+        );
       }
     }
   }
@@ -2101,21 +2139,21 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   }
 
   private refreshAsChild(parent) {
-    for (let d in parent) {
+    for (const d in parent) {
       this._tempParameter[d] = parent[d];
     }
     // call load treeNode
   }
 
   private initParameters(data) {
-    for (let d in data) {
+    for (const d in data) {
       this._tempParameter[d] = data[d];
     }
-    //call load treeNode
+    // call load treeNode
   }
 
   private initComponentValue(data) {
-    for (let d in data) {
+    for (const d in data) {
       this._tempParameter[d] = data[d];
     }
   }
@@ -2124,12 +2162,12 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId == parentid) {
+      if (data[i].ParentId === parentid) {
         temp = this.listToTreeData(data, data[i].key);
         if (temp.length > 0) {
           data[i]['children'] = temp;
         } else {
-          data[i]["isLeaf"] = true;
+          data[i]['isLeaf'] = true;
         }
         result.push(data[i]);
       }
@@ -2171,7 +2209,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     showLine: false,
     asyncData: true,
     expandAll: false
-  }
+  };
 
   setAsyncData() {
     (async () => {
@@ -2179,7 +2217,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
       if (data.Data && data.Status === 200) {
         this._demoAsyncTreeData = data.Data;
       }
-    })()
+    })();
   }
 
   async getAsyncTreeData(params) {
@@ -2188,7 +2226,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   }
 
   expandNode = (e) => {
-    console.log("expandNode");
+    console.log('expandNode');
     (async () => {
       if (e.node.getChildren().length === 0 && e.node.isExpanded) {
         const params = { ParentId: e.node.key };
@@ -2197,7 +2235,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
           data.Data.forEach(item => {
             item['isLeaf'] = false;
             item['children'] = [];
-          })
+          });
           e.node.addChildren(data.Data);
         }
       }
@@ -2208,12 +2246,12 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId == parentid) {
+      if (data[i].ParentId === parentid) {
         temp = this.listToTreeData(data, data[i].key);
         if (temp.length > 0) {
           data[i]['children'] = temp;
         } else {
-          data[i]["isLeaf"] = true;
+          data[i]['isLeaf'] = true;
         }
         result.push(data[i]);
       }

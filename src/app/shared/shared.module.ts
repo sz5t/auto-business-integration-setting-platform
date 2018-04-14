@@ -36,6 +36,8 @@ import { FormResolverDirective } from '@shared/resolver/form-resolver/form-resol
 import { GridEditorDirective } from '@shared/resolver/grid-resolver/grid-editor.directive';
 import { SqlEditorComponent } from './business/sql-editor/sql-editor.component';
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
+import { CnBsnTreeComponent } from '@shared/business/bsn-tree/bsn-tree.component';
+import { BsnAsyncTreeComponent } from './business/bsn-async-tree/bsn-async-tree.component';
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -75,7 +77,9 @@ const COMPONENTS = [
   TabsResolverComponent,
   FormResolverComponent,
   CnCodeEditComponent,
-  SqlEditorComponent
+  SqlEditorComponent,
+  CnBsnTreeComponent,
+  BsnAsyncTreeComponent
   
 ];
 const DIRECTIVES = [
@@ -99,8 +103,7 @@ const DIRECTIVES = [
     declarations: [
         // your components
         ...COMPONENTS,
-        ...DIRECTIVES,
-        SqlEditorComponent
+        ...DIRECTIVES
     ],
     exports: [
         CommonModule,

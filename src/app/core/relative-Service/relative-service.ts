@@ -93,6 +93,7 @@ export class RelativeResolver {
                   receiver: sendEvent.receiver,
                   parent: parent
                 };
+                console.log(this._reference.config.viewId, '-------------------------发出消息');
                 this._relativeService.sendMessage({ type: 'relation' }, receiver);
               }
             });
