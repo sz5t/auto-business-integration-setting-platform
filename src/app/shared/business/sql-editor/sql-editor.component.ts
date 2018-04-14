@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 import { ApiService } from '@core/utility/api-service';
@@ -52,49 +52,59 @@ import { NzMessageService } from 'ng-zorro-antd';
   }
   `]
 })
-export class SqlEditorComponent implements OnInit {
-
-    total = 0;
+export class SqlEditorComponent implements OnInit, OnDestroy {
+    total = 1;
     pageIndex = 1;
-    pageSize = 10;
+    pageSize = 15;
     tableData = [];
     _tempValue = {};
+    _relativeResolver;
     scriptName;
+    loading = true;
     @Input() config;
     @ViewChild('editor') editor: CnCodeEditComponent;
+
     constructor(
         private _http: ApiService,
-        private _relativeResolver: RelativeResolver,
         private _relativeService: RelativeService,
         private _message: NzMessageService
     ) { }
 
     ngOnInit() {
-        this._tempValue['_moduleId'] = '647d11660882564f88051e9141a42220';
-        // this._relativeResolver.reference = this;
-        // this._relativeResolver.relations = this.config.relations;
-        // this._relativeResolver.resolverRelation();
-        this.load();
+        this._relativeResolver = new RelativeResolver(),
+        // this._tempValue['_moduleId'] = '647d11660882564f88051e9141a42220';
+        this._relativeResolver.reference = this;
+        this._relativeResolver.relations = this.config.relations;
+        this._relativeResolver.relativeService = this._relativeService;
+        this._relativeResolver.initParameterEvents = [this.load];
+        this._relativeResolver.resolverRelation();
+        // this.load();
     }
 
     async load(condition?) {
         // tslint:disable-next-line:no-debugger
         let param = {
-            _page: this.pageIndex,
+            _page: this.pageIndex + 1,
             _rows: this.pageSize
         };
+        if (this._relativeResolver.tempParameter) {
+            param = {...param, ...this._relativeResolver.tempParameter};
+        }
         if (condition) {
             param = {...param, ...condition};
         }
-        const response  = await this._http.getProj(APIResource.DbCommandConfig, param).toPromise();
+
+        const response  = await this._http.getProj(`${APIResource.SysDataLink}/${param['_moduleId']}/${APIResource.DbCommandConfig}`, param).toPromise();
         if (response.Data && response.Status === 200) {
             this.tableData = response.Data.Rows;
+            console.log(response);
             this.total = response.Data.Total;
             this.tableData.map(d => {
                 d['expand'] = false;
                 d['selected'] = false;
             });
         }
+        this.loading = false;
     }
 
     selectRow(row) {
@@ -103,17 +113,18 @@ export class SqlEditorComponent implements OnInit {
         });
         row.selected = true;
         this.editor.setValue(row.ScriptText);
+        this.scriptName = row.Name;
     }
 
     add() {
         this.editor.setValue('');
-        this._tempValue['_id'] && delete this._tempValue['_id'];
+        this._relativeResolver.tempParameter['_id'] && delete this._relativeResolver.tempParameter['_id'];
     }
 
     async save() {
         const sqlString = this.editor.getValue();
         let returnValue: any;
-        if (this._tempValue['_id']) {
+        if (this._relativeResolver.tempParameter['_id']) {
             // update
             returnValue = this.updateSql(sqlString);
         } else {
@@ -121,7 +132,7 @@ export class SqlEditorComponent implements OnInit {
             if (sqlString && sqlString.length > 0) {
                 returnValue = await this.addSql(sqlString);
                 if (returnValue.Data && returnValue.Status === 200) {
-                    this._tempValue['_id'] = returnValue.Data.Id;
+                    this._relativeResolver.tempParameter['_id'] = returnValue.Data.Id;
                     const rel = await this.addSqlRelative();
                 }
             }
@@ -129,7 +140,7 @@ export class SqlEditorComponent implements OnInit {
         switch (returnValue.Status) {
             case 200:
                 this._message.create('success', 'SQL 保存成功');
-                this.load({_focusedId: this._tempValue['_id']});
+                this.load({_focusedId: this._relativeResolver.tempParameter['_id']});
                 break;
             case 500:
                 this._message.create('error', returnValue.Message);
@@ -142,11 +153,11 @@ export class SqlEditorComponent implements OnInit {
     delete (id) {
         (async() => {
             const resSql = await this.delSql(id);
-            const resParams = await this.delSqlRelative(id);
+            const resRelative = await this.delSqlRelative(id);
             switch (resSql.Status) {
                 case 200:
                     this._message.create('success', 'SQL 删除成功');
-                    this.load({_focusedId: this._tempValue['_id']});
+                    this.load({_focusedId: this._relativeResolver.tempParameter['_id']});
                     break;
                 case 500:
                     this._message.create('error', resSql.Message);
@@ -161,15 +172,15 @@ export class SqlEditorComponent implements OnInit {
     private async addSql(sql) {
         const params = {
             ScriptText: sql,
-            Name: this.scriptName
+            Name: this.scriptName,
         };
         return this._http.postProj(APIResource.DbCommandConfig, params).toPromise();
     }
 
     private async addSqlRelative() {
         const params = {
-            LeftId: this._tempValue['_moduleId'],
-            RightId: this._tempValue['_id'],
+            LeftId: this._relativeResolver.tempParameter['_moduleId'],
+            RightId: this._relativeResolver.tempParameter['_id'],
             LinkNode: 'sql'
         };
         return this._http.postProj(APIResource.SysDataLink, params).toPromise();
@@ -182,19 +193,27 @@ export class SqlEditorComponent implements OnInit {
     private async delSqlRelative(id) {
         const params = {
             RightId: id,
-            LeftId: this._tempValue['_moduleId'],
+            LeftId: this._relativeResolver.tempParameter['_moduleId'],
             LinkNote: 'sql'
         };
-        return this._http.deleteProj(APIResource.DbCommandConfig, {Id: id}).toPromise();
+        return this._http.deleteProj(APIResource.SysDataLink, params).toPromise();
     }
 
     private async updateSql(sql) {
         const params = {
             ScriptText: sql,
             Name: this.scriptName,
-            Id: this._tempValue['_id']
+            Id: this._relativeResolver.tempParameter['_id']
         };
         return this._http.putProj(APIResource.DbCommandConfig, params).toPromise();
     }
+
+    ngOnDestroy () {
+        if (this._relativeService) {
+            this._relativeService.clearMessage();
+        }
+    }
+
+    cancel() {}
 
 }

@@ -38,8 +38,8 @@ export class RelativeResolver {
   private _reference;
   // 已注册接收消息的集合
   private _subscribeArr = [];
-  // 消息对象
-  // private subject = new Subject<any>();
+  // 组件初始化事件的集合
+  private _initParameterEvents = [];
 
   private _relativeService;
 
@@ -55,10 +55,22 @@ export class RelativeResolver {
     this._viewId = value;
   }
 
-  set relativeService (value) {
+  set relativeService(value) {
     this._relativeService = value;
   }
-  
+
+  set initParameterEvents(value) {
+    this._initParameterEvents = value;
+  }
+
+  get tempParameter() {
+    return this._tempParameter;
+  }
+
+  set tempParameter(value) {
+    this._tempParameter = value;
+  }
+
   /**
    * 关系配置解析
    * 1、
@@ -97,7 +109,7 @@ export class RelativeResolver {
               }
               break;
             case 'initParameters':
-              if (value.data.receiver, this._reference.config.viewId) {
+              if (value.data.receiver === this._reference.config.viewId) {
                 this.receiveMessage(value.data);
               }
               break;
@@ -145,14 +157,19 @@ export class RelativeResolver {
     for (const d in parent) {
       this._tempParameter[d] = parent[d];
     }
-    // call load treeNode
+    // call event
   }
 
   private initParameters(data) {
     for (const d in data) {
       this._tempParameter[d] = data[d];
     }
-    // call load treeNode
+    if (this._initParameterEvents.length > 0) {
+      this._initParameterEvents.map(event => {
+        event.call(this._reference);
+      });
+    }
+    // call event
   }
 
   private initComponentValue(data) {
@@ -160,7 +177,7 @@ export class RelativeResolver {
       this._tempParameter[d] = data[d];
     }
 
-    // call load
+    // call event
   }
 
   unsubscribe() {

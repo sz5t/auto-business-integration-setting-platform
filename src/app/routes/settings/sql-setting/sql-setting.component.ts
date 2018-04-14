@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
-import {ApiService} from "@core/utility/api-service";
-import {APIResource} from "@core/utility/api-resource";
-import {RelativeService} from "@core/relative-Service/relative-service";
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
+import { RelativeService } from '@core/relative-Service/relative-service';
 
 @Component({
   selector: 'cn-sql-setting',
   templateUrl: './sql-setting.component.html',
 })
-export class SqlSettingComponent implements OnInit {
+export class SqlSettingComponent implements OnInit , OnDestroy {
 
   _moduleId;
   _funcValue;
@@ -17,26 +17,26 @@ export class SqlSettingComponent implements OnInit {
     'viewId': 'viewId_sqlSetting',
     'keyId': 'key',
     'nzIsPagination': true, // 是否分页
-    'nzShowTotal': true,// 是否显示总数据量
-    'pageSize': 5, //默认每页数据条数
+    'nzShowTotal': true, // 是否显示总数据量
+    'pageSize': 5, // 默认每页数据条数
     'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
     'nzLoading': true, // 是否显示加载中
-    'nzBordered': false,// 是否显示边框
+    'nzBordered': false, // 是否显示边框
     'ajaxConfig': {
       'url': {
-        parent:'AppModuleConfig',
+        parent: 'AppModuleConfig',
         child: 'DbCommandConfig',
         params: [
           {
             type: 'tempValue', valueName: '_moduleId'
           }
         ]
-        //self
+        // self
       },
       'ajaxType': 'get',
       'params': [
-       /* { name: '_parent.LeftId', type: 'tempValue', valueName: '_moduleId', value: '' },
-        { name: '_parent.LinkNote', type: 'value', value: 'sql' },*/
+        /* { name: '_parent.LeftId', type: 'tempValue', valueName: '_moduleId', value: '' },
+         { name: '_parent.LinkNote', type: 'value', value: 'sql' },*/
       ]
     },
     'componentType': {
@@ -57,7 +57,7 @@ export class SqlSettingComponent implements OnInit {
               params: [
                 { pid: 'Id', cid: 'parentId' },
                 { pid: 'Id', cid: '_id' },
-                { pid: 'ParameterList', cid: 'dataList'}
+                { pid: 'ParameterList', cid: 'dataList' }
               ]
             },
           }
@@ -211,7 +211,7 @@ export class SqlSettingComponent implements OnInit {
                     'viewCfg': [
                       {
                         'component': 'view_form',
-                        'config':[
+                        'config': [
                           {
                             'type': 'input',
                             'labelSize': '6',
@@ -389,7 +389,7 @@ export class SqlSettingComponent implements OnInit {
                             ]
                           }
                         ],
-                        'dataList':[]
+                        'dataList': []
                       }
                     ]
                   }
@@ -407,7 +407,7 @@ export class SqlSettingComponent implements OnInit {
       },
       { 'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除' },
       {
-        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存' ,
+        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存',
         'ajaxConfig': {
           add: [
             {
@@ -459,11 +459,11 @@ export class SqlSettingComponent implements OnInit {
     'viewId': 'viewId_sqlParams',
     'keyId': 'key',
     'nzIsPagination': true, // 是否分页
-    'nzShowTotal': true,// 是否显示总数据量
-    'pageSize': 5, //默认每页数据条数
+    'nzShowTotal': true, // 是否显示总数据量
+    'pageSize': 5, // 默认每页数据条数
     'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
     'nzLoading': true, // 是否显示加载中
-    'nzBordered': false,// 是否显示边框
+    'nzBordered': false, // 是否显示边框
     'componentType': {
       'parent': false,
       'child': true,
@@ -596,7 +596,7 @@ export class SqlSettingComponent implements OnInit {
                     'viewCfg': [
                       {
                         'component': 'view_form',
-                        'config':[
+                        'config': [
                           {
                             'type': 'input',
                             'labelSize': '6',
@@ -774,7 +774,7 @@ export class SqlSettingComponent implements OnInit {
                             ]
                           }
                         ],
-                        'dataList':[]
+                        'dataList': []
                       }
                     ]
                   }
@@ -792,7 +792,7 @@ export class SqlSettingComponent implements OnInit {
       },
       { 'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除' },
       {
-        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存' ,
+        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存',
         'ajaxConfig': {
           update: {
             'url': 'DbCommandConfig',
@@ -806,6 +806,21 @@ export class SqlSettingComponent implements OnInit {
       },
       { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
     ]
+  };
+  _sqlEditorConfig = {
+    'viewId': 'viewId_sqlEditor',
+    'componentType': {
+      'parent': false,
+      'child': true,
+      'own': true
+    },
+    'relations': [
+      {
+        'relationViewId': 'viewId_sqlEditor',
+        'relationSendContent': [],
+        'relationReceiveContent': []
+      }
+    ],
   };
   constructor(
     private apiService: ApiService,
@@ -826,25 +841,25 @@ export class SqlSettingComponent implements OnInit {
   // 改变模块选项
   async _changeModuleValue($event?) {
     // 选择功能模块，首先加载服务端配置列表
-    //const params = new HttpParams().set('TagA', this._funcValue.join(','));
-    if(this._funcValue.length >0) {
-      this._moduleId = this._funcValue[this._funcValue.length -1];
+    // const params = new HttpParams().set('TagA', this._funcValue.join(','));
+    if (this._funcValue.length > 0) {
+      this._moduleId = this._funcValue[this._funcValue.length - 1];
       const receiver = {
         name: 'initParameters',
-        receiver: 'viewId_sqlSetting' ,
+        receiver: 'viewId_sqlEditor',
         parent: {
-          _moduleId: this._funcValue[this._funcValue.length -1],
+          _moduleId: this._funcValue[this._funcValue.length - 1],
         }
       };
-      console.log("选中行发消息事件", receiver);
+      console.log('选中行发消息事件', receiver);
       this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
-     /* const sqlCommondData = await this.sqlRefreshData();
-      this._loading = false;
-      if(sqlCommondData.Data.length>0 && sqlCommondData.Status === 200) {
-        this._sql_dataSet = sqlCommonData.Data.rows;
-        this._sql_current = sqlCommondData.Page;
-        this._sql_total = sqlCommonData.PageCount;
-      }*/
+      /* const sqlCommondData = await this.sqlRefreshData();
+       this._loading = false;
+       if(sqlCommondData.Data.length>0 && sqlCommondData.Status === 200) {
+         this._sql_dataSet = sqlCommonData.Data.rows;
+         this._sql_current = sqlCommondData.Page;
+         this._sql_total = sqlCommonData.PageCount;
+       }*/
 
     }
   }
@@ -853,13 +868,13 @@ export class SqlSettingComponent implements OnInit {
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId == parentid) {
-        const obj = { "label": data[i].Name, "value": data[i].Id };
+      if (data[i].ParentId === parentid) {
+        const obj = { 'label': data[i].Name, 'value': data[i].Id };
         temp = this.arrayToTree(data, data[i].Id);
         if (temp.length > 0) {
           obj['children'] = temp;
         } else {
-          obj["isLeaf"] = true;
+          obj['isLeaf'] = true;
         }
         result.push(obj);
       }
@@ -872,7 +887,12 @@ export class SqlSettingComponent implements OnInit {
       _page: this._sql_current,
       _rows: this._sql_pageSize,
     };*/
-    //return  this.apiService.get(`${APIResource.SysDataCategoryLink}/${this._moduleId}/${APIResource.DbCommonConfig}`, params).toPromise();
+    // return  this.apiService.get(`${APIResource.SysDataCategoryLink}/${this._moduleId}/${APIResource.DbCommonConfig}`, params).toPromise();
   }
-
+  
+  ngOnDestroy () {
+    if (this.relativeMessage) {
+      this.relativeMessage.clearMessage();
+    }
+  }
 }

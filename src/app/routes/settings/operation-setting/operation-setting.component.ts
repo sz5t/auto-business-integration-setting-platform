@@ -2015,7 +2015,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         ]
       }
     ]
-  }
+  };
 
   // resolveRelation(data?) {
   //   if (this._demoTreeConfig.relations) {

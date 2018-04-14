@@ -116,7 +116,7 @@ export class ApiService {
   }
 
   deleteProj(resource, params?) {
-    params = this.setParamsObjProj(params);
+    // params = this.setParamsObjProj(params);
     return this.httpClient.delete(
       resource,
       params,
