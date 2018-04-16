@@ -1,5 +1,11 @@
 <page-header [title]=""></page-header>
 <nz-card>
+    <div class = "table-operations">
+        <button>刷新 </button>
+        <button>新增</button>
+        <button>修改</button>
+        <button>删除</button>
+    </div>
   <nz-table #nzTable
             [nzData]="_dataSet"
             [nzFrontPagination]="false"
@@ -16,14 +22,8 @@
     <thead >
     <tr>
 
-      <th >
-        <span>角色名称</span>
-
-      </th>
-      <th >
-        <span>角色配置</span>
-
-      </th>
+      <th>角色名称</th>
+      <th >角色配置</th>
       <!--<th >-->
         <!--<span>主键</span>-->
       <!--</th>-->
@@ -33,15 +33,11 @@
       <!--<th >-->
         <!--<span>ApplyId</span>-->
       <!--</th>-->
-      <th >
-        <span>备注</span>
-      </th>
+      <th >备注 </th>
       <!--<th >-->
         <!--<span>客户ID</span>-->
       <!--</th>-->
-      <th >
-        <span>创建时间</span>
-      </th>
+      <th >创建时间</th>
     </tr>
     </thead>
     <tbody >

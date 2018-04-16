@@ -22,17 +22,31 @@ export class RoleService {
   selector: 'app-role-manager',
   providers: [RoleService],
   templateUrl: './role-manager.component.html',
+  styles: [
+        `
+    .table-operations {
+      margin-bottom: 16px;
+    }
+    
+    .table-operations > button {
+      margin-right: 8px;
+    }
+    .selectedRow{
+        color:blue;
+    }
+    `
+    ]
 })
 export class RoleManagerComponent implements OnInit {
 
   _current = 1;
-  _pageSize = 10;
-  _total = 1;
-  _dataSet = [];
-  _loading = true;
-  _sortValue = 'asc';
-  _sortField = 'order';
-  _filterGender = [];
+    _pageSize = 10;
+    _total = 1;
+    _dataSet = [];
+    _loading = true;
+    _sortValue = 'asc';
+    _sortField = 'order';
+    _filterGender = [];
   sort(field , value) {
     this._sortValue = (value === 'descend') ? 'DESC' : 'ASC';
     this._sortField = field;

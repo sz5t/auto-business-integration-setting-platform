@@ -63,14 +63,14 @@
             </span>
             <span *ngIf="editRow===data.Id">
               <a (click)="save(data)">保存</a>
-              <span ></span>
+              <nz-divider nzType="vertical"></nz-divider>
                 <nz-popconfirm [nzTitle]="'确定要取消该操作吗?'" (nzOnConfirm)="cancel(data)">
                   <a nz-popconfirm>取消</a>
                 </nz-popconfirm>
             </span>
 
-            <span *ngIf="editRow!==data.Id">
-              <span ></span>
+          <span *ngIf="editRow!==data.Id">
+              <nz-divider nzType="vertical"></nz-divider>
                <nz-popconfirm [nzTitle]="'确定要删除该条数据吗?'" (nzOnConfirm)="delete1(data)">
                   <a nz-popconfirm>删除</a>
                 </nz-popconfirm>
