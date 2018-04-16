@@ -13,7 +13,7 @@ export class RelativeService {
   }
 
   clearMessage() {
-    this.subject.next();
+    this.subject.unsubscribe();
   }
 
   getMessage(): Observable<any> {

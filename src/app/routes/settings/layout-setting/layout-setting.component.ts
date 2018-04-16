@@ -941,8 +941,8 @@ export class LayoutSettingComponent implements OnInit {
       { title: '主键', field: 'key', width: 'auto', hidden: true },
       { title: 'ID', field: 'Id', width: 'auto', hidden: true },
       { title: '布局名称', field: 'Name', width: 'auto' },
-      { title: '模版名称', field: 'TagB', width: 'auto', hidden: false },
-      { title: '是否启用', field: 'ShareScope', width: 'auto', hidden: false },
+      { title: '模版名称', field: 'Template', width: 'auto', hidden: false },
+      { title: '是否启用', field: 'Enabled', width: 'auto', hidden: false },
       { title: '创建时间', field: 'CreateTime', width: 'auto', hidden: false }
     ],
     'toolbar': [
@@ -951,6 +951,10 @@ export class LayoutSettingComponent implements OnInit {
     ]
   };
   // 布局列表数据
+  total = 1;
+  pageIndex = 1;
+  pageSize = 15;
+  loading = false;
   _tableDataSource = [];
   constructor(
     private apiService: ApiService,
@@ -972,24 +976,43 @@ export class LayoutSettingComponent implements OnInit {
   }
 
   // 获取布局设置列表
-  getLayoutConfigData(params) {
-    return this.apiService.getProj(APIResource.AppConfigPack, params).toPromise();
+  async getLayoutConfigData(params) {
+    return this.apiService.getProj(APIResource.LayoutSetting, params).toPromise();
+  }
+
+  async getBlockConfigData(layoutId) {
+    return this.apiService.getProj(APIResource.BlockSetting, { LayoutId: layoutId }).toPromise();
   }
 
   // 改变模块选项
   _changeModuleValue($event?) {
     // 选择功能模块，首先加载服务端配置列表
     // const params = new HttpParams().set('TagA', this._funcValue.join(','));
+    this.loadLayout();
+  }
+
+  loadLayout() {
     if (this._funcValue.length > 0) {
       const params = {
-        ParentId: this._funcValue[this._funcValue.length - 1]
+        ModuleId: this._funcValue[this._funcValue.length - 1]
       };
       this.getLayoutConfigData(params).then(serverLayoutData => {
+        this.loading = true;
         if (serverLayoutData.Status === 200 && serverLayoutData.Data.length > 0) {
           this._tableDataSource = serverLayoutData.Data;
+          for (let i = 0, len = this._tableDataSource.length; i < len; i++) {
+            (async () => {
+              const result = await this.getBlockConfigData(this._tableDataSource[i].Id);
+              if (result.Data && result.Status) {
+                this._tableDataSource[i]['BlockList'] = result.Data;
+                this._tableDataSource[i]['expand'] = false;
+              }
+            })();
+          }
         } else {
           this._tableDataSource = [];
         }
+        this.loading = false;
       });
     }
   }
@@ -1015,6 +1038,7 @@ export class LayoutSettingComponent implements OnInit {
   }
 
   _submitForm($event) {
+    console.log($event);
     event.preventDefault();
     event.stopPropagation();
     const loadingMessage = this.message.loading('正在执行中...', { nzDuration: 0 }).messageId;
@@ -1024,28 +1048,71 @@ export class LayoutSettingComponent implements OnInit {
     const moduleID = this._funcValue[this._funcValue.length - 1];
     const layoutName = this._layoutValue.label;
     const copyLayout = JSON.parse(JSON.stringify(this._layoutValue.value));
-    this.overrideLayoutId(copyLayout);
+    const blockDataList = this.overrideLayoutId(copyLayout);
     const metadata = JSON.stringify(copyLayout);
     const configName = this._configName;
     // 配置信息保存入数据库
+
     const configData = {
-      ParentId: moduleID,
-      TagA: this.uuID(10),
-      TagB: AppConfigPack_ConfigType.LAYOUT + '.' + layoutName,
+      ModuleId: moduleID,
+      Template: layoutName,
       Name: configName,
-      Metadata: metadata
+      Metadata: metadata,
+      Enabled: true
     };
-    this.apiService.postProj(
-      APIResource.AppConfigPack,
-      configData).subscribe(response => {
-        this.message.remove(loadingMessage);
-        if (response && response.Status === 200) {
-          this.message.create('success', '执行成功');
-          this._changeModuleValue();
-        } else {
-          this.message.create('warning', `出现异常：${response.Message}`);
+
+    (async () => {
+      const layout = await this.addSettingLayout(configData);
+      if (layout.Data && layout.Status === 200) {
+        for (let i = 0, len = blockDataList.length; i < len; i++) {
+          blockDataList[i]['LayoutId'] = layout.Data.Id;
+          blockDataList[i]['ParentId'] = moduleID;
+          blockDataList[i]['type'] = 'view'; 
+          const block = await this.addBlockSetting(blockDataList[i]);
         }
-      });
+
+
+        //const viewData = this._layoutValue.value.layoutEditor;
+        // for (let i = 0, len = viewData.length; i < len; i++) {
+        //   for (let j = 0, jlen = viewData[i].data.length; j < jlen; j++) {
+        //    console.log(viewData[i], viewData[i].data);
+        //    const blockData = {
+        //     Title: viewData[i].data[j].title,
+        //     Icon: viewData[i].data[j].icon,
+        //     LayoutId: layout.Id,
+        //     type: 'view'
+        //   };
+        //   const block = await this.addBlockSetting(blockData);
+        //   }
+        // }
+      } else {
+        this.message.create('error', layout.Message);
+      }
+      this.message.remove(loadingMessage);
+      this.loadLayout();
+    })();
+
+
+    // this.apiService.postProj(
+    //   APIResource.LayoutSetting,
+    //   configData).subscribe(response => {
+    //     this.message.remove(loadingMessage);
+    //     if (response && response.Status === 200) {
+    //       this.message.create('success', '执行成功');
+    //       this._changeModuleValue();
+    //     } else {
+    //       this.message.create('warning', `出现异常：${response.Message}`);
+    //     }
+    //   });
+  }
+
+  async addSettingLayout(data) {
+    return this.apiService.postProj(APIResource.LayoutSetting, data).toPromise();
+
+  }
+
+  async addBlockSetting(data) {
+    return this.apiService.postProj(APIResource.BlockSetting, data).toPromise();
   }
 
   private uuID(w) {
@@ -1058,14 +1125,17 @@ export class LayoutSettingComponent implements OnInit {
   }
 
   overrideLayoutId(layoutValue) {
+    const blockDataList = [];
     layoutValue.rows.forEach(row => {
       row.row.cols.forEach(col => {
         col.id = this.uuID(10);
+        blockDataList.push({ Title: col.title, Icon: '' });
         if (col.rows) {
-          this.overrideLayoutId(col);
+          blockDataList.push(...this.overrideLayoutId(col));
         }
       });
     });
+    return blockDataList;
   }
 
   overrideLayoutTitle(rows, formData) {

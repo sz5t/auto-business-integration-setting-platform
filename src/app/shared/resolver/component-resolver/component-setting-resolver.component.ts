@@ -5,15 +5,15 @@ import {
   TemplateRef
 } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
-import {BsnDataTableComponent} from "@shared/business/bsn-data-table/bsn-data-table.component";
-import {FormResolverComponent} from "@shared/resolver/form-resolver/form-resolver.component";
+import { BsnDataTableComponent } from '@shared/business/bsn-data-table/bsn-data-table.component';
+import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
-import {Validators} from "@angular/forms";
-import {ApiService} from "@core/utility/api-service";
-import {APIResource} from "@core/utility/api-resource";
-import {AppConfigPack_Block, AppConfigPack_ConfigType} from "../../../model/APIModel/AppConfigPack";
-import {NzMessageService, NzDropdownService, NzDropdownContextComponent} from "ng-zorro-antd";
-import {TabsResolverComponent} from "@shared/resolver/tabs-resolver/tabs-resolver.component";
+import { Validators } from '@angular/forms';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
+import { AppConfigPack_Block, AppConfigPack_ConfigType } from '../../../model/APIModel/AppConfigPack';
+import { NzMessageService, NzDropdownService, NzDropdownContextComponent } from 'ng-zorro-antd';
+import { TabsResolverComponent } from '@shared/resolver/tabs-resolver/tabs-resolver.component';
 const component: { [type: string]: Type<any> } = {
   bsnDataTable: BsnDataTableComponent,
   form_view: FormResolverComponent,
@@ -29,16 +29,16 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   @Input() layoutId;
   _serverLayoutId;
   _dataStruct = {
-    bsnDataTable:{
+    bsnDataTable: {
       component: 'bsnDataTable',
-      config:{
+      config: {
         'keyId': 'key',
         'nzIsPagination': false, // 是否分页
-        'nzShowTotal': true,// 是否显示总数据量
-        'pageSize': 5, //默认每页数据条数
+        'nzShowTotal': true, // 是否显示总数据量
+        'pageSize': 5, // 默认每页数据条数
         'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
         'nzLoading': false, // 是否显示加载中
-        'nzBordered': false,// 是否显示边框
+        'nzBordered': false, // 是否显示边框
         'columns': [
           {
             title: '主键', field: 'key', width: 80, hidden: true
@@ -57,11 +57,11 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
           }
         ]
       },
-      dataList:[]
+      dataList: []
     },
     form_view: {
       component: 'form_view',
-      config:[
+      config: [
         {
           'type': 'input',
           'labelSize': '6',
@@ -84,7 +84,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
               'errorMessage': '最小长度为6'
             }
           ],
-          'validation': [Validators.required,Validators.minLength(6)]
+          'validation': [Validators.required, Validators.minLength(6)]
         },
         {
           'type': 'input',
@@ -116,20 +116,20 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
           'inputType': 'submit',
           'name': 'sex',
           'label': '性别',
-          'notFoundContent':'',
+          'notFoundContent': '',
           'selectModel': false,
           'showSearch': true,
-          'placeholder':'--请选择--',
+          'placeholder': '--请选择--',
           'disabled': false,
           'size': 'default',
           'options': [
             {
-              'label':'男',
+              'label': '男',
               'value': '1',
               'disabled': false
             },
             {
-              'label':'女',
+              'label': '女',
               'value': '2',
               'disabled': false
             }
@@ -168,7 +168,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
           'name': 'dateRangePicker',
           'dateModel': 'day',
           'label': '日期',
-          'placeholder': ['--开始日期--','--结束日期--'],
+          'placeholder': ['--开始日期--', '--结束日期--'],
           'disabled': false,
           'readonly': false,
           'size': 'default'
@@ -220,22 +220,23 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   menuConfig = [
     {
       label: '表格组件',
-      value : {},
+      value: {},
       children: [
         {
           label: '数据网格',
-          value : {
+          value: {
             viewId: '0001',
             title: '数据网格',
-            component:'bsnDataTable',
-            config:{
+            component: 'bsnDataTable',
+            type: 'list',
+            config: {
               'keyId': 'key',
               'nzIsPagination': false, // 是否分页
-              'nzShowTotal': true,// 是否显示总数据量
-              'pageSize': 5, //默认每页数据条数
+              'nzShowTotal': true, // 是否显示总数据量
+              'pageSize': 5, // 默认每页数据条数
               'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
               'nzLoading': false, // 是否显示加载中
-              'nzBordered': false,// 是否显示边框
+              'nzBordered': false, // 是否显示边框
               'columns': [
                 {
                   title: '主键', field: 'key', width: 80, hidden: true
@@ -254,7 +255,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
                 }
               ]
             },
-            dataList:[
+            dataList: [
               {
                 key: `key0`,
                 name: `用户 1`,
@@ -286,14 +287,15 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
     },
     {
       label: '表单组件',
-      value : {},
+      value: {},
       children: [
         {
           label: '基本表单',
-          value : {
-            viewId:'002',
+          value: {
+            viewId: '002',
             title: '基本表单',
-            component:'form_view',
+            component: 'form_view',
+            type: 'component',
             'config': [
               {
                 'type': 'input',
@@ -317,7 +319,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
                     'errorMessage': '最小长度为6'
                   }
                 ],
-                'validation': [Validators.required,Validators.minLength(6)]
+                'validation': [Validators.required, Validators.minLength(6)]
               },
               {
                 'type': 'input',
@@ -349,20 +351,20 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
                 'inputType': 'submit',
                 'name': 'sex',
                 'label': '性别',
-                'notFoundContent':'',
+                'notFoundContent': '',
                 'selectModel': false,
                 'showSearch': true,
-                'placeholder':'--请选择--',
+                'placeholder': '--请选择--',
                 'disabled': false,
                 'size': 'default',
                 'options': [
                   {
-                    'label':'男',
+                    'label': '男',
                     'value': '1',
                     'disabled': false
                   },
                   {
-                    'label':'女',
+                    'label': '女',
                     'value': '2',
                     'disabled': false
                   }
@@ -401,7 +403,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
                 'name': 'dateRangePicker',
                 'dateModel': 'day',
                 'label': '日期',
-                'placeholder': ['--开始日期--','--结束日期--'],
+                'placeholder': ['--开始日期--', '--结束日期--'],
                 'disabled': false,
                 'readonly': false,
                 'size': 'default'
@@ -454,36 +456,37 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
     },
     {
       label: '列表组件',
-      value : {},
+      value: {},
       children: [
         {
           label: '数据列表',
-          value : {}
+          value: {}
         }
       ]
     },
     {
       label: '树组件',
-      value : {},
+      value: {},
       children: [
         {
           label: '树组件',
-          value : {}
+          value: {}
         }
       ]
     },
     {
       label: '布局组件',
-      value : {},
+      value: {},
       children: [
         {
           label: '标签页',
-          value : {
-            component:'tabs',
+          value: {
+            component: 'tabs',
+            type: 'list',
             config: [
               {
-                id:`tab_${this.uuID(6)}`,
-                name   : `Tab 1`,
+                id: `tab_${this.uuID(6)}`,
+                name: `Tab 1`,
                 config: {}
               }
             ]
@@ -491,23 +494,24 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
         },
         {
           label: '分步页',
-          value : {}
+          value: {}
         },
         {
           label: '折叠面板',
-          value : {}
+          value: {}
         }
       ]
     }
   ];
   componentRef: ComponentRef<any>;
   @ViewChild('dynamicComponent', { read: ViewContainerRef }) container: ViewContainerRef;
+  _currentComponentData;
   private dropdown: NzDropdownContextComponent;
   constructor(
-      private _http: ApiService,
-      private message: NzMessageService,
-      private resolver: ComponentFactoryResolver,
-      private nzDropdownService: NzDropdownService
+    private _http: ApiService,
+    private message: NzMessageService,
+    private resolver: ComponentFactoryResolver,
+    private nzDropdownService: NzDropdownService
   ) { }
 
   ngOnInit() {
@@ -522,20 +526,20 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
     // 获取组件区域数据
     const params = {
       Name: this.blockId,     // 区域ID
-      //TagB: '',               // 组件类型
+      // TagB: '',               // 组件类型
       ParentId: this.layoutId // 布局ID
     };
     this._http.get(APIResource.AppConfigPack, params).subscribe(result => {
-      if(result && result.Status === 200) {
+      if (result && result.Status === 200) {
         result.Data.forEach(data => {
-          const component = data.TagB.substring(data.TagB.lastIndexOf('.')+1, data.TagB.length);
-          if (component === 'tabs'){
+          const component = data.TagB.substring(data.TagB.lastIndexOf('.') + 1, data.TagB.length);
+          if (component === 'tabs') {
             const d = {};
             d['config'] = JSON.parse(data.Metadata);
             d['dataList'] = [];
             d['component'] = component;
             this.createBsnComponent(d);
-          }else {
+          } else {
             this.createBsnComponent(this._dataStruct[component]);
           }
 
@@ -554,17 +558,17 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
         });*/
       }
     });
-  };
+  }
 
   ngOnChanges() {
     this.createBsnComponent();
   }
 
   createBsnComponent(event?) {
-    if(event) {
+    if (event) {
       this.config = event;
     }
-    if(this.config && this.config.component) {
+    if (this.config && this.config.component) {
       if (!component[this.config.component]) {
         const supportedTypes = Object.keys(component).join(', ');
         throw new Error(
@@ -579,6 +583,19 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
       this.componentRef.instance.layoutId = this.layoutId;
       this.componentRef.instance.blockId = this.blockId;
     }
+    // 保存选中组件数据
+    // BlockId,component,type,Metadata,Title,ParentId
+    this._currentComponentData = {
+      BlockId: this.blockId,
+      Component: this.config.component,
+      Type: this.config.type,
+      Title: this.config.name,
+      ParentId: this.layoutId,
+      Metadata: JSON.stringify(this.config)
+    };
+
+    console.log(this._currentComponentData);
+
   }
 
   _saveComponent() {
@@ -587,34 +604,34 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
       Name: this.blockId, // 组件名称
       TagA: this.uuID(10),
     };
-    if(this.config.component === 'tabs') {
+    if (this.config.component === 'tabs') {
       body.Metadata = JSON.stringify(this.config.config);
       body.TagB = `tabs.${this.config.component}`;
     } else {
       body.TagB = `component.${this.config.component}`;
     }
-    if(this._serverLayoutId) {
+    if (this._serverLayoutId) {
       body.Id = this._serverLayoutId;
-      this._http.putProj(APIResource.AppConfigPack, body,{Id: this._serverLayoutId}).subscribe(result=> {
-          if(result && result.Status=== 200) {
-            this.message.success('保存成功');
-          }else {
-            this.message.warning(`出现异常: ${result.Message}`);
-          }
-        }, error => {
-          this.message.error(`出现错误：${error}`)
+      this._http.putProj(APIResource.AppConfigPack, body, { Id: this._serverLayoutId }).subscribe(result => {
+        if (result && result.Status === 200) {
+          this.message.success('保存成功');
+        } else {
+          this.message.warning(`出现异常: ${result.Message}`);
         }
+      }, error => {
+        this.message.error(`出现错误：${error}`);
+      }
       );
     } else {
-      this._http.postProj(APIResource.AppConfigPack, body).subscribe(result=> {
-          if(result && result.Status=== 200) {
-            this.message.success('保存成功');
-          } else {
-            this.message.warning(`出现异常: ${result.Message}`);
-          }
-        }, error => {
-          this.message.error(`出现错误：${error}`)
+      this._http.postProj(APIResource.AppConfigPack, body).subscribe(result => {
+        if (result && result.Status === 200) {
+          this.message.success('保存成功');
+        } else {
+          this.message.warning(`出现异常: ${result.Message}`);
         }
+      }, error => {
+        this.message.error(`出现错误：${error}`);
+      }
       );
     }
   }
@@ -627,9 +644,9 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
     return this._http.get(APIResource.AppConfigPack, params).toPromise();
   }
 
-  uuID(w){
-    let s="";
-    let str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  uuID(w) {
+    let s = '';
+    const str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     for (let i = 0; i < w; i++) {
       s += str.charAt(Math.round(Math.random() * (str.length - 1)));
     }

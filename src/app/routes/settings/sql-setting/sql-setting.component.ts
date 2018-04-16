@@ -891,8 +891,8 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
   }
   
   ngOnDestroy () {
-    if (this.relativeMessage) {
-      this.relativeMessage.clearMessage();
+    if (this) {
+      // this.relativeMessage.clearMessage(); 
     }
   }
 }

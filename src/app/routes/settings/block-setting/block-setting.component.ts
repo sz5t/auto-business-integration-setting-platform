@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
-import {ApiService} from "@core/utility/api-service";
-import {APIResource} from "@core/utility/api-resource";
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
 
 @Component({
   selector: 'app-block-setting',
@@ -9,7 +9,7 @@ import {APIResource} from "@core/utility/api-resource";
 })
 export class BlockSettingComponent implements OnInit {
   // 加载模块数据
-  _funcOptions:any[] = [];
+  _funcOptions: any[] = [];
   _funcValue;
   _layoutNameValue;
   _layoutConfig;
@@ -32,17 +32,17 @@ export class BlockSettingComponent implements OnInit {
   _changeModuleValue($event?) {
     this._layoutList = [];
     // 选择功能模块，首先加载服务端配置列表
-    //const params = new HttpParams().set('TagA', this._funcValue.join(','));
-    if(this._funcValue.length >0) {
+    // const params = new HttpParams().set('TagA', this._funcValue.join(','));
+    if (this._funcValue.length > 0) {
       const params = {
-        ParentId:this._funcValue[this._funcValue.length -1],
+        ModuleId: this._funcValue[this._funcValue.length - 1],
         _select: 'Id,Name,Metadata'
       };
       this.getLayoutConfigData(params).then(serverLayoutData => {
-        if(serverLayoutData.Status === 200 && serverLayoutData.Data.length > 0){
-          serverLayoutData.Data.forEach((data,index) => {
+        if (serverLayoutData.Status === 200 && serverLayoutData.Data.length > 0) {
+          serverLayoutData.Data.forEach((data, index) => {
             const metadata = JSON.parse(data.Metadata);
-            this._layoutList.push({label:data.Name,value:{id:data.Id,metadata:metadata}});
+            this._layoutList.push({ label: data.Name, value: { id: data.Id, metadata: metadata } });
           });
         } else {
           this._layoutList = [];
@@ -53,8 +53,8 @@ export class BlockSettingComponent implements OnInit {
   }
 
   // 获取布局设置列表
-  getLayoutConfigData (params) {
-    return this.apiService.getProj(APIResource.AppConfigPack,params).toPromise();
+  getLayoutConfigData(params) {
+    return this.apiService.getProj(APIResource.LayoutSetting, params).toPromise();
   }
 
   // 获取模块信息
@@ -78,13 +78,13 @@ export class BlockSettingComponent implements OnInit {
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId == parentid) {
-        const obj = { "label": data[i].Name, "value": data[i].Id };
+      if (data[i].ParentId === parentid) {
+        const obj = { 'label': data[i].Name, 'value': data[i].Id };
         temp = this.arrayToTree(data, data[i].Id);
         if (temp.length > 0) {
           obj['children'] = temp;
         } else {
-          obj["isLeaf"] = true;
+          obj['isLeaf'] = true;
         }
         result.push(obj);
       }

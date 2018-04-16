@@ -72,6 +72,7 @@
                                             <th>参数类型</th>
                                             <th>赋值来源</th>
                                             <th>赋值参数</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -83,7 +84,12 @@
                                             <td>{{data.Direction}}</td>
                                             <td>{{data.ValueSourece}}</td>
                                             <td>{{data.ValueParam}}</td>
-
+                                            <td>
+                                                <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="deleteParam(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
+                                                    <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
+                                                            <i class="anticon anticon-delete"></i> 删除</button>
+                                            </nz-popconfirm>
+                                            </td>      
                                         </tr>
                                     </tbody>
                                 </nz-table>

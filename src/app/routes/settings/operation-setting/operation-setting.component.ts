@@ -1968,8 +1968,10 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   }
 
   ngOnDestroy() {
-    this.relativeMessage.clearMessage();
-    this._relativeResolver.unsubscribe();
+    if (this._relativeResolver) {
+      this._relativeResolver.unsubscribe();
+    }
+    
   }
 
   closeOperationMenu(e: NzMenuItemDirective): void {

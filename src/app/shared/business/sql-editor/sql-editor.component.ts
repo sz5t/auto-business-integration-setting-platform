@@ -153,6 +153,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
         }
     }
 
+    // 删除SQL语句
     delete (id) {
         (async() => {
             const resSql = await this.delSql(id);
@@ -172,10 +173,17 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
         })();
     }
 
+     // 删除SQL 参数
+    deleteParam(id) {
+
+    }
+
     private async addSql(sql) {
         const params = {
             ScriptText: sql,
             Name: this.scriptName,
+            Enabled: true,
+            DbObjType: '脚本'
         };
         return this._http.postProj(APIResource.DbCommandConfig, params).toPromise();
     }
@@ -189,10 +197,16 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
         return this._http.postProj(APIResource.SysDataLink, params).toPromise();
     }
 
+    
     private async delSql(id) {
         return this._http.deleteProj(APIResource.DbCommandConfig, {Id: id}).toPromise();
     }
 
+   
+    private async delSqlParam(id) {
+
+    }
+    // 删除SQL关联表数据
     private async delSqlRelative(id) {
         const params = {
             RightId: id,
@@ -206,14 +220,16 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
         const params = {
             ScriptText: sql,
             Name: this.scriptName,
-            Id: this._relativeResolver.tempParameter['_id']
+            Id: this._relativeResolver.tempParameter['_id'],
+            Enabled: true,
+            DbObjType: '脚本'
         };
         return this._http.putProj(APIResource.DbCommandConfig, params).toPromise();
     }
 
     ngOnDestroy () {
-        if (this._relativeService) {
-            this._relativeService.clearMessage();
+        if (this._relativeResolver) {
+            this._relativeResolver.unsubscribe();
         }
     }
 

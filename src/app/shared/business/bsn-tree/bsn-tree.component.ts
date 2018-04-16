@@ -88,8 +88,8 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     ngOnDestroy() {
-        if (this._messageService) {
-            this._messageService.clearMessage();
+        if (this._relativeResolver) {
+            this._relativeResolver.unsubscribe();
         }
     }
 }

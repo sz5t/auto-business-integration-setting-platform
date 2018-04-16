@@ -171,6 +171,23 @@ export class APIResource {
   public static AppModuleConfig = 'SinoForce.SysData.AppModuleConfig';
 
   /**
+   * 布局设置
+   */
+  public static LayoutSetting = 'SinoForce.SysData.LayoutSetting';
+
+  /**
+   * 区域设置
+   */
+  public static BlockSetting = 'SinoForce.SysData.BlockSetting';
+
+  /**
+   * 视图设置
+   */
+  public static ViewSetting = 'SinoForce.SysData.ViewSetting';
+
+
+
+  /**
    * 配置平台标识代码
    * @type {string}
    */
