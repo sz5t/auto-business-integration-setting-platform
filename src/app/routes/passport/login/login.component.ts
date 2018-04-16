@@ -3,7 +3,7 @@ import { Component, OnDestroy, Inject, Optional, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { SocialService, SocialOpenType, TokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { SocialService , TokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { ReuseTabService } from '@delon/abc';
 import { environment } from '@env/environment';
 import { OnlineUser } from '../../../model/APIModel/OnlineUser';
@@ -45,10 +45,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         @Optional() @Inject(ReuseTabService) private reuseTabService: ReuseTabService,
         @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService) {
         this.form = fb.group({
-            userName: [null, [Validators.required, Validators.minLength(5)]],
+            userName: [null, [Validators.required, Validators.minLength(1)]],
             password: [null, Validators.required],
-            mobile: [null, [Validators.required, Validators.pattern(/^1\d{10}$/)]],
-            captcha: [null, [Validators.required]],
+            uName: [null, [Validators.required, Validators.minLength(1)]],
+            uPassword: [null, [Validators.required]],
             remember: [true]
         });
         modalSrv.closeAll();
@@ -56,22 +56,26 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.titleService.setTitle('配置平台');
+        this.settingsService.setApp({name: '自动化业务装配系统'});
     }
     // region: fields
 
     get userName() { return this.form.controls.userName; }
     get password() { return this.form.controls.password; }
-    get mobile() { return this.form.controls.mobile; }
-    get captcha() { return this.form.controls.captcha; }
+    get uName() { return this.form.controls.uName; }
+    get uPassword() { return this.form.controls.uPassword; }
 
     // endregion
 
     switch(ret: any) {
         this.type = ret.index;
-        if (ret.index === 0)
+        if (ret.index === 0) {
             this.titleService.setTitle('配置平台');
-        else
+        }
+        else {
             this.titleService.setTitle('解析平台');
+            this.settingsService.setApp({name: 'XXX信息化系统'});
+        }
     }
 
     // region: get captcha
@@ -91,7 +95,6 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     // endregion
 
     submit() {
-        debugger;
         this.error = '';
         if (this.type === 0) {
             this.userName.markAsDirty();
@@ -100,38 +103,16 @@ export class UserLoginComponent implements OnInit, OnDestroy {
             this.password.updateValueAndValidity();
             if (this.userName.invalid || this.password.invalid) return;
         } else {
-            this.mobile.markAsDirty();
-            this.mobile.updateValueAndValidity();
-            this.captcha.markAsDirty();
-            this.captcha.updateValueAndValidity();
-            if (this.mobile.invalid || this.captcha.invalid) return;
+            this.uName.markAsDirty();
+            this.uName.updateValueAndValidity();
+            this.uPassword.markAsDirty();
+            this.uPassword.updateValueAndValidity();
+            if (this.uName.invalid || this.uPassword.invalid) return;
         }
         // mock http
         this.loading = true;
-        /* 
-        setTimeout(() => {
-        //     this.onlineUser = new OnlineUser();
-        //     this.cacheInfo = new CacheInfo();
-        //     this.loading = false;
-        //     if (this.type === 0) {
-        //         if (this.userName.value !== 'admin' || this.password.value !== '888888') {
-        //             this.error = `账户或密码错误`;
-        //             return;
-        //         }
-        //     }
+        this.reuseTabService.clear();
 
-        //     // 清空路由复用信息
-        //     this.reuseTabService.clear();
-        //     this.tokenService.set({
-        //         token: '123456789',
-        //         name: this.userName.value,
-        //         email: `cipchk@qq.com`,
-        //         id: 10000,
-        //         time: +new Date
-        //     });
-        //     this.router.navigate(['/']);
-        // }, 1000);
-        */
         setTimeout(() => {
             this.onlineUser = new OnlineUser();
             this.cacheInfo = new CacheInfo();
@@ -143,14 +124,12 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 environment.COMMONCODE = APIResource.SettingCommonCode;
                 this.cacheService.set('IsSettings', 'SETTING');
             } else {
-                this.onlineUser.Identify = this.mobile.value;
-                this.onlineUser.Password = Md5.hashStr(this.captcha.value).toString().toUpperCase();
+                this.onlineUser.Identify = this.uName.value;
+                this.onlineUser.Password = Md5.hashStr(this.uPassword.value).toString().toUpperCase();
                 environment.SERVER_URL = APIResource.LoginUrl;
                 environment.COMMONCODE = APIResource.LoginCommonCode;
                 this.cacheService.set('IsSettings', 'LOGING');
             }
-            // this.tokenService.clear();
-            console.log(this.apiService);
             this.apiService.post(APIResource.OnlineUser, this.onlineUser).toPromise()
                 .then(response => {
                     this.onlineUser = { ...response.Data };
@@ -204,7 +183,12 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                             })
                             .then((appPermission) => {
                                 if (appPermission['Status'].toString() === '200') {
-                                    this.router.navigate(['/']);
+                                    if(this.type === 0){
+                                        this.router.navigate(['/']);
+                                    }else{
+                                        this.router.navigate(['/dashboard/analysis']);
+                                    }
+
                                 }
                             })
                             .catch(errMsg => {
@@ -213,47 +197,47 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                     }
                 }
 
-                ).catch(errMsg => {
-                    this.error = errMsg;
-                });
+            ).catch(errMsg => {
+                this.error = errMsg;
+            });
         }, 1000);
     }
 
     // region: social
 
-    open(type: string, openType: SocialOpenType = 'href') {
-        let url = ``;
-        let callback = ``;
-        if (environment.production)
-            callback = 'https://cipchk.github.io/ng-alain/callback/' + type;
-        else
-            callback = 'http://localhost:4200/callback/' + type;
-        switch (type) {
-            case 'auth0':
-                url = `//cipchk.auth0.com/login?client=8gcNydIDzGBYxzqV0Vm1CX_RXH-wsWo5&redirect_uri=${decodeURIComponent(callback)}`;
-                break;
-            case 'github':
-                url = `//github.com/login/oauth/authorize?client_id=9d6baae4b04a23fcafa2&response_type=code&redirect_uri=${decodeURIComponent(callback)}`;
-                break;
-            case 'weibo':
-                url = `https://api.weibo.com/oauth2/authorize?client_id=1239507802&response_type=code&redirect_uri=${decodeURIComponent(callback)}`;
-                break;
-        }
-        if (openType === 'window') {
-            this.socialService.login(url, '/', {
-                type: 'window'
-            }).subscribe(res => {
-                if (res) {
-                    this.settingsService.setUser(res);
-                    this.router.navigateByUrl('/');
-                }
-            });
-        } else {
-            this.socialService.login(url, '/', {
-                type: 'href'
-            });
-        }
-    }
+    // open(type: string, openType: SocialOpenType = 'href') {
+    //     let url = ``;
+    //     let callback = ``;
+    //     if (environment.production)
+    //         callback = 'https://cipchk.github.io/ng-alain/callback/' + type;
+    //     else
+    //         callback = 'http://localhost:4200/callback/' + type;
+    //     switch (type) {
+    //         case 'auth0':
+    //             url = `//cipchk.auth0.com/login?client=8gcNydIDzGBYxzqV0Vm1CX_RXH-wsWo5&redirect_uri=${decodeURIComponent(callback)}`;
+    //             break;
+    //         case 'github':
+    //             url = `//github.com/login/oauth/authorize?client_id=9d6baae4b04a23fcafa2&response_type=code&redirect_uri=${decodeURIComponent(callback)}`;
+    //             break;
+    //         case 'weibo':
+    //             url = `https://api.weibo.com/oauth2/authorize?client_id=1239507802&response_type=code&redirect_uri=${decodeURIComponent(callback)}`;
+    //             break;
+    //     }
+    //     if (openType === 'window') {
+    //         this.socialService.login(url, '/', {
+    //             type: 'window'
+    //         }).subscribe(res => {
+    //             if (res) {
+    //                 this.settingsService.setUser(res);
+    //                 this.router.navigateByUrl('/');
+    //             }
+    //         });
+    //     } else {
+    //         this.socialService.login(url, '/', {
+    //             type: 'href'
+    //         });
+    //     }
+    // }
 
     // endregion
 
@@ -266,7 +250,14 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].ParentId == parentid || !data[i].ParentId) {
-                const obj = { text: data[i].Name, id: data[i].Id, group: JSON.parse(data[i].ConfigData).group, link: JSON.parse(data[i].ConfigData).link, icon: JSON.parse(data[i].ConfigData).icon, hide: JSON.parse(data[i].ConfigData).hide };
+                const obj = {
+                    text: data[i].Name,
+                    id: data[i].Id,
+                    group: JSON.parse(data[i].ConfigData).group,
+                    link: JSON.parse(data[i].ConfigData).link,
+                    icon: JSON.parse(data[i].ConfigData).icon,
+                    hide: JSON.parse(data[i].ConfigData).hide ? true : false
+                };
                 temp = this.arrayToTree(data[i].Children, data[i].Id);
                 if (temp.length > 0) {
                     obj['children'] = temp;

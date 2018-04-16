@@ -25,14 +25,14 @@ import { AuthGuard } from '@core/utility/auth-guard';
 const routes: Routes = [
     {
         path: '',
-        component: LayoutDefaultComponent,canActivate: [AuthGuard],
+        component: LayoutDefaultComponent, canActivate: [AuthGuard],
         children: [
             { path: '', redirectTo: 'dashboard/v1', pathMatch: 'full' },
             { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full' },
             { path: 'dashboard/v1', component: DashboardV1Component },
-            { path: 'dashboard/analysis', component: DashboardAnalysisComponent },
+            { path: 'dashboard/analysis', component: DashboardAnalysisComponent, data: { title: '工作台'}  },
             { path: 'dashboard/monitor', component: DashboardMonitorComponent },
-            { path: 'dashboard/workplace', component: DashboardWorkplaceComponent },
+            { path: 'dashboard/workplace', component: DashboardWorkplaceComponent, data: { title: '工作台'}  },
             { path: 'widgets', loadChildren: './widgets/widgets.module#WidgetsModule' },
             { path: 'style', loadChildren: './style/style.module#StyleModule' },
             { path: 'delon', loadChildren: './delon/delon.module#DelonModule' },
