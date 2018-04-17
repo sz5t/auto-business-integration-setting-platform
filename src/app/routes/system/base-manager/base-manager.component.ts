@@ -120,7 +120,7 @@ export class BaseManagerComponent implements OnInit {
     }).then( () => {
       this._randomBase.getModuleTree(this._current, this._pageSize, this._sortField, this._sortValue).subscribe( (data:any) => {
         this._dataTree = this.arrayToTree(data.Data.Rows, '');
-        this.cacheService.set('ModuleTree',this._dataTree);
+        // this.cacheService.set('ModuleTree',this._dataTree);
       });
     } );
   }

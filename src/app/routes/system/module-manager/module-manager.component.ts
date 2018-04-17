@@ -137,12 +137,15 @@ export class ModuleManagerComponent implements OnInit {
         this._loading = false;
         this._total = data.Data.Total;
         this._dataSet = this.arrayToTree(data.Data.Rows, '')
-        this.dataTree = this._dataSet;
+        this.dataTree = this.drarrayToTree(data.Data.Rows,'');
+        this.cacheService.set('ModuleTree',this.dataTree);
         this._dataSet.forEach(item => {
           this.expandDataCache[ item.id ] = this.convertTreeToList(item);
         });
       });
     }
+
+
 
   refresh(event?){
     this._current = 1;
@@ -165,6 +168,27 @@ export class ModuleManagerComponent implements OnInit {
       }else {
           this.msgSrv.success('请选中要删除的数据！');
       }
+    }
+
+    drarrayToTree(data, parentid) {
+        const result = [];
+        let temp;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].ParentId == parentid || !data[i].ParentId) {
+                const obj =
+                    { label: data[i].Name,
+                        value: data[i].Id
+                    };
+                temp = this.drarrayToTree(data[i].Children, data[i].Id);
+                if (temp.length > 0) {
+                    obj['children'] = temp;
+                } else {
+                    obj['isLeaf'] = true;
+                }
+                result.push(obj);
+            }
+        }
+        return result;
     }
 
   arrayToTree(data, parentid) {
@@ -270,7 +294,7 @@ export class ModuleManagerComponent implements OnInit {
                         }
                     });}
             });
-        }else if (this.items.length > 1 ){
+        }else if (this.items.size > 1 ){
             this.msgSrv.warning('不能修改多条记录！');
         } else {
             this.msgSrv.warning('请选中要修改的记录！');
