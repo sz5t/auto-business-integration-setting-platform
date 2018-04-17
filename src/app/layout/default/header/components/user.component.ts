@@ -57,7 +57,7 @@ import { NzModalService } from 'ng-zorro-antd';
     template: `
     <nz-dropdown nzPlacement="bottomRight">
         <div class="item d-flex align-items-center px-sm" nz-dropdown>
-            <nz-avatar [nzSrc]="settings.user.avatar" nzSize="small" class="mr-sm"></nz-avatar>
+            <nz-avatar [nzSrc]="settings.user['Remark']" nzSize="small" class="mr-sm"></nz-avatar>
             {{settings.user['RealName']}}
         </div>
         <div nz-menu class="width-sm">

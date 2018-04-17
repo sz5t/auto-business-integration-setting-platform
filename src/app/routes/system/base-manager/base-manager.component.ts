@@ -79,7 +79,7 @@ export class BaseManagerComponent implements OnInit {
   cacheMapData;
   editRow = null;
   tempEditObject = {};
-  rowLine=null;
+  rowLine = null;
 
   sort(sort) {
     this._sortValue = (sort.value === 'descend') ? 'DESC' : 'ASC';
@@ -217,10 +217,8 @@ export class BaseManagerComponent implements OnInit {
    * @param event
    */
   add1(event?) {
-     console.log()
-
     this._randomBase.addModule().subscribe(response => {
-
+        console.log(1111)
       response.Data.ConfigData = JSON.stringify({group: false, link: 'system', icon: 'icon-speedometer'});
       this._dataSet = [ ...this._dataSet, response.Data];
       this.cacheMapData.set(response.Data.Id, {checked: false, dataItem: response.Data});
@@ -264,7 +262,7 @@ export class BaseManagerComponent implements OnInit {
     update(event?) {
       const data = this.getSelectItem();
       if(data.length === 1) {
-        this._randomBase.updateModule(data);
+        this._randomBase.updateModule(data).subscribe();
         this.refreshData();
       }else if (data.length > 1 ){
           this.msgSrv.warning('不能修改多条记录！');
@@ -412,8 +410,6 @@ export class BaseManagerComponent implements OnInit {
         }
       });
       subscription.afterClose.subscribe((result) => {
-        console.log(result);
-        console.log( typeof result);
         if(typeof result === 'object')
             this._randomBase.addModule(result).subscribe( response => {
               if(response.Status === 200){

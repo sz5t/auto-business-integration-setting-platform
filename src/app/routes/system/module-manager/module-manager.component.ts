@@ -2,16 +2,35 @@ import {Component, Injectable, OnInit} from '@angular/core';
 import {APIResource} from '@core/utility/api-resource';
 import {ApiService} from '@core/utility/api-service';
 import {CacheService} from '@delon/cache';
-import {CacheInfo} from '../../../model/APIModel/AppUser';
+
+import {NzMessageService, NzModalService} from 'ng-zorro-antd';
+import {ModuleOperationComponent} from './module-operation.component';
 
 @Injectable()
 export class ModuleService {
+  moduleUrl = APIResource.AppModuleConfig;
   moduleServiceUrl = `${APIResource.AppModuleConfig}/_root/${APIResource.AppModuleConfig}?_recursive=true&_deep=4&_root.ApplyId=3935eb43532d435398d5189d5ece0f5d&_root.parentid=in("",null)`;
   getModule(pageIndex = 1, pageSize = 2, sortField, sortOrder) {
     return this.http.get(`${this.moduleServiceUrl}` , {
       _page: pageIndex, _rows: pageSize, _orderBy: `${sortField} ${sortOrder}`
     } );
   }
+
+  deleteModule(ids) {
+      const _ids = ids.join(',');
+      if( _ids.length > 0 ) {
+          return this.http.deleteProj(`${this.moduleUrl}`, { _ids: _ids});
+      }
+  }
+
+  updateModule(data?) {
+        return this.http.putProj(`${this.moduleUrl}`, data);
+      }
+
+    addModule(data?) {
+        return this.http.postProj(`${this.moduleUrl}`, data);
+    }
+
   constructor(private http: ApiService) {
   }
 }
@@ -44,13 +63,22 @@ export class ModuleManagerComponent implements OnInit {
   _sortValue = 'asc';
   _sortField = 'order';
 
+  ids: string[];
+  items = [];
+  dataItems;
+  dataTree = [];
+
   constructor(
       private cacheService: CacheService,
       private apiService: ApiService,
-      private _moduleService: ModuleService
-    ) { }
+      public msgSrv: NzMessageService,
+      private _moduleService: ModuleService,
+      private modalService: NzModalService
+    ) {
+      this.dataItems = new Map();
+  }
 
-    expandDataCache = {};
+  expandDataCache = {};
 
   collapse(array, data, $event) {
     if ($event === false) {
@@ -86,7 +114,6 @@ export class ModuleManagerComponent implements OnInit {
     this.loadData(true);
   }
 
-
   visitNode(node, hashMap, array) {
     if (!hashMap[ node.id ]) {
       hashMap[ node.id ] = true;
@@ -94,12 +121,13 @@ export class ModuleManagerComponent implements OnInit {
     }
   }
 
-    ngOnInit() {
+  ngOnInit() {
       this.loadData();
   }
 
-    loadData(reset = false, event?)
-    {
+  loadData(reset = false, event?)
+  {
+      this.dataItems.clear();
       if (reset) {
         this._current = 1;
         this._pageSize = event;
@@ -109,26 +137,34 @@ export class ModuleManagerComponent implements OnInit {
         this._loading = false;
         this._total = data.Data.Total;
         this._dataSet = this.arrayToTree(data.Data.Rows, '')
+        this.dataTree = this._dataSet;
         this._dataSet.forEach(item => {
           this.expandDataCache[ item.id ] = this.convertTreeToList(item);
         });
       });
     }
 
-    add(event?) {
-      console.log('新增', event );
-    }
-
-    refresh(event?){
-    this._current=1;
-    this._pageSize=10;
+  refresh(event?){
+    this._current = 1;
+    this._pageSize = 10;
       this.loadData();
     }
 
-    update(event?){
-    }
-
-    delete(event?){
+  delete(event?){
+      if(this.dataItems.size >= 1) {
+          const ids = [];
+          this.dataItems.forEach((item,ikey) => {ids.push(ikey)});
+          this._moduleService.deleteModule(ids).subscribe(response => {
+              if (response.Status === 200) {
+                  this.msgSrv.success(response.Message);
+                  this.loadData();
+              } else {
+                  this.msgSrv.error(response.Message);
+              }
+          });
+      }else {
+          this.msgSrv.success('请选中要删除的数据！');
+      }
     }
 
   arrayToTree(data, parentid) {
@@ -143,19 +179,21 @@ export class ModuleManagerComponent implements OnInit {
             link: JSON.parse(data[i].ConfigData).link,
             icon: JSON.parse(data[i].ConfigData).icon,
             hide:  JSON.parse(data[i].ConfigData).hide,
+            ids: JSON.parse(data[i].ConfigData).ids,
             remark: data[i].Remark,
             order: data[i].Order,
             createtime: data[i].CreateTime,
             applyid: data[i].ApplyId,
             projid: data[i].ProjId,
             platcustomerid: data[i].PlatCustomerId
-
           };
         temp = this.arrayToTree(data[i].Children, data[i].Id);
         if (temp.length > 0) {
           obj['children'] = temp;
+            obj['isLeaf'] = false;
         } else {
           obj['isLeaf'] = true;
+          obj['checked'] = false;
         }
         result.push(obj);
       }
@@ -163,4 +201,84 @@ export class ModuleManagerComponent implements OnInit {
     return result;
   }
 
+  refChecked(value, item) {
+      if(value) {
+          this.dataItems.set(item.id, item);
+      }else {
+          this.dataItems.delete(item.id);
+      }
+      console.log(this.dataItems.size);
+  }
+
+    showModalForComponent(flag?) {
+
+        switch (flag) {
+            case 'Add':
+                this.confirmAddData()
+                break;
+            case 'Edit':
+                this.confirmEditData( )
+                break;
+        }
+    }
+
+    confirmAddData() {
+        const subscription = this.modalService.create({
+            nzTitle          : '新增数据',
+            nzContent        : ModuleOperationComponent,
+            nzFooter         : null,
+            nzComponentParams: {
+                name: '',
+                tree: this.dataTree
+            }
+        });
+        subscription.afterClose.subscribe((result) => {
+            if(typeof result === 'object')
+                this._moduleService.addModule(result).subscribe( response => {
+                    if(response.Status === 200){
+                        this.msgSrv.success(response.Message ? response.Message : '添加成功！');
+                        this.loadData();
+                    }else {
+                        this.msgSrv.error(response.Message);
+                    }
+                });
+        });
+    }
+
+    confirmEditData() {
+        if( this.dataItems.size === 1) {
+            let data: any ={};
+            this.dataItems.forEach(item =>{ data = item });
+            const subscription = this.modalService.create({
+                nzTitle          : '修改数据',
+                nzContent        : ModuleOperationComponent,
+                nzFooter         : null,
+                nzComponentParams: {
+                    name: data,
+                    tree: this.dataTree
+                }
+            });
+            subscription.afterClose.subscribe(result => {
+                if(typeof result === 'object'){
+                    result['Id'] = data.id;
+                    this._moduleService.updateModule(result).subscribe( response => {
+                        if(response.Status === 200){
+                            this.msgSrv.success(response.Message ? response.Message : '修改成功！');
+                            this.loadData();
+                        }else {
+                            this.msgSrv.error(response.Message);
+                        }
+                    });}
+            });
+        }else if (this.items.length > 1 ){
+            this.msgSrv.warning('不能修改多条记录！');
+        } else {
+            this.msgSrv.warning('请选中要修改的记录！');
+        }
+    }
+
+    getText(flag)
+    {
+        return !flag ? '启用' : '禁用';
+    }
 }

@@ -49,7 +49,7 @@
                   "text": "系统配置",
                   "i18n": "",
                   "link": "/settings",
-                  "icon": "icon-speedometer",
+                  "icon": "anticon anticon-aliwangwang",
                   "children": [
                     {
                       "text": "布局设置",

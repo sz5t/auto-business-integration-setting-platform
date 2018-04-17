@@ -10,6 +10,7 @@ import {ModalBaseComponent} from './base-manager/modal-base.component';
 import { OrgManagerComponent } from './org-manager/org-manager.component';
 import { PrivManagerComponent } from './priv-manager/priv-manager.component';
 import { DataManagerComponent } from './data-manager/data-manager.component';
+import {ModuleOperationComponent} from './module-manager/module-operation.component';
 
 const routes: Routes = [
     {path: 'base-manager', component: BaseManagerComponent},
@@ -28,7 +29,8 @@ const COMPONENT_NOROUNT = [
     ModalBaseComponent,
     OrgManagerComponent,
     PrivManagerComponent,
-    DataManagerComponent
+    DataManagerComponent,
+    ModuleOperationComponent
 ];
 
 @NgModule({
