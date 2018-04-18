@@ -1144,6 +1144,7 @@ export class LayoutStepSettingComponent implements OnInit {
     rewriteLayoutMeta(layoutData, block) {
         for (let i = 0, len = layoutData.rows.length; i < len; i++) {
             for (let j = 0, jlen = layoutData.rows[i].row.cols.length; j < jlen; j++) {
+                debugger;
                 if (layoutData.rows[i].row.cols[i].id === block.Area) {
                     layoutData.rows[i].row.cols[i] = JSON.parse(block.Metadata);
                     layoutData.rows[i].row.cols[i]['id'] = block.Id;

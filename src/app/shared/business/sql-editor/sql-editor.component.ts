@@ -183,7 +183,10 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             ScriptText: sql,
             Name: this.scriptName,
             Enabled: true,
-            DbObjType: '脚本'
+            DbObjType: '脚本',
+            NeedAlterDb: true,
+            IssueFlag: '已发布',
+            ShareScope: 'Project'
         };
         return this._http.postProj(APIResource.DbCommandConfig, params).toPromise();
     }

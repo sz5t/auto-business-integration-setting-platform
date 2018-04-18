@@ -31,7 +31,6 @@ export class SettingLayoutComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('blockData', this.config);
     if (this.config) {
       this._isRows = Array.isArray(this.config.rows);
     }
@@ -63,7 +62,7 @@ export class SettingLayoutComponent implements OnInit {
     this._http.putProj(APIResource.BlockSetting, this.blockEntity).subscribe(result => {
       if (result && result.Status === 200) {
         this.message.create('success', '保存成功');
-        
+
         this.isVisible = false;
       } else {
         this.message.create('info', '保存失败');
