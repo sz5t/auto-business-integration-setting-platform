@@ -105,14 +105,16 @@ export class ApiService {
   }
 
   putProj(resource, body?, params?) {
-    params = this.setParamsObjProj(params);
-    return this.httpClient.put(
+    debugger;
+    // params = this.setParamsObjProj(params);
+    return this.httpClient.request(
+      'PUT',
       resource,
-      body,
-      params,
       {
+        body: body,
         headers: this.setHeaders()
-      });
+      }
+    );
   }
 
   deleteProj(resource, params?) {

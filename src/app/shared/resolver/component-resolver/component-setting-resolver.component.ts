@@ -582,20 +582,44 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
       this.componentRef.instance.dataList = this.config.dataList;
       this.componentRef.instance.layoutId = this.layoutId;
       this.componentRef.instance.blockId = this.blockId;
+
+      // 保存选中组件数据
+      // BlockId,component,type,Metadata,Title,ParentId
+      this._currentComponentData = {
+        BlockId: this.blockId,
+        Component: this.config.component,
+        Type: this.config.type,
+        Title: this.config.name,
+        ParentId: this.layoutId,
+        Metadata: JSON.stringify(this.config)
+      };
+
+      console.log(this._currentComponentData);
+
+      
+
     }
-    // 保存选中组件数据
-    // BlockId,component,type,Metadata,Title,ParentId
-    this._currentComponentData = {
-      BlockId: this.blockId,
-      Component: this.config.component,
-      Type: this.config.type,
-      Title: this.config.name,
-      ParentId: this.layoutId,
-      Metadata: JSON.stringify(this.config)
-    };
 
-    console.log(this._currentComponentData);
+  }
 
+  saveComponent(data) {
+    if (this.config.type === 'list') {
+      if (this.config.component === 'tabs') {
+        
+      }
+    } else {
+      this._http.postProj(APIResource.ViewSetting, data).subscribe(result => {
+        if (result && result.Status === 200) {
+          if (result && result.Status === 200) {
+            this.message.success('保存成功');
+          } else {
+            this.message.warning(`出现异常: ${result.Message}`);
+          }
+        }
+      }, error => {
+        this.message.error(`出现错误：${error}`);
+      });
+    }
   }
 
   _saveComponent() {

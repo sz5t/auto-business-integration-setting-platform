@@ -1072,7 +1072,7 @@ export class LayoutSettingComponent implements OnInit {
         }
 
 
-        //const viewData = this._layoutValue.value.layoutEditor;
+        // const viewData = this._layoutValue.value.layoutEditor;
         // for (let i = 0, len = viewData.length; i < len; i++) {
         //   for (let j = 0, jlen = viewData[i].data.length; j < jlen; j++) {
         //    console.log(viewData[i], viewData[i].data);

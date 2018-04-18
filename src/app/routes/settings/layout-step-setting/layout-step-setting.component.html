@@ -1,0 +1,138 @@
+<page-header [title]="''"></page-header>
+<nz-card [nzBordered]="false">
+    <div class="step-module">
+        <form nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="2" nzFor="module">功能模块</nz-form-label>
+                <nz-form-control [nzSpan]="12" [nzSm]="12" [nzXs]="12">
+                    <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue"
+                        (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'--请选择--'"
+                        [nzExpandTrigger]="'hover'">
+                    </nz-cascader>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </div>
+
+</nz-card>
+<nz-card [nzBordered]="false">
+    <nz-steps [(nzCurrent)]="current">
+        <nz-step nzTitle="创建布局"></nz-step>
+        <nz-step nzTitle="保存布局"></nz-step>
+        <nz-step nzTitle="扩展布局"></nz-step>
+    </nz-steps>
+    <div class="steps-content" *ngIf="current == 0">
+        <form nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="6" nzFor="module">布局类型</nz-form-label>
+                <nz-form-control [nzSm]="18" [nzXs]="18">
+                    <nz-select [(ngModel)]="_layoutValue" (ngModelChange)="_changeLayout($event)" [nzPlaceHolder]="'--请选择--'" [ngModelOptions]="{standalone: true}">
+                        <nz-option *ngFor="let option of _layoutOptions" [nzLabel]="option.label" [nzValue]="option">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="6" nzFor="module">功能模块</nz-form-label>
+                <nz-form-control [nzSm]="18" [nzXs]="18">
+                    <input nz-input [(ngModel)]="_configName" placeholder="请输入配置名称" [ngModelOptions]="{standalone: true}" />
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </div>
+    <div  *ngIf="current == 1">
+        <form  class="steps-content" nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
+            <nz-form-item>
+                <nz-form-control [nzSm]="24" [nzXs]="24">
+                    <nz-tabset *ngIf="_editorConfig" [nzTabPosition]="'left'" [nzType]="'line'">
+                        <nz-tab *ngFor="let tab of _editorConfig" [nzTitle]="tab.title">
+                            <ng-container *ngFor="let field of tab.data" cnFormResolverDirective [config]="field" [formGroup]="_formGroup"></ng-container>
+                        </nz-tab>
+                    </nz-tabset>
+                </nz-form-control>
+            </nz-form-item>
+            <!-- <nz-form-item [formGroup]="_formGroup">
+                <nz-form-control [nzOffset]="6" [nzSpan]="14">
+                    <button nz-button [nzType]="'primary'" [nzSize]="'default'">保存</button>
+                    <button nz-button [nzSize]="'default'" (click)="resetForm($event)">取消</button>
+                </nz-form-control>
+            </nz-form-item> -->
+        </form>
+        <nz-card nzTitle="布局预览">
+                <cn-setting-layout *ngIf="previewLayoutData"  [config]="previewLayoutData"></cn-setting-layout>
+        </nz-card>
+        
+    </div>
+    <div class="steps-content2" *ngIf="current == 2">
+        <cn-setting-layout *ngIf="previewLayoutData"  [config]="previewLayoutData"></cn-setting-layout>
+    </div>
+    <div class="steps-action">
+            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+              <span>上一步</span>
+            </button>
+            <button nz-button nzType="primary" (click)="done()" *ngIf="current === 1">
+                    <span>完成</span>
+                  </button>
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 1">
+              <span>下一步</span>
+            </button>
+            <button nz-button nzType="default" (click)="extend()" *ngIf="current === 1 && _isShowExtend">
+                    <span>扩展布局</span>
+                  </button>
+            <button nz-button nzType="primary" (click)="done()" *ngIf="current === 2">
+              <span>完成</span>
+            </button>
+          </div>
+</nz-card>
+<nz-card nzTitle="{{_selectedModuleText}}布局列表">
+    <nz-table #sqlTable [nzData]="_tableDataSource" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize">
+        <thead>
+            <tr>
+                <th nzShowExpand></th>
+                <th>布局名称</th>
+                <th>模版名称</th>
+                <th>是否启用</th>
+                <th>创建时间</th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-template ngFor let-data [ngForOf]="_tableDataSource">
+                <tr>
+                    <td nzShowExpand [(nzExpand)]="data.expand"></td>
+                    <td>{{data.Name}}</td>
+                    <td>{{data.Template}}</td>
+                    <td>{{data.Enabled}}</td>
+                    <td>{{data.CreateTime}}</td>
+                    <td>
+                        <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
+                            <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
+                                <i class="anticon anticon-delete"></i> 删除</button>
+                        </nz-popconfirm>
+                    </td>
+                </tr>
+                <tr [nzExpand]="data.expand">
+                    <td></td>
+                    <td colspan="7">
+                        <nz-table #innerTable [nzData]="data.BlockList" nzSize="middle" [nzShowPagination]="false">
+                            <thead>
+                                <tr>
+                                    <th>区域标题</th>
+                                    <th>区域图标</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let data of innerTable.data">
+                                    <td>{{data.Title}}</td>
+                                    <td>{{data.Icon}}</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </td>
+                </tr>
+            </ng-template>
+        </tbody>
+    </nz-table>
+
+</nz-card>
