@@ -38,6 +38,10 @@ import { SqlEditorComponent } from './business/sql-editor/sql-editor.component';
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { CnBsnTreeComponent } from '@shared/business/bsn-tree/bsn-tree.component';
 import { BsnAsyncTreeComponent } from './business/bsn-async-tree/bsn-async-tree.component';
+import { SettingLayoutComponent } from './resolver/setting-resolver/setting-layout/setting-layout.component';
+import { SettingComponentComponent } from './resolver/setting-resolver/setting-component/setting-component.component';
+import { SettingLayoutEditorComponent } from './resolver/setting-resolver/setting-layout/setting-layout-editor.component';
+import { SettingComponentEditorComponent } from '@shared/resolver/setting-resolver/setting-component/setting-component-editor.component';
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -51,36 +55,39 @@ const THIRDMODULES = [
 // region: your componets & directives
 const COMPONENTS = [
     ComponentResolverComponent,
-  ComponentSettingResolverComponent,
-  LayoutResolverComponent,
-  LayoutSettingResolverComponent,
-  FormResolverComponent,
-  CnFormInputComponent,
-  CnFormSubmitComponent,
-  CnFormSelectComponent,
-  // CnDatePickerComponent,
-  // CnTimePickerComponent,
-  // CnFormRangePickerComponent,
-  CnFormCheckboxComponent,
-  CnFormCheckboxGroupComponent,
-  CnFormRadioGroupComponent,
-  CnGridInputComponent,
-  CnGridSelectComponent,
-  // CnGridDatePickerComponent,
-  // CnGridTimePickerComponent,
-  // CnGridRangePickerComponent,
-  // CnGridCheckboxComponent,
-  BsnDataTableComponent,
-  BsnTableComponent,
-  CnContextMenuComponent,
-  // CnCodeEditComponent,
-  TabsResolverComponent,
-  FormResolverComponent,
-  CnCodeEditComponent,
-  SqlEditorComponent,
-  CnBsnTreeComponent,
-  BsnAsyncTreeComponent
-  
+    ComponentSettingResolverComponent,
+    LayoutResolverComponent,
+    LayoutSettingResolverComponent,
+    FormResolverComponent,
+    CnFormInputComponent,
+    CnFormSubmitComponent,
+    CnFormSelectComponent,
+    // CnDatePickerComponent,
+    // CnTimePickerComponent,
+    // CnFormRangePickerComponent,
+    CnFormCheckboxComponent,
+    CnFormCheckboxGroupComponent,
+    CnFormRadioGroupComponent,
+    CnGridInputComponent,
+    CnGridSelectComponent,
+    // CnGridDatePickerComponent,
+    // CnGridTimePickerComponent,
+    // CnGridRangePickerComponent,
+    // CnGridCheckboxComponent,
+    BsnDataTableComponent,
+    BsnTableComponent,
+    CnContextMenuComponent,
+    // CnCodeEditComponent,
+    TabsResolverComponent,
+    FormResolverComponent,
+    CnCodeEditComponent,
+    SqlEditorComponent,
+    CnBsnTreeComponent,
+    BsnAsyncTreeComponent,
+    SettingLayoutComponent,
+    SettingComponentComponent,
+    SettingComponentEditorComponent,
+    SettingLayoutEditorComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

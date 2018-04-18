@@ -57,6 +57,11 @@
                       "i18n": ""
                     },
                     {
+                      "text": "布局向导",
+                      "link": "/settings/layout-step-setting",
+                      "i18n": ""
+                    },
+                    {
                       "text": "区域设置",
                       "link": "/settings/block-setting",
                       "i18n": ""
