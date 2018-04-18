@@ -11,6 +11,9 @@ import { OrgManagerComponent } from './org-manager/org-manager.component';
 import { PrivManagerComponent } from './priv-manager/priv-manager.component';
 import { DataManagerComponent } from './data-manager/data-manager.component';
 import {ModuleOperationComponent} from './module-manager/module-operation.component';
+import { TypeOperationComponent } from './data-manager/type-operation.component';
+import {EntityOperationComponent} from './data-manager/entity-operation.component';
+
 
 const routes: Routes = [
     {path: 'base-manager', component: BaseManagerComponent},
@@ -30,7 +33,9 @@ const COMPONENT_NOROUNT = [
     OrgManagerComponent,
     PrivManagerComponent,
     DataManagerComponent,
-    ModuleOperationComponent
+    ModuleOperationComponent,
+    TypeOperationComponent,
+    EntityOperationComponent
 ];
 
 @NgModule({
@@ -38,7 +43,7 @@ const COMPONENT_NOROUNT = [
         SharedModule,
         RouterModule.forChild(routes)
     ],
-    declarations: [...COMPONENT_NOROUNT],
+    declarations: [...COMPONENT_NOROUNT ],
     entryComponents: COMPONENT_NOROUNT
 })
 export class SystemModule {

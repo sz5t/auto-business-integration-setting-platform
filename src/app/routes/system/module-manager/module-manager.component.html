@@ -6,6 +6,9 @@
         <button nz-button  (click)="showModalForComponent('Add')">新增</button>
         <button nz-button  (click)="showModalForComponent('Edit')">修改</button>
         <button nz-button  (click)="delete()">删除</button>
+          <!--<nz-popconfirm [nzTitle]="'确定要删除这个任务吗？'" (nzOnConfirm)="delete($event)">-->
+              <!--<button nz-popconfirm>删除</button>-->
+          <!--</nz-popconfirm>-->
       </div>
       <nz-table #nzTable
                 [nzPageSizeOptions]="[1, 2, 3, 5, 10]"

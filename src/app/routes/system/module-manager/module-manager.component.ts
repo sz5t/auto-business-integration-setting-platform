@@ -64,7 +64,7 @@ export class ModuleManagerComponent implements OnInit {
   _sortField = 'order';
 
   ids: string[];
-  items = [];
+  // items = [];
   dataItems;
   dataTree = [];
 
@@ -133,12 +133,12 @@ export class ModuleManagerComponent implements OnInit {
         this._pageSize = event;
       }
       this._loading = true;
-      this._moduleService.getModule(this._current, this._pageSize, this._sortField, this._sortValue).subscribe( (data:any) => {
+      this._moduleService.getModule(this._current, this._pageSize, this._sortField, this._sortValue).subscribe( (data: any) => {
         this._loading = false;
         this._total = data.Data.Total;
         this._dataSet = this.arrayToTree(data.Data.Rows, '')
-        this.dataTree = this.drarrayToTree(data.Data.Rows,'');
-        this.cacheService.set('ModuleTree',this.dataTree);
+        this.dataTree = this.drarrayToTree(data.Data.Rows, '');
+        this.cacheService.set('ModuleTree', this.dataTree);
         this._dataSet.forEach(item => {
           this.expandDataCache[ item.id ] = this.convertTreeToList(item);
         });
@@ -153,10 +153,10 @@ export class ModuleManagerComponent implements OnInit {
       this.loadData();
     }
 
-  delete(event?){
+  delete(event?) {
       if(this.dataItems.size >= 1) {
           const ids = [];
-          this.dataItems.forEach((item,ikey) => {ids.push(ikey)});
+          this.dataItems.forEach((item, ikey) => {ids.push(ikey) });
           this._moduleService.deleteModule(ids).subscribe(response => {
               if (response.Status === 200) {
                   this.msgSrv.success(response.Message);
@@ -173,6 +173,7 @@ export class ModuleManagerComponent implements OnInit {
     drarrayToTree(data, parentid) {
         const result = [];
         let temp;
+        if(data)
         for (let i = 0; i < data.length; i++) {
             if (data[i].ParentId == parentid || !data[i].ParentId) {
                 const obj =
@@ -194,6 +195,7 @@ export class ModuleManagerComponent implements OnInit {
   arrayToTree(data, parentid) {
     const result = [];
     let temp;
+      if(data)
     for (let i = 0; i < data.length; i++) {
       if (data[i].ParentId == parentid || !data[i].ParentId) {
         const obj =
@@ -219,6 +221,7 @@ export class ModuleManagerComponent implements OnInit {
           obj['isLeaf'] = true;
           obj['checked'] = false;
         }
+        obj['selected'] = false;
         result.push(obj);
       }
     }
@@ -231,7 +234,6 @@ export class ModuleManagerComponent implements OnInit {
       }else {
           this.dataItems.delete(item.id);
       }
-      console.log(this.dataItems.size);
   }
 
     showModalForComponent(flag?) {
@@ -294,7 +296,7 @@ export class ModuleManagerComponent implements OnInit {
                         }
                     });}
             });
-        }else if (this.items.size > 1 ){
+        }else if (this.dataItems.size > 1 ){
             this.msgSrv.warning('不能修改多条记录！');
         } else {
             this.msgSrv.warning('请选中要修改的记录！');
