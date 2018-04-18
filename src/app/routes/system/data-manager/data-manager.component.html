@@ -2,12 +2,10 @@
 <page-header [title]=""></page-header>
 <nz-card>
     <div class = "table-operations">
-        <button nz-button>刷新 </button>
-        <button nz-button>新增</button>
-        <button nz-button>修改</button>
-        <nz-popconfirm [nzTitle]="'确定要删除这个任务吗？'" (nzOnConfirm)="tdelete($event)">
-            <button nz-popconfirm>删除</button>
-        </nz-popconfirm>
+        <button nz-button (click)="trefresh($event)">刷新 </button>
+        <button nz-button (click)="showTypeForComponent('Add')">新增</button>
+        <button nz-button (click)="showTypeForComponent('Edit')">修改</button>
+        <button nz-button (click)="tdelete($event)">删除</button>
     </div>
     <nz-table #nzTable
               [nzData]="_tdataSet"
@@ -21,7 +19,7 @@
               (nzPageSizeChange)="refreshResourceType(true)"
               [nzBordered] = "true"
               [nzShowTotal]="totalTemplate"
-              nzTitle='资源类型'
+              nzTitle='数据表名称'
               nzSize = "small">
         <thead (nzSortChange)="sortType($event)" nzSingleSort>
         <tr>
@@ -32,6 +30,7 @@
             <th nzShowSort nzSortKey="BuildMode">生成模式</th>
             <th nzShowSort nzSortKey="Enabled">是否有效</th>
             <th nzShowSort nzSortKey="BuildState">生成状态</th>
+            <th nzShowSort nzSortKey="DbObjState">数据库状态</th>
             <th nzShowSort nzSortKey="CreateTime">创建时间</th>
         </tr>
         </thead>
@@ -42,8 +41,9 @@
             <td>{{data.Caption}}</td>
             <td>{{getShared(data.ShareScope)}}</td>
             <td>{{data.BuildMode}}</td>
-            <td>{{data.Enabled}}</td>
+            <td>{{getText(data.Enabled)}}</td>
             <td>{{data.BuildState}}</td>
+            <td>{{data.DbObjState}}</td>
             <td>{{data.CreateTime | date}}</td>
         </tr>
         </tbody>
@@ -51,14 +51,13 @@
     <ng-template #totalTemplate let-total let-range="range">
         {{range[0]}}-{{range[1]}} / {{total}} 条
     </ng-template>
-
     <nz-card nzType="inner" style="margin-top:16px">
 
     <div class = "table-operations">
-        <button nz-button>刷新 </button>
-        <button nz-button>新增</button>
-        <button nz-button>修改</button>
-        <button nz-button>删除</button>
+        <button nz-button (click)="erefresh()">刷新 </button>
+        <button nz-button (click)="showEntityForComponent('Add')">新增</button>
+        <button nz-button (click)="showEntityForComponent('Edit')">修改</button>
+        <button nz-button (click)="edelete()">删除</button>
     </div>
     <nz-table #nzTable1
               [nzData]="_edataSet"
@@ -72,7 +71,7 @@
               (nzPageSizeChange)="refreshEntityProDef(true)"
               [nzBordered] = "true"
               [nzShowTotal]="childrenTotalTemplate"
-              nzTitle='资源属性'
+              nzTitle='所属字段列表'
               nzSize = "small">
         <thead (nzSortChange)="sortEntity($event)" nzSingleSort>
         <tr>
@@ -84,7 +83,6 @@
             <th nzShowSort nzSortKey="MaxLength">最大长度</th>
             <th nzShowSort nzSortKey="Precision">精度</th>
             <th nzShowSort nzSortKey="SortCode">排序</th>
-            <!--<th nzShowSort nzSortKey="Remark" nzWidth="200px">备注</th>-->
             <th nzShowSort nzSortKey="CreateTime">创建时间</th>
         </tr>
         </thead>
@@ -94,11 +92,10 @@
             <td>{{data.Name}}</td>
             <td>{{data.Caption}}</td>
             <td>{{data.PropertyType}}</td>
-            <td>{{data.IsKey}}</td>
+            <td>{{getText(data.IsKey)}}</td>
             <td>{{data.MaxLength}}</td>
             <td>{{data.Precision}}</td>
             <td>{{data.SortCode}}</td>
-            <!--<td ><span  class="pt-sm text-truncate">{{data.Remark}}</span></td>-->
             <td>{{data.CreateTime | date}}</td>
         </tr>
         </tbody>
