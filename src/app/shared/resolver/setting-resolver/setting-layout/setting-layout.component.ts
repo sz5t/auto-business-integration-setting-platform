@@ -20,11 +20,10 @@ export class SettingLayoutComponent implements OnInit {
   _isRows = false;
   isVisible = false;
   isConfirmLoading = false;
-  blockEntity: {
-    Title: string,
-    Icon: string,
-    Id: ''
-  } = { Title: '', Icon: '', Id: '' };
+  blockEntity;
+  title;
+  icon;
+  id;
   constructor(
     private _http: ApiService,
     private message: NzMessageService
@@ -34,17 +33,15 @@ export class SettingLayoutComponent implements OnInit {
     if (this.config) {
       this._isRows = Array.isArray(this.config.rows);
     }
-
-
   }
 
   edit() {
     if (this.config) {
       (async () => {
         const block: any = await this._loadBlockData();
-        this.blockEntity.Title = block.Data.Title ? block.Data.Title : '';
-        this.blockEntity.Icon = block.Data.Icon ? block.Data.Icon : '';
-        this.blockEntity.Id = block.Data.Id ? block.Data.Icon : '';
+        this.title = block.Data.Title ? block.Data.Title : '';
+        this.icon = block.Data.Icon ? block.Data.Icon : '';
+        this.id = block.Data.Id ? block.Data.Id : '';
         this.isVisible = true;
       })();
     }
@@ -59,11 +56,13 @@ export class SettingLayoutComponent implements OnInit {
   }
 
   _updateBlockData() {
-    this._http.putProj(APIResource.BlockSetting, this.blockEntity).subscribe(result => {
+    this._http.putProj(APIResource.BlockSetting, {Title: this.title, Icon: this.icon, Id: this.id}).subscribe(result => {
       if (result && result.Status === 200) {
         this.message.create('success', '保存成功');
-
         this.isVisible = false;
+        this.config.icon = this.icon;
+        this.config.title = this.title;
+        // Todo: 调用列表刷新功能
       } else {
         this.message.create('info', '保存失败');
       }

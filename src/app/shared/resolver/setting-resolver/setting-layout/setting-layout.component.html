@@ -26,7 +26,7 @@
             <!-- <cn-layout-resolver [config]="tab.viewCfg"></cn-layout-resolver>-->
           </nz-tab>
         </nz-tabset>
-        <cn-tabs-resolver></cn-tabs-resolver>
+        <!-- <cn-tabs-resolver></cn-tabs-resolver> -->
   </nz-card>
   
   
@@ -62,13 +62,13 @@
         <nz-form-item>
             <nz-form-label [nzSpan]="6" nzFor="module">标题</nz-form-label>
             <nz-form-control [nzSm]="18" [nzXs]="18">
-              <input nz-input [(ngModel)]="blockEntity.Title" placeholder="选择图标" [ngModelOptions]="{standalone: true}" />
+              <input nz-input [(ngModel)]="title" placeholder="选择图标" [ngModelOptions]="{standalone: true}" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
             <nz-form-label [nzSpan]="6" nzFor="module">图标</nz-form-label>
             <nz-form-control [nzSm]="18" [nzXs]="18">
-                <input nz-input [(ngModel)]="blockEntity.Icon" placeholder="选择图标" [ngModelOptions]="{standalone: true}" />
+                <input nz-input [(ngModel)]="icon" placeholder="选择图标" [ngModelOptions]="{standalone: true}" />
             </nz-form-control>
         </nz-form-item>
     </form>

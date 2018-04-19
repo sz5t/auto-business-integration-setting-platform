@@ -19,7 +19,7 @@
     <nz-steps [(nzCurrent)]="current">
         <nz-step nzTitle="创建布局"></nz-step>
         <nz-step nzTitle="保存布局"></nz-step>
-        <nz-step nzTitle="扩展布局"></nz-step>
+        <nz-step nzTitle="完成"></nz-step>
     </nz-steps>
     <div class="steps-content" *ngIf="current == 0">
         <form nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
@@ -40,8 +40,8 @@
             </nz-form-item>
         </form>
     </div>
-    <div  *ngIf="current == 1">
-        <form  class="steps-content" nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
+    <div class="steps-content2"  *ngIf="current == 1">
+       <!-- <form  class="steps-content" nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
             <nz-form-item>
                 <nz-form-control [nzSm]="24" [nzXs]="24">
                     <nz-tabset *ngIf="_editorConfig" [nzTabPosition]="'left'" [nzType]="'line'">
@@ -51,20 +51,20 @@
                     </nz-tabset>
                 </nz-form-control>
             </nz-form-item>
-            <!-- <nz-form-item [formGroup]="_formGroup">
+             <nz-form-item [formGroup]="_formGroup">
                 <nz-form-control [nzOffset]="6" [nzSpan]="14">
                     <button nz-button [nzType]="'primary'" [nzSize]="'default'">保存</button>
                     <button nz-button [nzSize]="'default'" (click)="resetForm($event)">取消</button>
                 </nz-form-control>
-            </nz-form-item> -->
-        </form>
+            </nz-form-item> 
+        </form>-->
         <nz-card nzTitle="布局预览">
-                <cn-setting-layout *ngIf="previewLayoutData"  [config]="previewLayoutData"></cn-setting-layout>
+                <cn-setting-layout *ngIf="previewLayoutData"  [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout>
         </nz-card>
         
     </div>
     <div class="steps-content2" *ngIf="current == 2">
-        <cn-setting-layout *ngIf="previewLayoutData"  [config]="previewLayoutData"></cn-setting-layout>
+        <cn-setting-layout *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId"  [config]="previewLayoutData"></cn-setting-layout>
     </div>
     <div class="steps-action">
             <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">

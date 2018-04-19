@@ -186,9 +186,12 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             DbObjType: '脚本',
             NeedAlterDb: true,
             IssueFlag: '已发布',
-            ShareScope: 'Project'
+            ShareScope: 'Project',
+            DrmId: '787008d9029c4b40847d08c32a18699d',
+            ResultType: 'Dynamic',
+            ResultLength: 0
         };
-        return this._http.postProj(APIResource.DbCommandConfig, params).toPromise();
+        return this._http.postProjSys(APIResource.DbCommandConfig, params).toPromise();
     }
 
     private async addSqlRelative() {
@@ -221,11 +224,15 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
 
     private async updateSql(sql) {
         const params = {
+            Id: this._relativeResolver.tempParameter['_id'],
             ScriptText: sql,
             Name: this.scriptName,
-            Id: this._relativeResolver.tempParameter['_id'],
             Enabled: true,
-            DbObjType: '脚本'
+            DbObjType: '脚本',
+            NeedAlterDb: true,
+            IssueFlag: '已发布',
+            ShareScope: 'Project',
+            DrmId: '787008d9029c4b40847d08c32a18699d'
         };
         return this._http.putProj(APIResource.DbCommandConfig, params).toPromise();
     }

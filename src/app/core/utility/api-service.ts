@@ -91,6 +91,20 @@ export class ApiService {
       });
   }
 
+  postProjSys(resource, body?, params?) {
+    body['ProjId'] = '0ac12f70c2a7a44794b57ef0c1c480c2';
+    body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+    body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+    // let param: HttpParams = this.setParamsProj(params)
+    return this.httpClient.post(
+      resource,
+      body,
+      params,
+      {
+        headers: this.setHeaders()
+      });
+  }
+
 
   getProj(resource, params?) {
     params = this.setParamsObjProj(params);

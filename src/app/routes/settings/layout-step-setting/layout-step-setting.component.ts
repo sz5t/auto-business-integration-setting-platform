@@ -1013,14 +1013,23 @@ export class LayoutStepSettingComponent implements OnInit {
                                 this._tableDataSource[i]['BlockList'] = result.Data;
                                 this._tableDataSource[i]['expand'] = false;
                             }
+                            
+
+
                             for (let j = 0, jlen = result.Data.length; j < jlen; j++) {
+                                console.log('count',j);
+                                const blockMeta = JSON.parse(result.Data[j].Metadata);
+                                blockMeta.id =  result.Data[j].Id;
+                                result.Data[j].Metadata = blockMeta;
                                 this.rewriteLayoutMeta(layoutMetadata, result.Data[j]);
                             }
-                        
-                            // 设置布局结构原数据 递归调用并重写布局数据
-                            // 为预览布局设置数据
+
+                            console.log(layoutMetadata);
+
                             if (this._selectedLayoutId === this._tableDataSource[i].Id) {
-                                this.previewLayoutData = layoutMetadata;
+                                
+                                this.previewLayoutData = JSON.parse(JSON.stringify(layoutMetadata));
+                                console.log('----selectLayoutId', this.previewLayoutData);
                             }
                         })();
 
@@ -1142,14 +1151,14 @@ export class LayoutStepSettingComponent implements OnInit {
     }
 
     rewriteLayoutMeta(layoutData, block) {
+        console.log('------------------',layoutData, block);
         for (let i = 0, len = layoutData.rows.length; i < len; i++) {
             for (let j = 0, jlen = layoutData.rows[i].row.cols.length; j < jlen; j++) {
-                debugger;
-                if (layoutData.rows[i].row.cols[i].id === block.Area) {
-                    layoutData.rows[i].row.cols[i] = JSON.parse(block.Metadata);
-                    layoutData.rows[i].row.cols[i]['id'] = block.Id;
-                    if (layoutData.rows[i].row.cols[i].rows) {
-                        this.rewriteLayoutMeta(layoutData.rows[i].row.cols[i], block);
+                if (layoutData.rows[i].row.cols[j].id === block.Area) {
+                    layoutData.rows[i].row.cols[j] = block.Metadata;
+                
+                    if (layoutData.rows[i].row.cols[j].rows) {
+                        this.rewriteLayoutMeta(layoutData.rows[i].row.cols[j], block);
                     }
                 }
             }
