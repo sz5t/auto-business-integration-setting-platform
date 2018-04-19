@@ -528,15 +528,15 @@ export class SettingComponentEditorComponent implements OnInit, AfterViewInit, O
         this._http.get(APIResource.AppConfigPack, params).subscribe(result => {
             if (result && result.Status === 200) {
                 result.Data.forEach(data => {
-                    const component = data.TagB.substring(data.TagB.lastIndexOf('.') + 1, data.TagB.length);
-                    if (component === 'tabs') {
+                    const comp = data.TagB.substring(data.TagB.lastIndexOf('.') + 1, data.TagB.length);
+                    if (comp === 'tabs') {
                         const d = {};
                         d['config'] = JSON.parse(data.Metadata);
                         d['dataList'] = [];
-                        d['component'] = component;
+                        d['component'] = comp;
                         this.createBsnComponent(d);
                     } else {
-                        this.createBsnComponent(this._dataStruct[component]);
+                        this.createBsnComponent(this._dataStruct[comp]);
                     }
 
                     this._serverLayoutId = data.Id;

@@ -99,8 +99,7 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
         this.createBsnComponent();
     }
 
-    createBsnComponent(event?) {
-        debugger;
+    createBsnComponent(event?) {      
         if (event) {
             this.config = event;
         }
