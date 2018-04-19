@@ -2,10 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
-//import { CommonUtility } from '@core/utility/Common-utility';
+//   import { CommonUtility } from '@core/utility/Common-utility';
 import { NzMessageService } from 'ng-zorro-antd';
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { RelativeService } from '@core/relative-Service/relative-service';
+import { concat } from 'rxjs/operators/concat';
 
 @Component({
     selector: 'app-component-setting',
@@ -17,7 +18,7 @@ export class ComponentSettingComponent implements OnInit {
     _funcValue;
     _layoutValue;
     _selectedModuleText;
-    // 布局列表数据
+    //   布局列表数据
     _layoutList = [];
     _editorConfig = {
         title: '标题 1',
@@ -59,12 +60,12 @@ export class ComponentSettingComponent implements OnInit {
                                                         'component': 'bsnDataTable',
                                                         'config': {
                                                             'keyId': 'key',
-                                                            'nzIsPagination': false, // 是否分页
-                                                            'nzShowTotal': true,// 是否显示总数据量
-                                                            'pageSize': 5, //默认每页数据条数
+                                                            'nzIsPagination': false,  //   是否分页
+                                                            'nzShowTotal': true, //   是否显示总数据量
+                                                            'pageSize': 5,  //  默认每页数据条数
                                                             'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
-                                                            'nzLoading': false, // 是否显示加载中
-                                                            'nzBordered': false,// 是否显示边框
+                                                            'nzLoading': false,  //   是否显示加载中
+                                                            'nzBordered': false, //   是否显示边框
                                                             'columns': [
                                                                 {
                                                                     title: '主键', field: 'key', width: 80, hidden: true, editor: {
@@ -249,12 +250,12 @@ export class ComponentSettingComponent implements OnInit {
                                                         'component': 'bsnDataTable',
                                                         'config': {
                                                             'keyId': 'key',
-                                                            'nzIsPagination': false, // 是否分页
-                                                            'nzShowTotal': true,// 是否显示总数据量
-                                                            'pageSize': 5, //默认每页数据条数
+                                                            'nzIsPagination': false,  //   是否分页
+                                                            'nzShowTotal': true, //   是否显示总数据量
+                                                            'pageSize': 5,  //  默认每页数据条数
                                                             'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
-                                                            'nzLoading': false, // 是否显示加载中
-                                                            'nzBordered': false,// 是否显示边框
+                                                            'nzLoading': false,  //   是否显示加载中
+                                                            'nzBordered': false, //   是否显示边框
                                                             'columns': [
                                                                 {
                                                                     title: '主键', field: 'key', width: 80, hidden: true, editor: {
@@ -505,44 +506,44 @@ export class ComponentSettingComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
-        const fieldIdentity = '123'//CommonUtility.uuID(6);
-        this.attributeConfig = this.componentdic["bsn-datatable"].attributeConfig;
-        this.fildConfig = this.componentdic["bsn-datatable"].viewCfg[0]["config"];
-        this.parameterConfig = this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]["tabs"][1].viewCfg[0]["config"];
+        const fieldIdentity = '123'; //  CommonUtility.uuID(6);
+        this.attributeConfig = this.componentdic['bsn-datatable'].attributeConfig;
+        this.fildConfig = this.componentdic['bsn-datatable'].viewCfg[0]['config'];
+        this.parameterConfig = this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]['tabs'][1].viewCfg[0]['config'];
 
         const params = { _select: 'Id,Name,ParentId' };
         const moduleData = await this.getModuleData(params);
-        // 初始化模块列表，将数据加载到及联下拉列表当中
+        //   初始化模块列表，将数据加载到及联下拉列表当中
         this._funcOptions = this.arrayToTree(moduleData.Data, '');
     }
-    // 获取布局设置列表
+    //   获取布局设置列表
     getLayoutConfigData(params) {
         return this._http.getProj(APIResource.AppConfigPack, params).toPromise();
     }
 
-    // 获取模块信息
+    //   获取模块信息
     async getModuleData(params) {
         return this._http.getProj(APIResource.AppModuleConfig, params).toPromise();
     }
 
-    // 选择布局名称
+    //   选择布局名称
     async  _changeLayoutName($event) {
-        // 创建布局
-        // this._layoutConfig = $event.metadata;
+        //   创建布局
+        //   this._layoutConfig = $event.metadata;
 
-        console.log("布局信息",$event);
+        console.log('布局信息', $event);
         const str = [];
         if ($event.metadata) {
             const componentData = await this.getComponentByLayout($event.id);
             let componentJson = [];
-            console.log("componentData:", componentData);
+            console.log('componentData:', componentData);
             if (componentData && componentData.Status === 200) {
                 componentJson = componentData.Data;
             }
 
             this.nodes = this.arrayToTreeBylayout(this.layoutToarry($event.metadata, componentJson, '555'), '555');
-            // console.log(this.nodes);
-            // console.log('初步简析布局', this.layoutToarry($event.metadata, componentJson, '555'));
+            //   console.log(this.nodes);
+            //   console.log('初步简析布局', this.layoutToarry($event.metadata, componentJson, '555'));
         }
 
     }
@@ -555,20 +556,20 @@ export class ComponentSettingComponent implements OnInit {
             data.rows.forEach(rdata => {
                 if (rdata.row.cols) {
                     rdata.row.cols.forEach(cdata => {
-                        const obj = { "Name": cdata.title, "Id": cdata.id, "ParentId": pid };
+                        const obj = { 'Name': cdata.title, 'Id': cdata.id, 'ParentId': pid };
                         if (cdata.rows) {
-                            temp = this.layoutToarry(cdata, component, pid) //递归调用行
+                            temp = this.layoutToarry(cdata, component, pid);  //  递归调用行
                         }
                         if (temp) {
                             if (temp.length > 0) {
-                                result = [...result, ...temp]
+                                result = [...result, ...temp];
                             }
                         }
                         if (!cdata.rows) {
                             result.push(obj);
                             const cobj = this.componentToarry(component, cdata.id, component);
                             if (cobj) {
-                                result = [...result, ...cobj]
+                                result = [...result, ...cobj];
                             }
                         }
                     });
@@ -578,11 +579,11 @@ export class ComponentSettingComponent implements OnInit {
 
         if (data.tabs) {
             data.tabs.forEach(tab => {
-                const obj = { "Name": tab.name, "Id": tab.id, ParentId: pid };
+                const obj = { 'Name': tab.name, 'Id': tab.id, ParentId: pid };
                 result.push(obj);
                 const cobj = this.componentToarry(component, tab.id, component);
                 if (cobj) {
-                    result = [...result, ...cobj]
+                    result = [...result, ...cobj];
                 }
             });
         }
@@ -598,15 +599,15 @@ export class ComponentSettingComponent implements OnInit {
             const a = {};
 
             const index = data.findIndex(item => item.Name === pid);
-            let type = data[index].TagB.substring(data[index].TagB.lastIndexOf('.') + 1, data[index].TagB.length);
-            a["Id"] = data[index].Id;
-            a["Name"] = type;//data[index].TagB;
-            a["ParentId"] = data[index].Name;
+            const type = data[index].TagB.substring(data[index].TagB.lastIndexOf('.') + 1, data[index].TagB.length);
+            a['Id'] = data[index].Id;
+            a['Name'] = type; //  data[index].TagB;
+            a['ParentId'] = data[index].Name;
             obj.push(a);
             if (type === 'tabs') {
-                temp = this.layoutToarry({ tabs: JSON.parse(data[index].Metadata) }, component, data[index].Id) //递归调用行
+                temp = this.layoutToarry({ tabs: JSON.parse(data[index].Metadata) }, component, data[index].Id);  //  递归调用行
                 if (temp) {
-                    obj = [...obj, ...temp]
+                    obj = [...obj, ...temp];
                 }
             }
 
@@ -623,15 +624,15 @@ export class ComponentSettingComponent implements OnInit {
     }
 
 
-    // 改变模块选项
+    //   改变模块选项
     _changeModuleValue($event?) {
         this._layoutList = [];
-        // 选择功能模块，首先加载服务端配置列表
-        //const params = new HttpParams().set('TagA', this._funcValue.join(','));
+        //   选择功能模块，首先加载服务端配置列表
+        //  const params = new HttpParams().set('TagA', this._funcValue.join(','));
         if (this._funcValue.length > 0) {
             const params = {
-                //TagA: this._funcValue.join(','),
-                ParentId: this._funcValue[this._funcValue.length -1],
+                //  TagA: this._funcValue.join(','),
+                ParentId: this._funcValue[this._funcValue.length - 1],
                 _select: 'Id,Name,Metadata'
             };
             this.getLayoutConfigData(params).then(serverLayoutData => {
@@ -655,13 +656,13 @@ export class ComponentSettingComponent implements OnInit {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId == parentid) {
-                const obj = { "name": data[i].Name, "id": data[i].Id };
+            if (data[i].ParentId === parentid) {
+                const obj = { 'name': data[i].Name, 'id': data[i].Id };
                 temp = this.arrayToTreeBylayout(data, data[i].Id);
                 if (temp.length > 0) {
                     obj['children'] = temp;
                 } else {
-                    obj["isLeaf"] = true;
+                    obj['isLeaf'] = true;
                 }
                 result.push(obj);
             }
@@ -672,13 +673,13 @@ export class ComponentSettingComponent implements OnInit {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId == parentid) {
-                const obj = { "label": data[i].Name, "value": data[i].Id };
+            if (data[i].ParentId === parentid) {
+                const obj = { 'label': data[i].Name, 'value': data[i].Id };
                 temp = this.arrayToTree(data, data[i].Id);
                 if (temp.length > 0) {
                     obj['children'] = temp;
                 } else {
-                    obj["isLeaf"] = true;
+                    obj['isLeaf'] = true;
                 }
                 result.push(obj);
             }
@@ -727,11 +728,11 @@ export class ComponentSettingComponent implements OnInit {
     ];
 
     treeconfig = {
-        nzAutoExpandParent: true, //是否自动展开父节点，当数字时展开最大节点 false
-        nzAllowChildLinkage: true,// 是否开启父节点的checkbox状态的会影响子节点状态 true
-        nzAllowParentLinkage: true,// 是否开启子节点的checkbox状态的会影响父节点状态 true
-        nzCheckable: false, //  在节点之前添加一个复选框 false
-        nzShowLine: false, // 显示连接线 false
+        nzAutoExpandParent: true,  //  是否自动展开父节点，当数字时展开最大节点 false
+        nzAllowChildLinkage: true, //   是否开启父节点的checkbox状态的会影响子节点状态 true
+        nzAllowParentLinkage: true, //   是否开启子节点的checkbox状态的会影响父节点状态 true
+        nzCheckable: false,  //    在节点之前添加一个复选框 false
+        nzShowLine: false,  //   显示连接线 false
     };
 
     /**
@@ -739,17 +740,17 @@ export class ComponentSettingComponent implements OnInit {
      * @param data
      */
     async saveSql(data?) {
-        //保存sql前需要做判断，
-        //1.功能模块，布局选取。
-        //2.布局组件树选中节点是
+        //  保存sql前需要做判断，
+        //  1.功能模块，布局选取。
+        //  2.布局组件树选中节点是
         const sql = this.editor.getValue();
-        // const saveSqlStr=await this.saveSqlByApi(sql);
-        // const updateSqlStr=await this.updateSqlByApi(sql,"f4fa067fae1440c4a9ab29d1038add96");
-        // const sqlField=await this.getSqlFiledByApi("f4fa067fae1440c4a9ab29d1038add96");
-        console.log("保存sql", sql);
-        //  console.log("服务器保存sql",saveSqlStr);
-        // console.log("服务器返回sql",updateSqlStr);
-        //  console.log("服务器返回字段",sqlField);
+        //   const saveSqlStr=await this.saveSqlByApi(sql);
+        //   const updateSqlStr=await this.updateSqlByApi(sql,'f4fa067fae1440c4a9ab29d1038add96');
+        //   const sqlField=await this.getSqlFiledByApi('f4fa067fae1440c4a9ab29d1038add96');
+        console.log('保存sql', sql);
+        //    console.log('服务器保存sql',saveSqlStr);
+        //   console.log('服务器返回sql',updateSqlStr);
+        //    console.log('服务器返回字段',sqlField);
     }
 
 
@@ -792,26 +793,26 @@ export class ComponentSettingComponent implements OnInit {
 
         if (ev.node.data.type === 'component') {
             if (ev.node.data.value === 'bsn-datatable') {
-                this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]["tabs"][0].viewCfg
-                    = this.componentdic["bsn-datatable"].viewCfg;
-                this._editorConfig.rows[0].row.cols[0].tabs[1].viewCfg[0]["config"]
-                    = this.componentdic["bsn-datatable"].attributeConfig;
+                this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]['tabs'][0].viewCfg
+                    = this.componentdic['bsn-datatable'].viewCfg;
+                this._editorConfig.rows[0].row.cols[0].tabs[1].viewCfg[0]['config']
+                    = this.componentdic['bsn-datatable'].attributeConfig;
                 this._editorConfig = JSON.parse(JSON.stringify(this._editorConfig));
 
-                this.attributeConfig = this.componentdic["bsn-datatable"].attributeConfig;
-                this.fildConfig = this.componentdic["bsn-datatable"].viewCfg[0]["config"];
-                this.parameterConfig = this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]["tabs"][1].viewCfg[0]["config"];
+                this.attributeConfig = this.componentdic['bsn-datatable'].attributeConfig;
+                this.fildConfig = this.componentdic['bsn-datatable'].viewCfg[0]['config'];
+                this.parameterConfig = this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]['tabs'][1].viewCfg[0]['config'];
             }
             if (ev.node.data.value === 'bsn-tree') {
-                this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]["tabs"][0].viewCfg
-                    = this.componentdic["bsn-tree"].viewCfg;
-                this._editorConfig.rows[0].row.cols[0].tabs[1].viewCfg[0]["config"]
-                    = this.componentdic["bsn-tree"].attributeConfig;
+                this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]['tabs'][0].viewCfg
+                    = this.componentdic['bsn-tree'].viewCfg;
+                this._editorConfig.rows[0].row.cols[0].tabs[1].viewCfg[0]['config']
+                    = this.componentdic['bsn-tree'].attributeConfig;
 
                 this._editorConfig = JSON.parse(JSON.stringify(this._editorConfig));
-                this.attributeConfig = this.componentdic["bsn-tree"].attributeConfig;
-                this.fildConfig = this.componentdic["bsn-tree"].viewCfg[0]["config"];
-                this.parameterConfig = this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]["tabs"][1].viewCfg[0]["config"];
+                this.attributeConfig = this.componentdic['bsn-tree'].attributeConfig;
+                this.fildConfig = this.componentdic['bsn-tree'].viewCfg[0]['config'];
+                this.parameterConfig = this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]['tabs'][1].viewCfg[0]['config'];
 
             }
 
@@ -820,14 +821,14 @@ export class ComponentSettingComponent implements OnInit {
 
         const receiver = {
             name: 'initParameters',
-            receiver: 'operation_sqlColumns' ,
+            receiver: 'operation_sqlColumns',
             parent: {
-              _Id: ev.node.data.id,
-              _optType: 'opt_sqlList'
+                _Id: ev.node.data.id,
+                _optType: 'opt_sqlList'
             }
-          };
-          console.log("选中行发消息事件", receiver);
-          this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
+        };
+        console.log('选中行发消息事件', receiver);
+        this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
 
     }
 
@@ -847,12 +848,12 @@ export class ComponentSettingComponent implements OnInit {
                     'component': 'bsnDataTable',
                     'config': {
                         'keyId': 'key',
-                        'nzIsPagination': false, // 是否分页
-                        'nzShowTotal': true,// 是否显示总数据量
-                        'pageSize': 5, //默认每页数据条数
+                        'nzIsPagination': false,  //   是否分页
+                        'nzShowTotal': true, //   是否显示总数据量
+                        'pageSize': 5,  //  默认每页数据条数
                         'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
-                        'nzLoading': false, // 是否显示加载中
-                        'nzBordered': false,// 是否显示边框
+                        'nzLoading': false,  //   是否显示加载中
+                        'nzBordered': false, //   是否显示边框
                         'columns': [
                             {
                                 title: '主键', field: 'key', width: 80, hidden: true, editor: {
@@ -1087,12 +1088,12 @@ export class ComponentSettingComponent implements OnInit {
                     'component': 'bsnDataTable',
                     'config': {
                         'keyId': 'key',
-                        'nzIsPagination': false, // 是否分页
-                        'nzShowTotal': true,// 是否显示总数据量
-                        'pageSize': 5, //默认每页数据条数
+                        'nzIsPagination': false,  //   是否分页
+                        'nzShowTotal': true, //   是否显示总数据量
+                        'pageSize': 5,  //  默认每页数据条数
                         'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
-                        'nzLoading': false, // 是否显示加载中
-                        'nzBordered': false,// 是否显示边框
+                        'nzLoading': false,  //   是否显示加载中
+                        'nzBordered': false, //   是否显示边框
                         'columns': [
                             {
                                 title: '主键', field: 'key', width: 80, hidden: true, editor: {
@@ -1235,74 +1236,74 @@ export class ComponentSettingComponent implements OnInit {
                 },
             ]
         }
-    }
+    };
 
 
     /**
      * 临时变量 数据列表配置
      */
     tempConfig = {
-            'viewId': 'componentsetting_temp',
-            'component': 'bsnDataTable',
-            'keyId': 'key',
-            'nzIsPagination': false, // 是否分页
-            'nzShowTotal': true,// 是否显示总数据量
-            'pageSize': 5, //默认每页数据条数
-            'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
-            'nzLoading': false, // 是否显示加载中
-            'nzBordered': false,// 是否显示边框
-            'columns': [
-                {
-                    title: '主键', field: 'key', width: 80, hidden: true, editor: {
-                        type: 'input',
-                        field: 'key',
-                        options: {
-                            'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '10',
-                            'inputType': 'text',
-                        }
-                    }
-                },
-                {
-                    title: '业务字段名称', field: 'fieldName', width: 80,
-                    editor: {
-                        type: 'input',
-                        field: 'fieldName',
-                        options: {
-                            'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '10',
-                            'inputType': 'text',
-                        }
-                    }
-                },
-                {
-                    title: '业务字段标题', field: 'title', width: 80,
-                    editor: {
-                        type: 'input',
-                        field: 'title',
-                        options: {
-                            'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '10',
-                            'inputType': 'text',
-                        }
+        'viewId': 'componentsetting_temp',
+        'component': 'bsnDataTable',
+        'keyId': 'key',
+        'nzIsPagination': false,  //   是否分页
+        'nzShowTotal': true, //   是否显示总数据量
+        'pageSize': 5,  //  默认每页数据条数
+        'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
+        'nzLoading': false,  //   是否显示加载中
+        'nzBordered': false, //   是否显示边框
+        'columns': [
+            {
+                title: '主键', field: 'key', width: 80, hidden: true, editor: {
+                    type: 'input',
+                    field: 'key',
+                    options: {
+                        'type': 'input',
+                        'labelSize': '6',
+                        'controlSize': '10',
+                        'inputType': 'text',
                     }
                 }
-            ],
-            'toolbar': [
-                { 'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新' },
-                { 'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增' },
-                { 'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改' },
-                { 'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除' },
-                { 'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存' },
-                { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' },
-                { 'name': 'showDialog', 'class': 'editable-add-btn', 'text': '弹出框' },
+            },
+            {
+                title: '业务字段名称', field: 'fieldName', width: 80,
+                editor: {
+                    type: 'input',
+                    field: 'fieldName',
+                    options: {
+                        'type': 'input',
+                        'labelSize': '6',
+                        'controlSize': '10',
+                        'inputType': 'text',
+                    }
+                }
+            },
+            {
+                title: '业务字段标题', field: 'title', width: 80,
+                editor: {
+                    type: 'input',
+                    field: 'title',
+                    options: {
+                        'type': 'input',
+                        'labelSize': '6',
+                        'controlSize': '10',
+                        'inputType': 'text',
+                    }
+                }
+            }
+        ],
+        'toolbar': [
+            { 'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新' },
+            { 'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增' },
+            { 'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改' },
+            { 'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除' },
+            { 'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存' },
+            { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' },
+            { 'name': 'showDialog', 'class': 'editable-add-btn', 'text': '弹出框' },
 
-                
-            ]
-    }
+
+        ]
+    };
     /**
      * 临时变量值
      */

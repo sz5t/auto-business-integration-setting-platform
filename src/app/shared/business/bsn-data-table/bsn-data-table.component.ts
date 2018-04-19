@@ -61,7 +61,10 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         reLoad: [],
         selectRowBySetValue: []
     };
-
+    /**
+     * 操作是否有效
+     */
+    _toolbar = {};
     async load(type?, pi?: number) {
         if (typeof pi !== 'undefined') {
             this.pi = pi || 1;
@@ -154,7 +157,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                         if (type === 'load') {
                             if (this.tempParameters[param.valueName]) {
                                 params[param.name] = this.tempParameters[param.valueName];
-                            }else {
+                            } else {
                                 console.log('参数不全不能加载');
                                 tag = false;
                                 return;
@@ -162,15 +165,15 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                         } else {
                             params[param.name] = this.tempParameters[param.valueName];
                         }
-                    }else {
+                    } else {
                         params[param.name] = this.tempParameters[param.valueName];
                     }
 
-                }else if (param.type === 'value') {
+                } else if (param.type === 'value') {
 
                     params[param.name] = param.value;
 
-                }else if (param.type === 'GUID') {
+                } else if (param.type === 'GUID') {
                     const fieldIdentity = CommonUtility.uuID(10);
                     params[param.name] = fieldIdentity;
                 } else if (param.type === 'componentValue') {
@@ -181,7 +184,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
 
             if (this.isString(p.url)) {
                 url = APIResource[p.url];
-            }else {
+            } else {
                 let pc = 'null';
                 p.url.params.forEach(param => {
                     if (param['type'] === 'value') {
@@ -189,9 +192,9 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     } else if (param.type === 'GUID') {
                         const fieldIdentity = CommonUtility.uuID(10);
                         pc = fieldIdentity;
-                    }else if (param.type === 'componentValue') {
+                    } else if (param.type === 'componentValue') {
                         pc = componentValue.value;
-                    }else if (param.type === 'tempValue') {
+                    } else if (param.type === 'tempValue') {
                         pc = this.tempParameters[param.valueName];
                     }
                 });
@@ -206,10 +209,10 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         } else if (p.ajaxType === 'put') {
             console.log('put参数', params);
             return this._http.putProj(url, params).toPromise();
-        }else if (p.ajaxType === 'post') {
+        } else if (p.ajaxType === 'post') {
             console.log('post参数', params);
             return this._http.postProj(url, params).toPromise();
-        }else {
+        } else {
             return null;
         }
     }
@@ -238,6 +241,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     }
     async ngOnInit() {
         this.analysisRelation(this.config);
+        this.toolbarEnables('load');
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
@@ -250,7 +254,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
             this.updateEditCache();
             this.total = this.dataList.length;
         }
-        
+
         this._relativeResolver = new RelativeResolver();
         this._relativeResolver.relations = this.config.relation;
         this._relativeResolver.reference = this;
@@ -265,6 +269,42 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
 
     showMsg(msg: string) {
         this.message.info(msg);
+    }
+
+    /**
+     * toolbar 是否启用状态解析
+     * @param type 类别 load、action
+     * @param name toolbarname
+     */
+    toolbarEnables(type?, name?) {
+        if (type) {
+            if (type === 'load') {
+                if (this.config.toolbar) {
+                    this.config.toolbar.forEach(bar => {
+                        if (bar.enable === false) {
+                            this._toolbar[bar.name] = false;
+                        } else {
+                            this._toolbar[bar.name] = true;
+                        }
+                    });
+
+                }
+            } else {
+                this.config.toolbar.forEach(bar => {
+                    if (bar.name === name) {
+                        this.config.toolbar.forEach(baritem => {
+                            this._toolbar[baritem.name] = true;
+                        });
+                        if (bar.enables) {
+                            for (const d in bar.enables) {
+                                this._toolbar[d] = bar.enables[d];
+                            }
+                        }
+                    }
+                });
+
+            }
+        }
     }
 
     /**
@@ -457,6 +497,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     }
     /**取消 */
     cancelRow(): void {
+        this.toolbarEnables('action', 'cancelRow');
         this.dataList.forEach(item => {
             if (item.checked === true) {
                 this.cancelEdit(item.key);
@@ -557,7 +598,13 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      * 刷新
      */
     refresh() {
-
+        this.toolbarEnables('action', 'refresh');
+        // 测试生成方法
+        console.log(' 测试生成方法 begin');
+        this.createMethod();
+        console.log(' 测试生成方法', this.CRUD);
+        this.CRUD['add']();
+        console.log(' 调用生成方法');
     }
 
 
@@ -598,7 +645,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                 }
 
                 this.total = this.dataList.length;
-            }else {
+            } else {
                 this.tempParameters[d] = data[d];
             }
         }
@@ -903,7 +950,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                                 ngXl: 24
                             },
 
-                           //  'title': '基本属性',
+                            //  'title': '基本属性',
                             'viewId': 'opt_base',
                             'component': 'form_view',
                             'config': [
@@ -1114,24 +1161,6 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      * @param data 
      */
     showDialog(data?) {
-
-        //  [(nzVisible)]='modal.isVisible'
-        //  [nzConfirmLoading]='true|false'
-        //  [nzTitle]=''标题''
-        //  [nzClosable]='false|true'
-        //  [nzBody]=''这是内容''
-        //  [nzWidth]='520'
-        //  [nzContent]='modalContent'
-        //  [nzOkText]=''确定''
-        //  [nzCancelText]=''取消''
-        //  [nzMaskClosable]='false|true'
-        //  [nzZIndex]='1000'
-        //  [nzStyle]='{}'
-        //  [nzWrapClassName]=''''
-        //  (nzOnCancel)='handleCancel($event)'
-        //  (nzOnOk)='handleOk($event)'
-        //  this.isVisible = true;
-        //   this.modal.config=
         this.showModalForComponent();
 
     }
@@ -1157,8 +1186,74 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         //  subscription.subscribe(result => {
         //      console.log(result);
         //      // onCancel 、 onOk
-          
+
         //  })
+
+        const modal = this.modalService.create({
+            nzTitle: 'Modal Title',
+            nzContent: LayoutResolverComponent,
+            nzComponentParams: {
+                config: this._editorConfig
+            },
+            nzFooter: [{
+              label: 'change component tilte from outside',
+              onClick: (componentInstance) => {
+               // componentInstance.title = 'title in inner component is changed';
+              }
+            }]
+          });
     }
+
+
+
+    /**
+     * 存储方法的变量
+     */
+    CRUD= {};
+    /**
+     * 生成方法（自定义方法）
+     */
+    createMethod() {
+     
+      // 每个方法，有自定义变量，对变量的操作，执行异步请求
+      // 将数据集 格式化，json 生成，或者格式转化
+      // 方法名称，取toolbar name
+      // 参数 ， 拼装成json对象传递进去
+      // 创建的方法，也可以直接调用
+      // 方法返回，返回值也存储在临时变量 
+      //     好处，不处理各种返回传递；
+      //     不好处，业务对象数据，比较复杂，各种数据混在一起，可能会串数据，对命名，等都有要求，日后优化力度大
+      // 消息，内置的合理，动态生成的可能会有执行成功后发消息，类似这种，将消息单独出来，在方法完成后或异步请求执行成功后调用
+      this.CRUD['add'] = function (params?) {
+          console.log('createMethod，add');
+      };
+
+    }
+
+    methodItem() {
+
+         this.config.toolbar.forEach(bar => {
+            this.CRUD[bar.name] = function (params?) {
+                console.log('createMethod', bar.name);
+                // 1.解析动作前
+                // 2. 当前动作
+                // 2.1 异步请求
+                   // 每个异步请求前，后均有动作，细化每个函数执行一个，粗化是一个方法简析各种
+                   // 2.1.1  请求前，判断参数等其他信息，参数组织
+                   // 2.1.2  执行结果分析
+                   // 2.1.2.1 执行成功-》操作
+                   // 2.1.2.1.1 操作后续，发消息？给临时变量赋值？
+                   // 2.1.2.2 执行失败-》操作
+                // 2.2 弹出窗体
+                   // 表单 和 复杂页面。 表单自提交数据，复杂页面 保存等效果在页面中实现
+                   //
+
+                // 3. 解析动作后
+            };
+         });
+    }
+
+
+
 
 }

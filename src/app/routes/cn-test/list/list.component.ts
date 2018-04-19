@@ -21,7 +21,34 @@ import { RelativeService } from '@core/relative-Service/relative-service';
     .selectedRow{
         color:blue;
     }
-    `
+        :host ::ng-deep .ant-table-expanded-row > td:last-child {
+          padding: 0 48px 0 8px;
+        }
+  
+        :host ::ng-deep .ant-table-expanded-row > td:last-child .ant-table-thead th {
+          border-bottom: 1px solid #e9e9e9;
+        }
+  
+        :host ::ng-deep .ant-table-expanded-row > td:last-child .ant-table-thead th:first-child {
+          padding-left: 0;
+        }
+  
+        :host ::ng-deep .ant-table-expanded-row > td:last-child .ant-table-row td:first-child {
+          padding-left: 0;
+        }
+  
+        :host ::ng-deep .ant-table-expanded-row .ant-table-row:last-child td {
+          border: none;
+        }
+  
+        :host ::ng-deep .ant-table-expanded-row .ant-table-thead > tr > th {
+          background: none;
+        }
+  
+        :host ::ng-deep .table-operation a.operation {
+          margin-right: 24px;
+        }
+      `
     ]
 })
 export class ListComponent implements OnInit {
@@ -98,6 +125,34 @@ export class ListComponent implements OnInit {
             });
         }
         this.updateEditCache();
+
+
+        for (let i = 0; i < 3; ++i) {
+            this.nestedTableData.push({
+                key: i,
+                name: 'Screem',
+                platform: 'iOS',
+                version: '10.3.4.5654',
+                upgradeNum: 500,
+                creator: 'Jack',
+                createdAt: '2014-12-24 23:12:00',
+                expand: false,
+                pp: [{
+                    key: i,
+                    date: '2014-12-24 23:12:00',
+                    name: 'This is production name',
+                    upgradeNum: 'Upgraded: 56',
+                }]
+            });
+        }
+        /*  for (let i = 0; i < 3; ++i) {
+           this.innerTableData.push({
+             key       : i,
+             date      : '2014-12-24 23:12:00',
+             name      : 'This is production name',
+             upgradeNum: 'Upgraded: 56',
+           });
+         } */
     }
 
     showMsg(msg: string) {
@@ -385,12 +440,46 @@ export class ListComponent implements OnInit {
             }
         ],
         'toolbar': [
-            { 'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新' },
+            {
+                'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新',
+                'enables': { // 默认所有操作 状态都是false，为true 的时候当前操作限制操作
+                    'addRow': true,
+                    'updateRow': false
+                }
+            },
             { 'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增' },
             { 'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改' },
-            { 'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除' },
-            { 'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存' },
-            { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
+            { 'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'enable': true },
+            { 'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'enable': false },
+            { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' },
+            {
+                'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '测试方法注入',
+                'type': 'method/action',
+                'ajaxConfig': {
+                    add: {
+                        'url': 'AppConfigPack_test',
+                        'ajaxType': 'post',
+                        'params': [
+                            { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
+                            { name: 'Name', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
+                            { name: 'TagA', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
+                            { name: 'TagB', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
+                            { name: 'Metadata', type: 'tempValue', valueName: 'dataList', value: 'liutest11' }
+
+                        ]
+                    },
+                    update: {
+                        'url': 'AppConfigPack_test',
+                        'ajaxType': 'put',
+                        'params': [
+                            { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
+                            { name: 'Metadata', type: 'tempValue', valueName: 'dataList', value: '' }
+
+                        ]
+                    }
+                },
+            },
+            { 'name': 'showDialog', 'class': 'editable-add-btn', 'text': '弹出框' },
         ]
 
     };
@@ -558,7 +647,8 @@ export class ListComponent implements OnInit {
                     }
                 },
             },
-            { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
+            { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' },
+          
         ]
 
     };
@@ -1050,11 +1140,15 @@ export class ListComponent implements OnInit {
         'dataList': [],
         'relations': [
             {
-              relationViewId: 'viewId_testList',
-              relationSendContent: [],
-              relationReceiveContent: []
+                relationViewId: 'viewId_testList',
+                relationSendContent: [],
+                relationReceiveContent: []
             }
-          ]
+        ]
     };
+
+
+    nestedTableData = [];
+    innerTableData = [];
 
 }
