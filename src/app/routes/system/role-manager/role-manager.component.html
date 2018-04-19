@@ -1,10 +1,10 @@
 <page-header [title]=""></page-header>
 <nz-card>
     <div class = "table-operations">
-        <button>刷新 </button>
-        <button>新增</button>
-        <button>修改</button>
-        <button>删除</button>
+        <button  nz-button (click)="refresh($event)">刷新 </button>
+        <button  nz-button (click)="add($event)">新增</button>
+        <button  nz-button (click)="update($event)">修改</button>
+        <button  nz-button (click)="delete($event)">删除</button>
     </div>
   <nz-table #nzTable
             [nzData]="_dataSet"
@@ -21,36 +21,17 @@
             nzSize = "small">
     <thead >
     <tr>
-
+      <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll($event)"></th>
       <th>角色名称</th>
-      <th >角色配置</th>
-      <!--<th >-->
-        <!--<span>主键</span>-->
-      <!--</th>-->
-      <!--<th >-->
-        <!--<span>项目ID</span>-->
-      <!--</th>-->
-      <!--<th >-->
-        <!--<span>ApplyId</span>-->
-      <!--</th>-->
       <th >备注 </th>
-      <!--<th >-->
-        <!--<span>客户ID</span>-->
-      <!--</th>-->
       <th >创建时间</th>
     </tr>
     </thead>
     <tbody >
-    <tr *ngFor="let data of nzTable.data">
-      <td >
-        <a>{{data.Name}}</a>
-      </td>
-      <td >{{data.AppPermission}}</td>
-      <!--<td >{{data.Id}}</td>-->
-      <!--<td >{{data.ProjId}}</td>-->
-      <!--<td >{{data.ApplyId}}</td>-->
+    <tr *ngFor="let data of nzTable.data" (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+      <td nzShowCheckbox  [(nzChecked)]="data.checked"> </td>
+      <td >{{data.Name}}</td>
       <td >{{data.Remark}}</td>
-      <!--<td >{{data.PlatCustomerId}}</td>-->
       <td >{{data.CreateTime | date}}</td>
     </tr>
     </tbody>

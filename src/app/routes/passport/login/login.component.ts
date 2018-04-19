@@ -56,7 +56,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.titleService.setTitle('配置平台');
-        this.settingsService.setApp({name: '自动化业务装配系统'});
+        this.cacheService.set('AppName', '自动化业务装配系统');
     }
     // region: fields
 
@@ -71,10 +71,9 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         this.type = ret.index;
         if (ret.index === 0) {
             this.titleService.setTitle('配置平台');
-        }
-        else {
+        } else {
             this.titleService.setTitle('解析平台');
-            this.settingsService.setApp({name: 'XXX信息化系统'});
+            this.cacheService.set('AppName', 'XXX信息化系统');
         }
     }
 

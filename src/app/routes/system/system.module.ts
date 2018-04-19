@@ -4,7 +4,6 @@ import {RoleManagerComponent} from './role-manager/role-manager.component';
 import {ModuleManagerComponent} from './module-manager/module-manager.component';
 import {BaseManagerComponent} from './base-manager/base-manager.component';
 import {RouterModule, Routes} from '@angular/router';
-import {CanLeaveProvide} from '../delon/guard/can-leave.provide';
 import {SharedModule} from '@shared/shared.module';
 import {ModalBaseComponent} from './base-manager/modal-base.component';
 import { OrgManagerComponent } from './org-manager/org-manager.component';
@@ -13,6 +12,7 @@ import { DataManagerComponent } from './data-manager/data-manager.component';
 import {ModuleOperationComponent} from './module-manager/module-operation.component';
 import { TypeOperationComponent } from './data-manager/type-operation.component';
 import {EntityOperationComponent} from './data-manager/entity-operation.component';
+import { UserOperationComponent } from './user-manager/user-operation.component';
 
 
 const routes: Routes = [
@@ -35,7 +35,8 @@ const COMPONENT_NOROUNT = [
     DataManagerComponent,
     ModuleOperationComponent,
     TypeOperationComponent,
-    EntityOperationComponent
+    EntityOperationComponent,
+    UserOperationComponent
 ];
 
 @NgModule({

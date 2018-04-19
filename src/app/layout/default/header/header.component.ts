@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { SettingsService } from '@delon/theme';
+import {CacheService} from '@delon/cache';
 
 @Component({
     selector: 'app-header',
@@ -19,18 +20,14 @@ import { SettingsService } from '@delon/theme';
 })
 export class HeaderComponent {
     searchToggleStatus: boolean;
-    projectName:string;
+    projectName: string;
 
-    constructor(public settings: SettingsService) {
-        this.projectName = this.settings.app.name;
+    constructor(private cacheService: CacheService,public settings: SettingsService) {
+        this.projectName = this.cacheService.getNone('AppName');
     }
 
     toggleCollapsedSidebar() {
         this.settings.setLayout('collapsed', !this.settings.layout.collapsed);
-    }
-
-    searchToggleChange() {
-        this.searchToggleStatus = !this.searchToggleStatus;
     }
 
 }
