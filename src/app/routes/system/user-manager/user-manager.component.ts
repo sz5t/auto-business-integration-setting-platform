@@ -2,7 +2,8 @@ import { Component, Injectable, OnInit } from '@angular/core';
 import {ApiService} from '@core/utility/api-service';
 import {APIResource} from '@core/utility/api-resource';
 import {CacheService} from '@delon/cache';
-import { NzMessageService } from 'ng-zorro-antd';
+import {NzMessageService, NzModalService} from 'ng-zorro-antd';
+import {UserOperationComponent} from './user-operation.component';
 
 @Injectable()
 export class RandomUserService {
@@ -13,6 +14,24 @@ export class RandomUserService {
       _page: pageIndex, _rows: pageSize, _orderBy: `${sortField} ${sortOrder}`
     });
   }
+
+  deleteUser(idlist) {
+      const ids = idlist.join(',');
+      if( ids.length > 0 ) {
+          return this.http.delete(`${this.randomUserUrl}`, {_ids: ids});
+      }
+  }
+
+  addUser(data?){
+      data['Password'] = '1';
+      data['PlatCustomerId'] = 'eb4332bbb4d01a4289457a891b6a0333';
+      data['LoginLimitKind'] = 'None';   // { "Name":"None", "Value":0 },{"Name":"ByIp","Value":1},{"Name":"ByMac","Value":2},{"Name":"ByIpAndMac","Value":3}
+      return this.http.post(`${this.randomUserUrl}`, data);
+  }
+
+    updateUser(data?) {
+      return this.http.put(`${this.randomUserUrl}` ,data);
+    }
   constructor(private http: ApiService) {
   }
 }
@@ -39,27 +58,13 @@ export class RandomUserService {
 
 
 export class UserManagerComponent implements OnInit {
-  //region
-  content:any;
-  contentConfigPack:any;
-  contentModule:any;
 
-  addcontent:any;
-  addcontentConfigPack:any;
-  addcontentModule:any;
-
-  putcontent:any;
-  putcontentConfigPack:any;
-  putcontentModule:any;
-
-  delcontent:any;
-  delcontentConfigPack:any;
-  delcontentModule:any;
-  // location: Location;
-  //endregion
+  _allChecked = false;
+  _indeterminate = false;
+  _cacheMapData;
 
   _current = 1;
-  _pageSize = 2;
+  _pageSize = 10;
   _total = 1;
   _dataSet = [];
   _loading = true;
@@ -68,8 +73,44 @@ export class UserManagerComponent implements OnInit {
   _filterGender = [];
 
   Gender= {Unknown: '未知', Male: '男', Female: '女'};
+
+    _checkAll() {
+        this._dataSet.forEach(item => item.checked = this._allChecked);
+        this._cacheMapData.forEach( mpa =>{mpa.checked = this._allChecked});
+    }
+
+    selectRow(data?){
+        this._dataSet.forEach( item => {
+            item.selected = false;
+        });
+        data.selected = true;
+        this._cacheMapData.get(data.Id).checked = data.checked;
+    }
+
+    refresh(data?) {
+        this.refreshData();
+    }
+
+    delete(data?) {
+        const idlist = this.getSelectId();
+        if(idlist.length >= 1) {
+            this._randomUser.deleteUser(idlist).subscribe(response => {
+                if (response.Status === 200) {
+                    this.msgSrv.success(response.Message);
+                    idlist.forEach( na =>{
+                        this._cacheMapData.delete(na);
+                    })
+                    this.refreshData();
+                } else {
+                    this.msgSrv.error(response.Message);
+                }
+            });
+        }else {
+            this.msgSrv.success('请选中要删除的数据！');
+        }
+    }
+
   sort(sort) {
-      console.log(111,sort.value === 'descend')
     this._sortValue = (sort.value == 'descend') ? 'DESC' : 'ASC';
     this._sortField = sort.key;
     this.refreshData();
@@ -82,9 +123,8 @@ export class UserManagerComponent implements OnInit {
     this.refreshData(true);
   }
     constructor(
-      private cacheService: CacheService,
-      private apiService: ApiService,
       public msgSrv: NzMessageService,
+      private modalService: NzModalService,
       private _randomUser: RandomUserService
     ) { }
 
@@ -92,199 +132,102 @@ export class UserManagerComponent implements OnInit {
     if (reset) {
       this._current = 1;
     }
+    this._cacheMapData = new Map();
+    this._allChecked = false;
     this._loading = true;
     this._randomUser.getUsers(this._current, this._pageSize, this._sortField, this._sortValue,'').subscribe((data: any) => {
       this._loading = false;
       this._total = data.Data.Total;
       this._dataSet = data.Data.Rows;
+      this._dataSet.forEach( item => {
+          this._cacheMapData.set(item.Id, {checked: false, dataItem: item});
+      });
     });
-  };
+  }
 
+    getSelectId() {
+        const name = [] ;
+        this._cacheMapData.forEach(item =>{
+            if(item.checked){
+                name.push(item.dataItem.Id);
+            }
+        })
+        return name;
+    }
   ngOnInit() {
     this.refreshData();
     }
 
-    //region
-    clear()
-    {
-      this.content = '';
-      this.contentConfigPack = '';
-      this.contentModule = '';
 
-      this.addcontent = '';
-      this.addcontentConfigPack = '';
-      this.addcontentModule = '';
-
-      this.putcontent = '';
-      this.putcontentConfigPack = '';
-      this.putcontentModule = '';
-
-      this.delcontent = '';
-      this.delcontentConfigPack = '';
-      this.delcontentModule = '';
-    }
-
-  getUser()
-  {
-    this.clear();
-    this.apiService.get(APIResource.AppUser, {
-      _select: 'Id,RealName'}).toPromise().then(
-      response => {
-        this.content = JSON.stringify(response.Data);
-      }
-    );
-  }
-    currentPageDataChange($event: Array<{ name: string; age: number; address: string; checked: boolean }>)
-    {
-
-    }
-  getModule()
-  {
-    this.clear();
-    this.apiService.getProj(APIResource.AppModuleConfig, {_select : 'Id,Name'}).toPromise().then(
-      response => {
-        this.contentModule = JSON.stringify(response.Data);
-      }
-    );
-  }
-
-  getAppConfigPack()
-  {
-    this.clear();
-    this.apiService.getProj(APIResource.AppConfigPack, {
-      _select: 'Id,Name'
-    }).toPromise().then(
-      response => {
-        this.contentConfigPack = JSON.stringify(response.Data);
-      }
-    );
-  }
-
-  addUser()
-  {
-    this.clear();
-    this.apiService.post(APIResource.AppUser,
-      {
-        "UserType":"测试账号",
-        "Name":"test",
-        "Code":"180306986165123",
-        "Password":"6",
-        "OrgId":"333",
-        "RealName":"测试",
-        "NickName":"测试",
-        "Gender":"Male",
-        "LoginLimitKind":"None",
-        "Status":"Normal",
-        "Remark":null,
-        "Id":'46d5c928d26b47c0a70235479bb9cfd4'
-      }).toPromise().then(
-      response => {
-        this.addcontent = JSON.stringify(response.Data);
-      }
-    );
-  }
-
-  addModule()
-  {
-    this.clear();
-    this.apiService.postProj(APIResource.AppModuleConfig, ).toPromise().then(
-      response => {
-        this.addcontentModule = JSON.stringify(response.Data);
-      }
-    );
-  }
-
-  addAppConfigPack()
-  {
-    this.clear();
-    this.apiService.postProj(APIResource.AppConfigPack, ).toPromise().then(
-      response => {
-        this.addcontentConfigPack = JSON.stringify(response.Data);
-      }
-    );
-  }
-
-  putUser()
-  {
-    this.clear();
-    this.apiService.put(APIResource.AppUser, {
-      Id: '46d5c928d26b47c0a70235479bb9cfd4'},{
-    "PersonId":" ",
-      "UserType":"修改了测试账号",
-      "Name":"test",
-      "Code":"188888986165123",
-      "Password":"6",
-      "OrgId":"888",
-      "RealName":"测试88",
-      "NickName":"测试88",
-      "Gender":"Male",
-      ID:'46d5c928d26b47c0a70235479bb9cfd4'
-  }).toPromise().then(
-      response => {
-        this.putcontent = JSON.stringify(response.Data);
-      }
-    );
-  }
-
-  putModule()
-  {
-    this.clear();
-    this.apiService.putProj(APIResource.AppModuleConfig, {_select : 'Id,Name'}).toPromise().then(
-      response => {
-        this.putcontentModule = JSON.stringify(response.Data);
-      }
-    );
-  }
-
-  putAppConfigPack()
-  {
-    this.clear();
-    this.apiService.putProj(APIResource.AppConfigPack, {
-      _select: 'Id,Name'
-    }).toPromise().then(
-      response => {
-        this.putcontentConfigPack = JSON.stringify(response.Data);
-      }
-    );
-  }
-
-  delUser()
-  {
-    this.clear();
-    this.apiService.delete(APIResource.AppUser, {
-      Id: '46d5c928d26b47c0a70235479bb9cfd4'}).toPromise().then(
-      response => {
-        if(response.Data) {
-          this.delcontent = JSON.stringify(response.Data);
+    showUserForComponent(flag?) {
+        switch (flag) {
+            case 'Add':
+                this.confirmAddUser();
+                break;
+            case 'Edit':
+                this.confirmEditUser();
+                break;
         }
-      }
-    );
-  }
+    }
 
-  delModule()
-  {
+    confirmAddUser() {
+        const subscription = this.modalService.create({
+            nzTitle          : '新增数据',
+            nzContent        : UserOperationComponent,
+            nzFooter         : null,
+            nzComponentParams: {
+                name: '',
+            }
+        });
+        subscription.afterClose.subscribe((result) => {
+            if(typeof result === 'object')
 
-    this.clear();
-    this.apiService.deleteProj(APIResource.AppModuleConfig, {_select : 'Id,Name'}).toPromise().then(
-      response => {
-        this.delcontentModule = JSON.stringify(response.Data);
-      }
-    );
-  }
+                this._randomUser.addUser(result).subscribe( response => {
+                    if(response.Status === 200){
+                        this.msgSrv.success(response.Message ? response.Message : '添加成功！');
+                        this.refreshData();
+                    }else {
+                        this.msgSrv.error(response.Message);
+                    }
+                });
+        });
+    }
 
-  delAppConfigPack()
-  {
-    // console.log(1111,this.location);
-    this.clear();
+    confirmEditUser() {
+        const items = this.getSelectId();
+        if( items.length === 1) {
+            let itemId = items.pop();
+            let ITEM = {};
+            this._dataSet.forEach( (item) =>{
+                if(item.Id == itemId)
+                    ITEM = item;
+            } )
 
-    this.apiService.deleteProj(APIResource.AppConfigPack, {
-      _select: 'Id,Name'
-    }).toPromise().then(
-      response => {
-        this.delcontentConfigPack = JSON.stringify(response.Data);
-      }
-    );
-  }
-  //endregion
-
+            const subscription = this.modalService.create({
+                nzTitle          : '修改数据',
+                nzContent        : UserOperationComponent,
+                nzFooter         : null,
+                nzComponentParams: {
+                    data: ITEM
+                }
+            });
+            subscription.afterClose.subscribe(result => {
+                if(typeof result === 'object'){
+                    result['Id'] = itemId;
+                    delete result['Password']
+                    this._randomUser.updateUser(result).subscribe( response => {
+                        if(response.Status === 200){
+                            this.msgSrv.success(response.Message ? response.Message : '修改成功！');
+                            this.refreshData();
+                        }else {
+                            this.msgSrv.error(response.Message);
+                        }
+                    });}
+            });
+        }else if (items.length > 1 ){
+            this.msgSrv.warning('不能修改多条记录！');
+        } else {
+            this.msgSrv.warning('请选中要修改的记录！');
+        }
+    }
 }

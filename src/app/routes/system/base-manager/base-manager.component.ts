@@ -75,7 +75,6 @@ export class BaseManagerComponent implements OnInit {
   _loading = true;
   _sortValue = 'Desc';
   _sortField = 'CreateTime';
-  editCache = {};
   cacheMapData;
   editRow = null;
   tempEditObject = {};

@@ -35,7 +35,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let data of nzTable.data" (click)="tselectRow(data,_teditCache[data.id]?.dataItem)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+        <tr *ngFor="let data of nzTable.data" (click)="tselectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
             <td nzShowCheckbox  [(nzChecked)]="data.checked"> </td>
             <td>{{data.Name}}</td>
             <td>{{data.Caption}}</td>
@@ -43,7 +43,7 @@
             <td>{{data.BuildMode}}</td>
             <td>{{getText(data.Enabled)}}</td>
             <td>{{data.BuildState}}</td>
-            <td>{{data.DbObjState}}</td>
+            <td>{{data.BuildState}}</td>
             <td>{{data.CreateTime | date}}</td>
         </tr>
         </tbody>

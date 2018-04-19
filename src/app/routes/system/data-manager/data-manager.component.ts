@@ -92,6 +92,7 @@ export class EntityProDefService {
     ]
 })
 export class DataManagerComponent implements OnInit {
+    //region
     _tallChecked = false;
     _tindeterminate = false;
     _tcurrent = 1;
@@ -102,9 +103,10 @@ export class DataManagerComponent implements OnInit {
     _tsortValue = 'asc';
     _tsortField = 'CreateTime';
     _tcacheMapData;
-    _teditCache = {};
     _tparentid = 'XXX';
+//endregion
 
+    //region
     _eallChecked = false;
     _eindeterminate = false;
     _ecurrent = 1;
@@ -118,11 +120,12 @@ export class DataManagerComponent implements OnInit {
     _eeditCache = {};
 
     shared;
+    //endregion
 
 //region  基本操作
     _tcheckAll() {
         this._tdataSet.forEach(item => item.checked = this._tallChecked);
-        this._tcacheMapData.forEach( mpa =>{mpa.checked = this._tallChecked});
+        this._tcacheMapData.forEach( mpa => { mpa.checked = this._tallChecked});
     }
 
     tselectRow(data?){
@@ -326,9 +329,9 @@ export class DataManagerComponent implements OnInit {
     confirmEditType() {
         const items = this.gettSelectId();
         if( items.length === 1) {
-            let dataitem = items.pop();
-            let ITEM={};
-            this._tdataSet.forEach( (item) =>{if(item.Id == dataitem) ITEM = item;} )
+            let itemId = items.pop();
+            let ITEM = {};
+            this._tdataSet.forEach( (item) =>{if(item.Id == itemId) ITEM = item;} )
 
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',
@@ -340,7 +343,7 @@ export class DataManagerComponent implements OnInit {
             });
             subscription.afterClose.subscribe(result => {
                 if(typeof result === 'object'){
-                    result['Id'] = dataitem;
+                    result['Id'] = itemId;
                     this.resourceType.updateType(result).subscribe( response => {
                         if(response.Status === 200){
                             this.msgSrv.success(response.Message ? response.Message : '修改成功！');
@@ -403,9 +406,9 @@ export class DataManagerComponent implements OnInit {
     confirmEditEntity() {
         const items = this.geteSelectId();
         if( items.length === 1) {
-            let dataitem = items.pop();
+            let itemId = items.pop();
             let ITEM={};
-            this._edataSet.forEach( (item) =>{if(item.Id == dataitem) ITEM = item;} )
+            this._edataSet.forEach( (item) => {if( item.Id == itemId ) ITEM = item;} )
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',
                 nzContent        : EntityOperationComponent,
@@ -416,7 +419,7 @@ export class DataManagerComponent implements OnInit {
             });
             subscription.afterClose.subscribe(result => {
                 if(typeof result === 'object'){
-                    result['Id'] = dataitem;
+                    result['Id'] = itemId;
                     this.entityProDef.updateEntity(result).subscribe( response => {
                         if(response.Status === 200){
                             this.msgSrv.success(response.Message ? response.Message : '修改成功！');

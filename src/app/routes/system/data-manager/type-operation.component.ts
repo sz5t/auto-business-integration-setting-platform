@@ -25,7 +25,6 @@ export class TypeOperationComponent implements OnInit {
         private cacheService: CacheService,
         private fb: FormBuilder,
         private modal: NzModalRef) {
-
     }
     emitDataOutside() {
         if(!this.typeOperForm.valid)

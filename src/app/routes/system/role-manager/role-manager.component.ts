@@ -13,6 +13,14 @@ export class RoleService {
       _page: pageIndex, _rows: pageSize//, _orderBy: `${sortField} ${sortOrder}`
     });
   }
+
+    deleteUser(idlist) {
+        const ids = idlist.join(',');
+        if( ids.length > 0 ) {
+            return this.http.delete(`${this.roleServiceUrl}`, {_ids: ids});
+        }
+    }
+
   constructor(private http: ApiService) {
   }
 }
@@ -39,7 +47,11 @@ export class RoleService {
 })
 export class RoleManagerComponent implements OnInit {
 
-  _current = 1;
+    _allChecked = false;
+    _indeterminate = false;
+    _cacheMapData;
+
+    _current = 1;
     _pageSize = 10;
     _total = 1;
     _dataSet = [];
@@ -47,6 +59,16 @@ export class RoleManagerComponent implements OnInit {
     _sortValue = 'asc';
     _sortField = 'order';
     _filterGender = [];
+
+    _checkAll() {
+        this._dataSet.forEach(item => item.checked = this._allChecked);
+        this._cacheMapData.forEach( mpa =>{mpa.checked = this._allChecked});
+    }
+
+    selectRow(data?){
+        console.log('rost', data);
+    }
+
   sort(field , value) {
     this._sortValue = (value === 'descend') ? 'DESC' : 'ASC';
     this._sortField = field;
@@ -67,6 +89,8 @@ export class RoleManagerComponent implements OnInit {
     if (reset) {
       this._current = 1;
     }
+      this._cacheMapData = new Map();
+      this._allChecked = false;
     this._loading = true;
     this._randomBase.getPrivRole(this._current, this._pageSize, this._sortField, this._sortValue,'').subscribe((data: any) => {
       this._loading = false;
@@ -75,8 +99,23 @@ export class RoleManagerComponent implements OnInit {
     });
   };
 
+    refresh(data?){
+        this.refreshData();
+    }
+
+    add(data?) {
+        console.log('add');
+    }
+
+    update(data?) {
+        console.log('update');
+    }
+
+    delete(data?) {
+        console.log('delete');
+    }
+
   ngOnInit() {
     this.refreshData();
   }
-
 }

@@ -15,43 +15,50 @@
               [nzLoading]="_loading"
               [nzTotal]="_total"
               [(nzPageIndex)]="_current"
-              (nzPageIndexChange)="loadData(false,$event)"
+              (nzPageIndexChange)="refreshOrg(false,$event)"
               [nzPageSize]="_pageSize"
-              (nzPageSizeChange)="loadData(true,$event)"
+              (nzPageSizeChange)="refreshOrg(true,$event)"
               [nzBordered] = "true"
               [nzShowTotal]="totalTemplate"
               nzSize = "small" >
         <thead>
         <tr>
+            <th>选择</th>
             <th>名称</th>
             <th>简称</th>
-            <th>有效</th>
             <th>编码</th >
-            <!--<th><span>项目ID</span></th>-->
-            <!--<th><span>ApplyId</span></th>-->
-            <!--<th><span>客户ID</span></th>-->
             <th>排序</th>
             <th>创建时间</th>
         </tr>
         </thead>
         <tbody>
-        <ng-template ngFor let-data [ngForOf]="nzTable.data">
-            <ng-template ngFor let-item [ngForOf]="expandDataCache[data.id]">
-                <tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)">
-                    <td [nzIndentSize]="item.level*20" [(nzExpand)]="item.expand" (nzExpandChange)="collapse(expandDataCache[data.id],item,$event)"  [nzShowExpand]="!!item.children">
-                        {{item.text}}
-                    </td>
-                    <td >{{item.link}}</td>
-                    <td >{{item.hide}}</td>
-                    <td >{{item.order}}</td>
-                    <!--<td >{{item.projid}}</td>-->
-                    <!--<td >{{item.applyid}}</td>-->
-                    <!--<td >{{item.platcustomerid}}</td>-->
-                    <td >{{item.remark}}</td>
-                    <td >{{item.createtime | date}}</td>
-                </tr>
-            </ng-template>
-        </ng-template>
+
+        <tr *ngFor="let item of nzTable.data">
+        <td nzShowCheckbox  [(nzChecked)]="item.checked"> </td>
+        <td>{{item.Name}}</td>
+        <td >{{item.ShortName}}</td>
+        <td >{{item.Code}}</td>
+        <td >{{item.Order}}</td>
+        <td >{{item.CreateTime | date}}</td>
+        </tr>
+
+        <!--<ng-template ngFor let-data [ngForOf]="nzTable.data">-->
+            <!--<ng-template ngFor let-item [ngForOf]="expandDataCache[data.id]">-->
+                <!--<tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)">-->
+                    <!--<td [nzIndentSize]="item.level*20" [(nzExpand)]="item.expand" (nzExpandChange)="collapse(expandDataCache[data.id],item,$event)"  [nzShowExpand]="!!item.children">-->
+                        <!--{{item.text}}-->
+                    <!--</td>-->
+                    <!--<td >{{item.link}}</td>-->
+                    <!--<td >{{item.hide}}</td>-->
+                    <!--<td >{{item.order}}</td>-->
+                    <!--&lt;!&ndash;<td >{{item.projid}}</td>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<td >{{item.applyid}}</td>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<td >{{item.platcustomerid}}</td>&ndash;&gt;-->
+                    <!--<td >{{item.remark}}</td>-->
+                    <!--<td >{{item.createtime | date}}</td>-->
+                <!--</tr>-->
+            <!--</ng-template>-->
+        <!--</ng-template>-->
         </tbody>
         <ng-template #totalTemplate let-total let-range="range">
             {{range[0]}}-{{range[1]}} / {{total}} 条
