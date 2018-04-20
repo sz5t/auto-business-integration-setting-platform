@@ -3,7 +3,18 @@
 
 <nz-card>
 <div>
-   
+  <nz-tree
+  [(ngModel)]="nodesnewtree"
+  [nzCheckable]="true"
+  [nzMultiple]="true"
+  [nzDefaultExpandedKeys]="expandKeys"
+  [nzDefaultCheckedKeys]="checkedKeys"
+  [nzDefaultSelectedKeys]="selectedKeys"
+  [nzDefaultExpandAll]="expandDefault"
+  (nzClick)="mouseAction('click',$event)"
+  (nzDblClick)="mouseAction('dblclick', $event)"
+>
+</nz-tree>`
 </div>
 <nz-popover [nzTitle]="'标题'" [(nzVisible)]="visible" [nzTrigger]="'click'" [nzPlacement]="'rightTop'">
     <!-- <button nz-button nz-popover [nzType]="'primary'">点击</button> -->

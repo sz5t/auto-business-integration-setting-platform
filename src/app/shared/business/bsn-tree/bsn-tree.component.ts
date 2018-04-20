@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, NzTreeNode } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { APIResource } from '@core/utility/api-resource';
 import { CnComponentBase } from '@shared/components/cn-component-base';
+import { CommonUtility } from '@core/utility/Common-utility';
 @Component({
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
@@ -13,12 +14,12 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     @Input() config;
     treeData;
     _relativeResolver;
-    _tempValue;
+    _tempValue = {};
     selfEvent = {
         clickNode: [],
         expandNode: [],
         load: []
-      };
+    };
     constructor(
         private _http: ApiService,
         private _messageService: RelativeService
@@ -34,29 +35,46 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             this._relativeResolver.initParameter = [this.loadTreeData];
             this._relativeResolver.relations = this.config.relations;
             this._relativeResolver.resolverRelation();
-            this._tempValue = this._relativeResolver._tempValue;
+            this._tempValue = this._relativeResolver. _tempParameter;
         }
         this.loadTreeData();
     }
 
     async getTreeData() {
-        let params = {};
-        if (this.config.ajax.params) {
-            this.config.ajax.params.map(p => {
-                params = {...params, ...p};
-            });
-        }
-        if (this._tempValue) {
-            params = {...params, ...this._tempValue};
-        }
-        return this._http.getProj(APIResource[this.config.ajax.url], params).toPromise();
+        const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
+        return ajaxData;
     }
 
     loadTreeData() {
         (async () => {
             const data = await this.getTreeData();
             if (data.Data && data.Status === 200) {
-                this.treeData = this.listToTreeData(data.Data, '');
+                const TotreeBefore = data.Data;
+                TotreeBefore.forEach(d => {
+                    if (this.config.columns) {
+                        this.config.columns.forEach(col => {
+                            d[col['field']] = d[col['valueName']];
+                        });
+                    }
+                });
+                let parent = '';
+                // 解析出 parentid ,一次性加载目前只考虑一个值
+                if (this.config.parent) {
+                    this.config.parent.forEach(param => {
+                        if (param.type === 'tempValue') {
+                            parent = this._tempValue[param.valueName];
+
+                        } else if (param.type === 'value') {
+
+                            parent = param.value;
+
+                        } else if (param.type === 'GUID') {
+                            const fieldIdentity = CommonUtility.uuID(10);
+                            parent = fieldIdentity;
+                        }
+                    });
+                }
+                this.treeData = this.listToTreeData(TotreeBefore, parent);
             }
         })();
     }
@@ -72,7 +90,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 } else {
                     data[i]['isLeaf'] = true;
                 }
-                result.push(data[i]);
+                result.push(new NzTreeNode(data[i]));
             }
         }
         return result;
@@ -92,4 +110,78 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             this._relativeResolver.unsubscribe();
         }
     }
+
+    async execAjax(p?, componentValue?, type?) {
+        const params = {
+        };
+        let url;
+        let tag = true;
+       /*  if (!this._tempValue)  {
+            this._tempValue = {};
+        } */
+        if (p) {
+            p.params.forEach(param => {
+                if (param.type === 'tempValue') {
+                    if (type) {
+                        if (type === 'load') {
+                            if (this._tempValue[param.valueName]) {
+                                params[param.name] = this._tempValue[param.valueName];
+                            } else {
+                                console.log('参数不全不能加载');
+                                tag = false;
+                                return;
+                            }
+                        } else {
+                            params[param.name] = this._tempValue[param.valueName];
+                        }
+                    } else {
+                        params[param.name] = this._tempValue[param.valueName];
+                    }
+                } else if (param.type === 'value') {
+
+                    params[param.name] = param.value;
+
+                } else if (param.type === 'GUID') {
+                    const fieldIdentity = CommonUtility.uuID(10);
+                    params[param.name] = fieldIdentity;
+                } else if (param.type === 'componentValue') {
+                    params[param.name] = componentValue.value;
+                }
+            });
+            if (this.isString(p.url)) {
+                url = APIResource[p.url];
+            } else {
+                let pc = 'null';
+                p.url.params.forEach(param => {
+                    if (param['type'] === 'value') {
+                        pc = param.value;
+                    } else if (param.type === 'GUID') {
+                        const fieldIdentity = CommonUtility.uuID(10);
+                        pc = fieldIdentity;
+                    } else if (param.type === 'componentValue') {
+                        pc = componentValue.value;
+                    } else if (param.type === 'tempValue') {
+                        pc = this._tempValue[param.valueName];
+                    }
+                });
+                url = APIResource[p.url['parent']] + '/' + pc + '/' + APIResource[p.url['child']];
+            }
+        }
+        if (p.ajaxType === 'get' && tag) {
+            console.log('get参数', params);
+            return this._http.getProj(url, params).toPromise();
+        } else if (p.ajaxType === 'put') {
+            console.log('put参数', params);
+            return this._http.putProj(url, params).toPromise();
+        } else if (p.ajaxType === 'post') {
+            console.log('post参数', params);
+            return this._http.postProj(url, params).toPromise();
+        } else {
+            return null;
+        }
+    }
+    isString(obj) { // 判断对象是否是字符串
+        return Object.prototype.toString.call(obj) === '[object String]';
+    }
+
 }

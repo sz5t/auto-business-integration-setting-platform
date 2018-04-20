@@ -3,7 +3,7 @@ import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
 //   import { CommonUtility } from '@core/utility/Common-utility';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, NzTreeNode } from 'ng-zorro-antd';
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { RelativeService } from '@core/relative-Service/relative-service';
 import { concat } from 'rxjs/operators/concat';
@@ -498,6 +498,7 @@ export class ComponentSettingComponent implements OnInit {
             },
         ]
     };
+    treeData;
     constructor(
         private http: _HttpClient,
         private _http: ApiService,
@@ -518,12 +519,17 @@ export class ComponentSettingComponent implements OnInit {
     }
     //   获取布局设置列表
     getLayoutConfigData(params) {
-        return this._http.getProj(APIResource.AppConfigPack, params).toPromise();
+        return this._http.getProj(APIResource.LayoutSetting, params).toPromise();
     }
 
     //   获取模块信息
     async getModuleData(params) {
         return this._http.getProj(APIResource.AppModuleConfig, params).toPromise();
+    }
+
+    // 布局块
+    async getBlockConfigData(layoutId) {
+        return this._http.getProj(APIResource.BlockSetting, {LayoutId: layoutId }).toPromise();
     }
 
     //   选择布局名称
@@ -532,20 +538,90 @@ export class ComponentSettingComponent implements OnInit {
         //   this._layoutConfig = $event.metadata;
 
         console.log('布局信息', $event);
-        const str = [];
-        if ($event.metadata) {
-            const componentData = await this.getComponentByLayout($event.id);
-            let componentJson = [];
-            console.log('componentData:', componentData);
-            if (componentData && componentData.Status === 200) {
-                componentJson = componentData.Data;
+        const backdata = await this.getBlockConfigData($event.id);
+        const  columns = [
+            {title: '主键', field: 'key',  valueName: 'Id'},
+            {title: '父节点', field: 'parentId',  valueName: 'ParentId'},
+            {title: '标题', field: 'title',  valueName: 'Title'},
+        ];
+        const TotreeBefore = backdata.Data;
+        TotreeBefore.forEach(data => {
+            columns.forEach(col => {
+                data[col['field']] = data[col['valueName']];
+            });
+        });
+       
+        const treeDataJson = this.listToTreeData(TotreeBefore, this._funcValue[this._funcValue.length - 1]);
+        this.treeData = treeDataJson;
+      
+        console.log('list转tree后', treeDataJson);
+ 
+    }
+
+    listToTreeData(data, parentid) {
+        const result = [];
+        let temp;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].ParentId === parentid) {
+               
+                temp = this.listToTreeData(data, data[i].key);
+                if (temp.length > 0) {
+                    data[i]['children'] = temp;
+                } else {
+                    data[i]['isLeaf'] = true;
+                }
+                result.push( new NzTreeNode(data[i]));
             }
-
-            this.nodes = this.arrayToTreeBylayout(this.layoutToarry($event.metadata, componentJson, '555'), '555');
-            //   console.log(this.nodes);
-            //   console.log('初步简析布局', this.layoutToarry($event.metadata, componentJson, '555'));
         }
+        return result;
+    }
 
+
+    tree_Config = {
+        'viewId': 'component_viewId_tree',
+        'asyncData': true, // 
+        'expandAll': true, //  
+        'checkable': false,  //    在节点之前添加一个复选框 false
+        'showLine': false,  //   显示连接线 fal
+        'columns': [ // 字段映射，映射成树结构所需
+            {title: '主键', field: 'key',  valueName: 'Id'},
+            {title: '父节点', field: 'parentId',  valueName: 'ParentId'},
+            {title: '标题', field: 'title',  valueName: 'Title'},
+        ],
+        'parent': [
+            { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: '05369c6ce6564d5eb3f044d0dfaaa689' }
+        ],
+        'ajaxConfig': {
+            'url': 'BlockSetting',
+            'ajaxType': 'get',
+            'params': [
+                { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }                
+            ]
+        },
+        'relations': [{
+            'relationViewId': 'component_viewId_tree',
+            'relationSendContent': [
+              {
+                'name': 'clickNode',
+                'sender': 'viewId_tree',
+                'aop': 'after',
+                'receiver': 'operation_sqlColumns',
+                'relationData': {
+                  'name': 'initParameter',
+                  'params': [
+                    { 'pid': 'key', 'cid': '_parentId' }
+                  ]
+                },
+              }
+            ],
+            'relationReceiveContent': []
+          }]
+      };
+
+    onMouseAction(actionName, $event) {
+        console.log('点击树节点事件', actionName);
+        console.log('点击树节点数据', $event);
+       // this[actionName]($event);
     }
 
     /**生成结构树-》 布局简析 */
@@ -632,7 +708,7 @@ export class ComponentSettingComponent implements OnInit {
         if (this._funcValue.length > 0) {
             const params = {
                 //  TagA: this._funcValue.join(','),
-                ParentId: this._funcValue[this._funcValue.length - 1],
+                MODULEID: this._funcValue[this._funcValue.length - 1],
                 _select: 'Id,Name,Metadata'
             };
             this.getLayoutConfigData(params).then(serverLayoutData => {
@@ -686,55 +762,13 @@ export class ComponentSettingComponent implements OnInit {
         }
         return result;
     }
-    nodes = [
-
-        {
-            id: '1',
-            name: '组件设置根节点',
-            type: 'root',
-            data: 'ahhahah',
-            hasChildren: true,
-            children: [
-                {
-                    id: '1.2',
-                    name: '布局区域1',
-                    type: 'layout',
-                    hasChildren: true,
-                    children: [
-                        {
-                            id: '1.21',
-                            name: '数据表格',
-                            value: 'bsn-datatable',
-                            type: 'component',
-                        }
-                    ]
-                },
-                {
-                    id: '1.3',
-                    name: '布局区域2',
-                    type: 'layout',
-                    hasChildren: true,
-                    children: [
-                        {
-                            id: '1.31',
-                            name: '树',
-                            value: 'bsn-tree',
-                            type: 'component',
-                        }
-                    ]
-                }
-            ]
-        }
-    ];
 
     treeconfig = {
-        nzAutoExpandParent: true,  //  是否自动展开父节点，当数字时展开最大节点 false
-        nzAllowChildLinkage: true, //   是否开启父节点的checkbox状态的会影响子节点状态 true
-        nzAllowParentLinkage: true, //   是否开启子节点的checkbox状态的会影响父节点状态 true
-        nzCheckable: false,  //    在节点之前添加一个复选框 false
-        nzShowLine: false,  //   显示连接线 false
+        asyncData: true, // 
+        expandAll: true, //  
+        checkable: false,  //    在节点之前添加一个复选框 false
+        showLine: false,  //   显示连接线 false
     };
-
     /**
      * 保存sql
      * @param data
