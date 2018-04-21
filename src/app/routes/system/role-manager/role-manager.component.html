@@ -2,8 +2,8 @@
 <nz-card>
     <div class = "table-operations">
         <button  nz-button (click)="refresh($event)">刷新 </button>
-        <button  nz-button (click)="add($event)">新增</button>
-        <button  nz-button (click)="update($event)">修改</button>
+        <button nz-button (click)="showRoleForComponent('Add')">新增</button>
+        <button nz-button (click)="showRoleForComponent('Edit')">修改</button>
         <button  nz-button (click)="delete($event)">删除</button>
     </div>
   <nz-table #nzTable

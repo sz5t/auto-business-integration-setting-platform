@@ -13,6 +13,8 @@ import {ModuleOperationComponent} from './module-manager/module-operation.compon
 import { TypeOperationComponent } from './data-manager/type-operation.component';
 import {EntityOperationComponent} from './data-manager/entity-operation.component';
 import { UserOperationComponent } from './user-manager/user-operation.component';
+import { RoleOperationComponent } from './role-manager/role-operation.component';
+import { OrgOperationComponent } from './org-manager/org-operation.component';
 
 
 const routes: Routes = [
@@ -36,7 +38,9 @@ const COMPONENT_NOROUNT = [
     ModuleOperationComponent,
     TypeOperationComponent,
     EntityOperationComponent,
-    UserOperationComponent
+    UserOperationComponent,
+    RoleOperationComponent,
+    OrgOperationComponent
 ];
 
 @NgModule({
@@ -44,7 +48,7 @@ const COMPONENT_NOROUNT = [
         SharedModule,
         RouterModule.forChild(routes)
     ],
-    declarations: [...COMPONENT_NOROUNT ],
+    declarations: [...COMPONENT_NOROUNT  ],
     entryComponents: COMPONENT_NOROUNT
 })
 export class SystemModule {

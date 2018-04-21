@@ -22,6 +22,7 @@
             </nz-form-item>
         </nz-tab>
         <nz-tab nzTitle="解析平台登录">
+            <nz-alert *ngIf="errorApp" [nzType]="'error'" [nzMessage]="errorApp" [nzShowIcon]="true" class="mb-lg"></nz-alert>
             <nz-form-item>
                 <nz-form-control>
                     <nz-input-group nzSize="large" nzPrefixIcon="anticon anticon-user">

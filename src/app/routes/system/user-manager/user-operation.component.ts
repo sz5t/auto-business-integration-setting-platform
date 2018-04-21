@@ -10,8 +10,6 @@ import {CacheService} from '@delon/cache';
 export class UserOperationComponent implements OnInit {
 
     constructor(
-        private http: _HttpClient,
-        private cacheService: CacheService,
         private fb: FormBuilder,
         private modal: NzModalRef
     ) { }

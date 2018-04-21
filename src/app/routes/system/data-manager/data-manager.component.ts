@@ -25,10 +25,10 @@ export class ResourceTypeService {
     }
 
     addType(data?) {
-        data['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
-        data['DrmId']  = '57e76ec4a882334c85532f3a5f561a12';
-        data['OwnerAssembly']  = 'SinoForce.AppData';
-        data['OwnerNameSpace']  = 'SinoForce.AppData';
+        data['ProjId'] = APIResource.AppProject;
+        data['DrmId']  = APIResource.AppDrmId;
+        data['OwnerAssembly']  = APIResource.AppOwnerAssembly;
+        data['OwnerNameSpace']  = APIResource.AppOwnerAssembly;
         data['ShareScope']  = 'Project';
         return this.http.postProj(this.ResourceTypeUrl, data);
     }
@@ -61,7 +61,7 @@ export class EntityProDefService {
 
     addEntity(data?) {
         data['Mapped'] = true;
-        data['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
+        data['ProjId'] = APIResource.AppProject;
         return this.http.postProj(this.EntityProDefUrl, data);
     }
 

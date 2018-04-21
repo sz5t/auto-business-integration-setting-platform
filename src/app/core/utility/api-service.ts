@@ -28,7 +28,7 @@ export class ApiService {
 
   // region 操作配置平台的相关资源
   post(resource, body?, params?) {
-   
+
     return this.httpClient.request(
       'POST',
       resource,
@@ -52,7 +52,7 @@ export class ApiService {
       });
   }
 
-  put(resource, params?, body?) {
+  put(resource, body?, params?) {
     return this.httpClient.request(
       'PUT',
       resource,
@@ -119,7 +119,6 @@ export class ApiService {
   }
 
   putProj(resource, body?, params?) {
-    debugger;
     // params = this.setParamsObjProj(params);
     return this.httpClient.request(
       'PUT',

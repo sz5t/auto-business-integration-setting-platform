@@ -18,7 +18,6 @@ export class ModuleOperationComponent implements OnInit {
     _name: any;
     _parentId: string;
     _tree: any;
-    _ids: any[];
     values: any[] ;
 
     @Input()
@@ -30,20 +29,16 @@ export class ModuleOperationComponent implements OnInit {
     }
 
     handleOk(): void {
-        console.log('Button ok clicked!');
         this.isVisible = false;
     }
 
     handleCancel1(): void {
-        console.log('Button cancel clicked!');
         this.isVisible = false;
     }
 
     copy(group?:any, item?: any)
     {
         this.iconFlag = group.prefix + item.k;
-        console.log(this.iconFlag);
-
     }
 
     constructor(
@@ -62,8 +57,7 @@ export class ModuleOperationComponent implements OnInit {
                 group: this.validateForm.controls['Group'].value ? this.validateForm.controls['Group'].value : false,
                 link: this.validateForm.controls['Link'].value,
                 icon: this.validateForm.controls['Icon'].value,
-                hide: this.validateForm.controls['Hide'].value ? this.validateForm.controls['Hide'].value : false,
-                ids : this._ids
+                hide: this.validateForm.controls['Hide'].value ? this.validateForm.controls['Hide'].value : false
             }),
             Name:   this.validateForm.controls['Name'].value,
             Order:  this.validateForm.controls['Order'].value,
@@ -71,6 +65,8 @@ export class ModuleOperationComponent implements OnInit {
             Remark: this.validateForm.controls['Remark'].value,
             ShareScope: 'Project'
         };
+        if(!this._parentId)
+            data['ParentId'] = '';
 
         this.modal.destroy(data);
     }
@@ -107,9 +103,8 @@ export class ModuleOperationComponent implements OnInit {
             this.iconFlag = this._name.icon;
             this.validateForm.controls['Order'].setValue(this._name.order);
             this.validateForm.controls['Remark'].setValue(this._name.remark);
-            this.values = this._name.ids;
-            this._ids = this.values;
-
+            this._name.Ids.shift();
+            this.values = this._name.Ids;
         }
     }
 
@@ -117,20 +112,10 @@ export class ModuleOperationComponent implements OnInit {
         return this.validateForm.controls[ name ];
     }
 
-    public onChanges(values: any)
-    {
-        this._parentId = values.pop();
-    }
+    public onChanges(values: any) {
 
-    public onSelectionChange(options: any)
-    {
-        this._ids = [];
-        options.forEach( item => {
-            this._ids.push({
-                label: item.label,
-                value: item.value
-            })
-        })
+        this._parentId = values.pop();
+        console.log(this._parentId);
     }
 
 }

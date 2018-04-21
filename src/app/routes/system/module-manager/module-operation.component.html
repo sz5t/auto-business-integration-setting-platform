@@ -15,8 +15,7 @@
                 nzChangeOnSelect
                 [nzOptions]="_tree"
                 [(ngModel)] = "values"
-                (nzChange)="onChanges($event)"
-                (nzSelectionChange) ="onSelectionChange($event)">
+                (nzChange)="onChanges($event)">
             </nz-cascader>
         </nz-form-control>
     </nz-form-item>
@@ -55,7 +54,7 @@
     <nz-form-item>
         <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Remark">备注</nz-form-label>
         <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-            <input nz-input  formControlName="Remark" id="Icon">
+            <input nz-input  formControlName="Remark" id="Remark">
         </nz-form-control>
     </nz-form-item>
 
