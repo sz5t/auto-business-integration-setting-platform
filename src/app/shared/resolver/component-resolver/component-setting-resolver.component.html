@@ -3,7 +3,7 @@
         <li nz-submenu *ngFor="let menu of menuConfig">
           <span title> {{menu.label}}</span>
           <ul *ngFor="let item of menu.children">
-            <li nz-menu-item (click)="createBsnComponent(item.value)"> {{item.label}}</li>
+            <li nz-menu-item (click)="addComponent(item.value)"> {{item.label}}</li>
           </ul>
         </li>
       </ul>

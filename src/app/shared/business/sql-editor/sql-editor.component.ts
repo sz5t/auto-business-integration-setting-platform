@@ -85,7 +85,6 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     async load(condition?) {
-        // tslint:disable-next-line:no-debugger
         let param = {
             _page: this.pageIndex + 1,
             _rows: this.pageSize
@@ -100,7 +99,6 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
         const response  = await this._http.getProj(`${APIResource.SysDataLink}/${param['_moduleId']}/${APIResource.DbCommandConfig}`, param).toPromise();
         if (response.Data && response.Status === 200) {
             this.tableData = response.Data.Rows;
-            console.log(response);
             this.total = response.Data.Total;
             this.tableData.map(d => {
                 d['expand'] = false;

@@ -1012,6 +1012,7 @@ export class LayoutStepSettingComponent implements OnInit {
                             if (result.Data && result.Status) {
                                 this._tableDataSource[i]['BlockList'] = result.Data;
                                 this._tableDataSource[i]['expand'] = false;
+                                this._tableDataSource[i]['selected'] = false;
                             }
 
                             for (let j = 0, jlen = result.Data.length; j < jlen; j++) {
@@ -1159,13 +1160,42 @@ export class LayoutStepSettingComponent implements OnInit {
 
     }
 
+    private selectRow(row) {
+        this._tableDataSource.map(d => {
+            d.selected = false;
+        });
+        row.selected = true;
+        this._layoutValue = this.getLayoutTypeValue(row.Template);
+        this._configName = row.Name;
+        this._selectedLayoutId = row.Id;
+        // this.previewLayoutData = 
+        
+    }
+
+    private getLayoutTypeValue(name) {
+        let value;
+        this._layoutOptions.map(val => {
+            if (val.label === name) {
+                value = val;
+            }
+        });
+        return value;
+    }
 
     overrideLayoutId(layoutValue) {
         const blockDataList = [];
         layoutValue.rows.forEach(row => {
             row.row.cols.forEach(col => {
                 const meta = JSON.stringify(col);
-                blockDataList.push({ Title: col.title, Icon: '', Area: col.id, Metadata: meta });
+                blockDataList.push(
+                    { 
+                        Title: col.title, 
+                        Icon: '', 
+                        Area: col.id, 
+                        Metadata: meta,
+                        Span: col.span,
+                        Size: JSON.stringify(col.size) 
+                    });
                 if (col.rows) {
                     blockDataList.push(...this.overrideLayoutId(col));
                 }
@@ -1186,7 +1216,7 @@ export class LayoutStepSettingComponent implements OnInit {
         });
     }
 
-    arrayToTree(data, parentid) {
+    private arrayToTree(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
@@ -1297,7 +1327,7 @@ export class LayoutStepSettingComponent implements OnInit {
                 for (let i = 0, len = blockDataList.length; i < len; i++) {
                     blockDataList[i]['LayoutId'] = layout.Data.Id;
                     blockDataList[i]['ParentId'] = moduleID;
-                    blockDataList[i]['type'] = 'view';
+                    blockDataList[i]['Type'] = 'view';
                     const block = await this.addBlockSetting(blockDataList[i]);
                 }
                 this.message.create('success', '布局保存成功');

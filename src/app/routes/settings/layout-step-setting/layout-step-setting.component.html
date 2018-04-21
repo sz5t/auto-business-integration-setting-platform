@@ -99,7 +99,7 @@
         </thead>
         <tbody>
             <ng-template ngFor let-data [ngForOf]="_tableDataSource">
-                <tr>
+                <tr (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
                     <td nzShowExpand [(nzExpand)]="data.expand"></td>
                     <td>{{data.Name}}</td>
                     <td>{{data.Template}}</td>

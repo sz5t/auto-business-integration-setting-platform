@@ -24,6 +24,7 @@ export class SettingLayoutComponent implements OnInit {
   title;
   icon;
   id;
+  metadata;
   constructor(
     private _http: ApiService,
     private message: NzMessageService
@@ -42,6 +43,7 @@ export class SettingLayoutComponent implements OnInit {
         this.title = block.Data.Title ? block.Data.Title : '';
         this.icon = block.Data.Icon ? block.Data.Icon : '';
         this.id = block.Data.Id ? block.Data.Id : '';
+        this.metadata = block.Data.Metadata ? JSON.parse(block.Data.Metadata) : {};
         this.isVisible = true;
       })();
     }
@@ -56,7 +58,15 @@ export class SettingLayoutComponent implements OnInit {
   }
 
   _updateBlockData() {
-    this._http.putProj(APIResource.BlockSetting, {Title: this.title, Icon: this.icon, Id: this.id}).subscribe(result => {
+    this.metadata.title = this.title;
+    this.metadata.icon = this.icon;
+    const body = {
+      Title: this.title, 
+      Icon: this.icon, 
+      Id: this.id,
+      Metadata: JSON.stringify(this.metadata)
+    };
+    this._http.putProj(APIResource.BlockSetting, body).subscribe(result => {
       if (result && result.Status === 200) {
         this.message.create('success', '保存成功');
         this.isVisible = false;

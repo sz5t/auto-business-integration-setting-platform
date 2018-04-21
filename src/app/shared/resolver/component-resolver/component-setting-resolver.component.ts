@@ -60,8 +60,15 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
       dataList: []
     },
     form_view: {
-      component: 'form_view',
-      config: [
+      keyId: 'Id',
+      ajaxConfig: {
+      },
+      componentType: {
+        'parent': false,
+        'child': false,
+        'own': true
+      },
+      forms: [
         {
           'type': 'input',
           'labelSize': '6',
@@ -98,16 +105,16 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
           'readonly': false,
           'size': 'default',
           /*'validations': [
-           {
-           'validator': 'required',
-           'errorMessage': ''
-           },
-           {
-           'validator': 'minLength',
-           'length': 6,
-           'errorMessage': ''
-           }
-           ]*/
+            {
+              'validator': 'required',
+              'errorMessage': ''
+            },
+            {
+              'validator': 'minLength',
+              'length': 6,
+              'errorMessage': ''
+            }
+          ]*/
         },
         {
           'type': 'select',
@@ -214,7 +221,19 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
           'name': 'submit'
         }
       ],
-      dataList: []
+      toolbar: [
+        {
+          'name': 'saveFrom', 'class': 'editable-add-btn', 'text': '保存',
+          'ajaxConfig': {}
+        },
+        {
+          'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消',
+          'ajaxConfig': {}
+        }
+      ],
+      relations: [
+
+      ]
     }
   };
   menuConfig = [
@@ -228,7 +247,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
             viewId: '0001',
             title: '数据网格',
             component: 'bsnDataTable',
-            type: 'list',
+            type: 'component',
             config: {
               'keyId': 'key',
               'nzIsPagination': false, // 是否分页
@@ -292,164 +311,179 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
         {
           label: '基本表单',
           value: {
-            viewId: '002',
+            keyId: 'Id',
             title: '基本表单',
             component: 'form_view',
             type: 'component',
-            'config': [
-              {
-                'type': 'input',
-                'labelSize': '6',
-                'controlSize': '10',
-                'inputType': 'text',
-                'name': 'userName',
-                'label': '用户姓名',
-                'placeholder': '例如：Company.cn.app',
-                'disabled': false,
-                'readonly': false,
-                'size': 'default',
-                'validations': [
-                  {
-                    'validator': 'required',
-                    'errorMessage': '不能为空'
-                  },
-                  {
-                    'validator': 'minlength',
-                    'length': 6,
-                    'errorMessage': '最小长度为6'
-                  }
-                ],
-                'validation': [Validators.required, Validators.minLength(6)]
+            config: {
+              ajaxConfig: {
               },
-              {
-                'type': 'input',
-                'labelSize': '6',
-                'controlSize': '10',
-                'inputType': 'text',
-                'name': 'userPassword',
-                'label': '用户密码',
-                'placeholder': '',
-                'disabled': false,
-                'readonly': false,
-                'size': 'default',
-                /*'validations': [
-                 {
-                 'validator': 'required',
-                 'errorMessage': ''
-                 },
-                 {
-                 'validator': 'minLength',
-                 'length': 6,
-                 'errorMessage': ''
-                 }
-                 ]*/
+              componentType: {
+                'parent': false,
+                'child': false,
+                'own': true
               },
-              {
-                'type': 'select',
-                'labelSize': '6',
-                'controlSize': '10',
-                'inputType': 'submit',
-                'name': 'sex',
-                'label': '性别',
-                'notFoundContent': '',
-                'selectModel': false,
-                'showSearch': true,
-                'placeholder': '--请选择--',
-                'disabled': false,
-                'size': 'default',
-                'options': [
-                  {
-                    'label': '男',
-                    'value': '1',
-                    'disabled': false
-                  },
-                  {
-                    'label': '女',
-                    'value': '2',
-                    'disabled': false
-                  }
-                ]
-              },
-              {
-                'type': 'datePicker',
-                'labelSize': '6',
-                'controlSize': '10',
-                'name': 'datePicker',
-                'label': '日期',
-                'placeholder': '--请选择日期--',
-                'dateModel': 'day',
-                'format': 'YYYY-MM-DD',
-                'disabled': false,
-                'readonly': false,
-                'size': 'default'
-              },
-              {
-                'type': 'timePicker',
-                'labelSize': '6',
-                'controlSize': '10',
-                'format': 'HH:mm:ss',
-                'name': 'timePicker',
-                'label': '时间',
-                'placeholder': '--请选择时间--',
-                'disabled': false,
-                'readonly': false,
-                'size': 'default'
-              },
-              {
-                'type': 'rangePicker',
-                'labelSize': '6',
-                'controlSize': '10',
-                'format': 'YYYY-MM-DD',
-                'name': 'dateRangePicker',
-                'dateModel': 'day',
-                'label': '日期',
-                'placeholder': ['--开始日期--', '--结束日期--'],
-                'disabled': false,
-                'readonly': false,
-                'size': 'default'
-              },
-              {
-                'type': 'checkbox',
-                'labelSize': '6',
-                'controlSize': '10',
-                'name': 'checkbox',
-                'label': '爱好',
-                'disabled': false
-              },
-              {
-                'type': 'checkboxGroup',
-                'labelSize': '6',
-                'controlSize': '10',
-                'name': 'checkbox',
-                'label': '特长',
-                'disabled': false,
-                'options': [
-                  { label: 'Apple', value: 'Apple', checked: true },
-                  { label: 'Pear', value: 'Pear' },
-                  { label: 'Orange', value: 'Orange' }
-                ]
-              },
-              {
-                'type': 'radioGroup',
-                'labelSize': '6',
-                'controlSize': '10',
-                'name': 'radioGroup',
-                'label': '专业',
-                'disabled': false,
-                'options': [
-                  { label: 'Apple', value: 'Apple', checked: true },
-                  { label: 'Pear', value: 'Pear' },
-                  { label: 'Orange', value: 'Orange' }
-                ]
-              },
-              {
-                'type': 'submit',
-                'offsetSize': '6',
-                'controlSize': '10',
-                'name': 'submit'
-              }
-            ],
-            'dataList': []
+              forms: [
+                {
+                  'type': 'input',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'inputType': 'text',
+                  'name': 'userName',
+                  'label': '用户姓名',
+                  'placeholder': '例如：Company.cn.app',
+                  'disabled': false,
+                  'readonly': false,
+                  'size': 'default',
+                  'validations': [
+                    {
+                      'validator': 'required',
+                      'errorMessage': '不能为空'
+                    },
+                    {
+                      'validator': 'minlength',
+                      'length': 6,
+                      'errorMessage': '最小长度为6'
+                    }
+                  ],
+                  'validation': [Validators.required, Validators.minLength(6)]
+                },
+                {
+                  'type': 'input',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'inputType': 'text',
+                  'name': 'userPassword',
+                  'label': '用户密码',
+                  'placeholder': '',
+                  'disabled': false,
+                  'readonly': false,
+                  'size': 'default',
+                  'validations': [
+                    {
+                      'validator': 'required',
+                      'errorMessage': ''
+                    },
+                    {
+                      'validator': 'minLength',
+                      'length': 6,
+                      'errorMessage': ''
+                    }
+                  ]
+                },
+                {
+                  'type': 'select',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'inputType': 'submit',
+                  'name': 'sex',
+                  'label': '性别',
+                  'notFoundContent': '',
+                  'selectModel': false,
+                  'showSearch': true,
+                  'placeholder': '--请选择--',
+                  'disabled': false,
+                  'size': 'default',
+                  'options': [
+                    {
+                      'label': '男',
+                      'value': '1',
+                      'disabled': false
+                    },
+                    {
+                      'label': '女',
+                      'value': '2',
+                      'disabled': false
+                    }
+                  ]
+                },
+                {
+                  'type': 'datePicker',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'name': 'datePicker',
+                  'label': '日期',
+                  'placeholder': '--请选择日期--',
+                  'dateModel': 'day',
+                  'format': 'YYYY-MM-DD',
+                  'disabled': false,
+                  'readonly': false,
+                  'size': 'default'
+                },
+                {
+                  'type': 'timePicker',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'format': 'HH:mm:ss',
+                  'name': 'timePicker',
+                  'label': '时间',
+                  'placeholder': '--请选择时间--',
+                  'disabled': false,
+                  'readonly': false,
+                  'size': 'default'
+                },
+                {
+                  'type': 'rangePicker',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'format': 'YYYY-MM-DD',
+                  'name': 'dateRangePicker',
+                  'dateModel': 'day',
+                  'label': '日期',
+                  'placeholder': ['--开始日期--', '--结束日期--'],
+                  'disabled': false,
+                  'readonly': false,
+                  'size': 'default'
+                },
+                {
+                  'type': 'checkbox',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'name': 'checkbox',
+                  'label': '爱好',
+                  'disabled': false
+                },
+                {
+                  'type': 'checkboxGroup',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'name': 'checkbox',
+                  'label': '特长',
+                  'disabled': false,
+                  'options': [
+                    { label: 'Apple', value: 'Apple', checked: true },
+                    { label: 'Pear', value: 'Pear' },
+                    { label: 'Orange', value: 'Orange' }
+                  ]
+                },
+                {
+                  'type': 'radioGroup',
+                  'labelSize': '6',
+                  'controlSize': '10',
+                  'name': 'radioGroup',
+                  'label': '专业',
+                  'disabled': false,
+                  'options': [
+                    { label: 'Apple', value: 'Apple', checked: true },
+                    { label: 'Pear', value: 'Pear' },
+                    { label: 'Orange', value: 'Orange' }
+                  ]
+                }
+              ],
+              toolbar: [
+                {
+                  'name': 'saveFrom', 'class': 'editable-add-btn', 'text': '保存',
+                  'ajaxConfig': {}
+                },
+                {
+                  'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消',
+                  'ajaxConfig': {}
+                }
+              ],
+              relations: [
+
+              ]
+            }
           }
         }
       ]
@@ -470,34 +504,6 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
       children: [
         {
           label: '树组件',
-          value: {}
-        }
-      ]
-    },
-    {
-      label: '布局组件',
-      value: {},
-      children: [
-        {
-          label: '标签页',
-          value: {
-            component: 'tabs',
-            type: 'list',
-            config: [
-              {
-                id: `tab_${this.uuID(6)}`,
-                name: `Tab 1`,
-                config: {}
-              }
-            ]
-          }
-        },
-        {
-          label: '分步页',
-          value: {}
-        },
-        {
-          label: '折叠面板',
           value: {}
         }
       ]
@@ -523,66 +529,23 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   }
 
   async ngAfterViewInit() {
-    // 获取组件区域数据
-    const params = {
-      Name: this.blockId,     // 区域ID
-      // TagB: '',               // 组件类型
-      ParentId: this.layoutId // 布局ID
-    };
-    this._http.get(APIResource.AppConfigPack, params).subscribe(result => {
-      if (result && result.Status === 200) {
-        result.Data.forEach(data => {
-          const component = data.TagB.substring(data.TagB.lastIndexOf('.') + 1, data.TagB.length);
-          if (component === 'tabs') {
-            const d = {};
-            d['config'] = JSON.parse(data.Metadata);
-            d['dataList'] = [];
-            d['component'] = component;
-            this.createBsnComponent(d);
-          } else {
-            this.createBsnComponent(this._dataStruct[component]);
-          }
-
-          this._serverLayoutId = data.Id;
-        });
-
-        /*result.Data.forEach(data => {
-          this.menuConfig.forEach(menu => {
-            menu.children.forEach(componentCfg => {
-              if(componentCfg.value.component === data.Name) {
-                this.createBsnComponent(componentCfg.value);
-                this._serverLayoutId = data.Id;
-              }
-            });
-          });
-        });*/
-      }
-    });
+    this._loadComponent();
   }
 
   ngOnChanges() {
-    this.createBsnComponent();
+    if (this.config) {
+      this._renderComponent(this.config);
+    }
+
   }
 
-  createBsnComponent(event?) {
+  private addComponent(event?) {
+    debugger;
     if (event) {
       this.config = event;
     }
-    if (this.config && this.config.component) {
-      if (!component[this.config.component]) {
-        const supportedTypes = Object.keys(component).join(', ');
-        throw new Error(
-          `Trying to use an unsupported types (${this.config.component}).Supported types: ${supportedTypes}`
-        );
-      }
-      this.container.clear();
-      const comp = this.resolver.resolveComponentFactory<any>(component[this.config.component]);
-      this.componentRef = this.container.createComponent(comp);
-      this.componentRef.instance.config = this.config.config;
-      this.componentRef.instance.dataList = this.config.dataList;
-      this.componentRef.instance.layoutId = this.layoutId;
-      this.componentRef.instance.blockId = this.blockId;
-
+    if (event) {
+      // 提交组件数据
       // 保存选中组件数据
       // BlockId,component,type,Metadata,Title,ParentId
       this._currentComponentData = {
@@ -593,25 +556,70 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
         ParentId: this.layoutId,
         Metadata: JSON.stringify(this.config)
       };
-
-      console.log(this._currentComponentData);
-
-      
-
+      this._saveComponent(this._currentComponentData, () => {
+        // 渲染组件
+        this._renderComponent(this.config);
+      });
     }
-
   }
 
-  saveComponent(data) {
-    if (this.config.type === 'list') {
-      if (this.config.component === 'tabs') {
-        
+  private _loadComponent() {
+    // 获取组件区域数据
+    const params = {
+      BlockId: this.blockId,     // 区域ID
+      ParentId: this.layoutId // 布局ID
+    };
+    this._http.get(APIResource.ViewSetting, params).subscribe(result => {
+      if (result && result.Status === 200 && result.Data.length > 0) {
+        const d = {};
+        d['config'] = JSON.parse(result.Data[0].Metadata);
+        d['layoutId'] = result.Data[0].ParentId;
+        d['blockId'] = result.Data[0].BlockId;
+        this._renderComponent(d['config']);
+        this._serverLayoutId = result.Data[0].Id;
       }
+    });
+  }
+
+  private _renderComponent(config) {
+    if (config && config.component) {
+      if (!component[config.component]) {
+        const supportedTypes = Object.keys(component).join(', ');
+        throw new Error(
+          `Trying to use an unsupported types (${config.component}).Supported types: ${supportedTypes}`
+        );
+      }
+      this.container.clear();
+      const comp = this.resolver.resolveComponentFactory<any>(component[config.component]);
+      this.componentRef = this.container.createComponent(comp);
+      this.componentRef.instance.config = config.config;
+      this.componentRef.instance.dataList = config.dataList;
+      this.componentRef.instance.layoutId = this.layoutId;
+      this.componentRef.instance.blockId = this.blockId;
+    }
+  }
+
+  private _saveComponent(data, callback) {
+    if (this._serverLayoutId) {
+      data['Id'] = this._serverLayoutId;
+      this._http.putProj(APIResource.ViewSetting, data).subscribe(result => {
+        if (result && result.Status === 200) {
+          if (result && result.Status === 200) {
+            this.message.success('保存成功');
+            callback();
+          } else {
+            this.message.warning(`出现异常: ${result.Message}`);
+          }
+        }
+      }, error => {
+        this.message.error(`出现错误：${error}`);
+      });
     } else {
       this._http.postProj(APIResource.ViewSetting, data).subscribe(result => {
         if (result && result.Status === 200) {
           if (result && result.Status === 200) {
             this.message.success('保存成功');
+            callback();
           } else {
             this.message.warning(`出现异常: ${result.Message}`);
           }
@@ -621,60 +629,4 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
       });
     }
   }
-
-  _saveComponent() {
-    const body: AppConfigPack_Block = {
-      ParentId: this.layoutId,
-      Name: this.blockId, // 组件名称
-      TagA: this.uuID(10),
-    };
-    if (this.config.component === 'tabs') {
-      body.Metadata = JSON.stringify(this.config.config);
-      body.TagB = `tabs.${this.config.component}`;
-    } else {
-      body.TagB = `component.${this.config.component}`;
-    }
-    if (this._serverLayoutId) {
-      body.Id = this._serverLayoutId;
-      this._http.putProj(APIResource.AppConfigPack, body, { Id: this._serverLayoutId }).subscribe(result => {
-        if (result && result.Status === 200) {
-          this.message.success('保存成功');
-        } else {
-          this.message.warning(`出现异常: ${result.Message}`);
-        }
-      }, error => {
-        this.message.error(`出现错误：${error}`);
-      }
-      );
-    } else {
-      this._http.postProj(APIResource.AppConfigPack, body).subscribe(result => {
-        if (result && result.Status === 200) {
-          this.message.success('保存成功');
-        } else {
-          this.message.warning(`出现异常: ${result.Message}`);
-        }
-      }, error => {
-        this.message.error(`出现错误：${error}`);
-      }
-      );
-    }
-  }
-
-  async getTabComponent(blockId) {
-    const params = {
-      ParentId: this.layoutId,
-      TagA: blockId
-    };
-    return this._http.get(APIResource.AppConfigPack, params).toPromise();
-  }
-
-  uuID(w) {
-    let s = '';
-    const str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    for (let i = 0; i < w; i++) {
-      s += str.charAt(Math.round(Math.random() * (str.length - 1)));
-    }
-    return s;
-  }
-
 }
