@@ -63,7 +63,7 @@ export class EntityOperationComponent implements OnInit {
             MinLength : [0],
             Nullable:  [true],
             Precision     : [0],
-            SortCode     : [ ],
+            SortCode     : [null, [ Validators.required ] ],
             Remark   : [ null],
             PropertyType: ['String']
         });

@@ -8,7 +8,7 @@
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Gender">性别</nz-form-label>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >性别</nz-form-label>
         <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
             <nz-select formControlName="Gender">
                 <nz-option [nzLabel]="'未知'" [nzValue]="'Unknown'" ></nz-option>
@@ -19,7 +19,7 @@
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >身份标识</nz-form-label>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="IdCardNumber">身份标识</nz-form-label>
         <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
             <input nz-input  formControlName="IdCardNumber" id="IdCardNumber">
         </nz-form-control>
@@ -37,7 +37,7 @@
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >移动电话</nz-form-label>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="MobileNumber">移动电话</nz-form-label>
         <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
             <input nz-input  formControlName="MobileNumber" id="MobileNumber">
         </nz-form-control>
