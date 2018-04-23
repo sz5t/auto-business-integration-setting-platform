@@ -77,6 +77,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                     });
                 }
                 this.treeData = this.listToTreeData(TotreeBefore, parent);
+                console.log(this.treeData, parent);
             }
         })();
     }

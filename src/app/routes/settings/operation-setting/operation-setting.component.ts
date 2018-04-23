@@ -1616,33 +1616,15 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     // this._layoutConfig = $event.metadata;
     const str = [];
     if ($event.metadata) {
-      (async () => {
-        // load block
-        const operationTreeData = [];
-        const operationData = await this._getOperationTree($event.id);
-        if (operationData && operationData.Status === 200) {
-          const columns = [
-            { title: '主键', field: 'key', valueName: 'Id' },
-            { title: '父节点', field: 'parentId', valueName: 'ParentId' },
-            { title: '标题', field: 'title', valueName: 'Title' },
-          ];
-
-
+      const receiver = {
+        name: 'initParameters',
+        receiver: 'view_operationTree',
+        parent: {
+          _layoutId: $event.id
         }
-      })();
+      };
+      this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
     }
-
-    
-    const receiver = {
-      name: 'initParameters',
-      receiver: 'view_operationTree',
-      parent: {
-        _optType: 'opt_sqlList',
-        _moduleId: this._funcValue[this._funcValue.length - 1]
-      }
-    };
-    this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
-    
   }
 
   private _listToTreeData(data, parentid) {
