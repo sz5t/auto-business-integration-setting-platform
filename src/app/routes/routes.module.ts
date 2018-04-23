@@ -20,7 +20,7 @@ import { Exception500Component } from './exception/500.component';
 import { AuthGuard } from '@core/utility/auth-guard';
 
 @NgModule({
-    imports: [ SharedModule, RouteRoutingModule ],
+    imports: [SharedModule, RouteRoutingModule],
     declarations: [
         DashboardV1Component,
         DashboardAnalysisComponent,
@@ -37,9 +37,9 @@ import { AuthGuard } from '@core/utility/auth-guard';
         Exception404Component,
         Exception500Component
     ],
-    providers:[
+    providers: [
         AuthGuard
     ]
 })
 
-export class RoutesModule {}
+export class RoutesModule { }

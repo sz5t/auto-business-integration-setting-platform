@@ -539,8 +539,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
 
   }
 
-  private addComponent(event?) {
-    debugger;
+  private addComponent(event?) {    
     if (event) {
       this.config = event;
     }

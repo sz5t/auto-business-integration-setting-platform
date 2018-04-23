@@ -7,6 +7,7 @@ import { _HttpClient } from '@delon/theme';
 })
 export class LayoutResolverComponent implements OnInit {
   @Input() config;
+  @Input() layoutId;
   _isRows = false;
   constructor(
       private http: _HttpClient
@@ -14,10 +15,6 @@ export class LayoutResolverComponent implements OnInit {
 
   ngOnInit() {
     this._isRows = Array.isArray(this.config.rows);
-  }
-
-  getMenuData(event) {
-    this.config = event;
   }
 
 }

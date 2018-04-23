@@ -40,7 +40,8 @@ const routes: Routes = [
             { path: 'pro', loadChildren: './pro/pro.module#ProModule' },
             { path: 'system', loadChildren: './system/system.module#SystemModule'},
             { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
-            { path: 'test', loadChildren: './cn-test/cn-test.module#CnTestModule'}
+            { path: 'test', loadChildren: './cn-test/cn-test.module#CnTestModule'},
+            { path: 'template', loadChildren: './template/template.module#TemplateModule'},
         ]
     },
     // 全屏布局

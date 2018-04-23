@@ -1483,7 +1483,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
       },
     ]
   };
-  
+
   tree_Config = {
     'viewId': 'view_operationTree',
     'asyncData': true, // 
@@ -1491,38 +1491,38 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     'checkable': false,  //    在节点之前添加一个复选框 false
     'showLine': false,  //   显示连接线 fal
     'columns': [ // 字段映射，映射成树结构所需
-        {title: '主键', field: 'key',  valueName: 'Id'},
-        {title: '父节点', field: 'parentId',  valueName: 'ParentId'},
-        {title: '标题', field: 'title',  valueName: 'Title'},
+      { title: '主键', field: 'key', valueName: 'Id' },
+      { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+      { title: '标题', field: 'title', valueName: 'Title' },
     ],
     'parent': [
-        { name: 'ParentId', type: 'tempValue', valueName: '_layoutId', value: '' }
+      { name: 'ParentId', type: 'tempValue', valueName: '_moduleId', value: '' }
     ],
     'ajaxConfig': {
-        'url': 'GetOperationTree',
-        'ajaxType': 'get',
-        'params': [
-            { name: 'LayoutId', type: 'tempValue', valueName: '_layoutId', value: '' }                
-        ]
+      'url': 'GetOperationTree',
+      'ajaxType': 'get',
+      'params': [
+        { name: 'layoutId', type: 'tempValue', valueName: '_layoutId', value: '' }
+      ]
     },
     'relations': [{
-        'relationViewId': 'view_operationTree',
-        'relationSendContent': [
-          {
-            'name': 'clickNode',
-            'sender': 'view_operationTree',
-            'aop': 'after',
-            'receiver': 'operation_sqlColumns',
-            'relationData': {
-              'name': 'initParameter',
-              'params': [
-                { 'pid': 'key', 'cid': '_parentId' }
-              ]
-            },
-          }
-        ],
-        'relationReceiveContent': []
-      }]
+      'relationViewId': 'view_operationTree',
+      'relationSendContent': [
+        {
+          'name': 'clickNode',
+          'sender': 'view_operationTree',
+          'aop': 'after',
+          'receiver': 'operation_sqlColumns',
+          'relationData': {
+            'name': 'initParameter',
+            'params': [
+              { 'pid': 'key', 'cid': '_parentId' }
+            ]
+          },
+        }
+      ],
+      'relationReceiveContent': []
+    }]
   };
   nodes = [
     {
@@ -1620,7 +1620,8 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         name: 'initParameters',
         receiver: 'view_operationTree',
         parent: {
-          _layoutId: $event.id
+          _layoutId: $event.id,
+          _moduleId: this._funcValue[this._funcValue.length - 1]
         }
       };
       this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);

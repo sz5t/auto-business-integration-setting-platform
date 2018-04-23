@@ -413,6 +413,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
 
     /**新增 */
     addRow(): void {
+        this.toolbarEnables('action', 'addRow');
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
         const fieldIdentity = CommonUtility.uuID(6);
         rowContentNew['key'] = fieldIdentity;
@@ -425,6 +426,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     }
     /**修改 */
     updateRow(): void {
+        this.toolbarEnables('action', 'updateRow');
         this.dataList.forEach(item => {
             if (item.checked === true) {
                 this.startEdit(item.key);
@@ -433,6 +435,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     }
     /**删除 */
     deleteRow(): void {
+        this.toolbarEnables();
         //  this.modalService.confirm({
         //      title: '确认框',
         //      content: '确认要删除？',
@@ -450,7 +453,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     /**保存 */
     async  saveRow() {
 
-
+        this.toolbarEnables('action', 'saveRow');
         this.dataList.forEach(item => {
             if (item.checked === true) {
                 this.saveEdit(item.key);
@@ -1209,7 +1212,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     /**
      * 存储方法的变量
      */
-    CRUD= {};
+    CRUD = {};
     /**
      * 生成方法（自定义方法）
      */

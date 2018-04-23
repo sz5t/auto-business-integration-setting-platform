@@ -39,6 +39,7 @@ export class APIResource {
    */
   public static SysDataCategoryLink = 'SinoForce.SysData.SysDataCategoryLink';	//
   public static DataCategoryLink = 'SinoForce.AppData.DataCategoryLink';	//
+  public static ShowCase = 'SinoForce.SysData.ShowCase';
 
   /**
    * 资源访问令牌
@@ -235,7 +236,7 @@ export class APIResource {
     /**
      * 配置系统ApplyId
      * @type {string}
-     */WEB前端标识
+     */
     public static SysApplyId = 'b9743e6da0b940beb34345fe09240c2f';
 
 // ---------------------------------------------------------------------------------
@@ -255,7 +256,7 @@ export class APIResource {
     /**
      * 业务系统ApplyId
      * @type {string}
-     */ WEB应用运行平台
+     */
     public static AppApplyId = '3935eb43532d435398d5189d5ece0f5d';
 
     /**

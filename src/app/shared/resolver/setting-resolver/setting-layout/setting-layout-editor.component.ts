@@ -111,7 +111,7 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
             this._currentLyoutData = {
                 LayoutId: this.layoutId,
                 Type: this.config.type,
-                Title: '',
+                Title: '标签页',
                 ParentId: this.blockId, // 当前布局区域ID
                 ShowTitle: true
                 // Metadata: JSON.stringify(this.config)
