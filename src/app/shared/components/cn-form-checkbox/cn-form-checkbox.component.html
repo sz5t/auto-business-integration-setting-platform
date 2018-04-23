@@ -1,6 +1,6 @@
 <nz-form-item>
   <nz-form-label [nzSm]="config.labelSize" [nzXs]="24">
-    <label [attr.for]="config.name" nz-form-item-required>{{config.label}}</label>
+   {{config.label}}
   </nz-form-label>
   <nz-form-control [formGroup]="formGroup" [nzSm]="config.controlSize" [nzXs]="24">
     <label formControlName="{{config.name}}" nz-checkbox [(ngModel)]="_checked" [nzDisabled]="config.disabled">

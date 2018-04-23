@@ -1,7 +1,7 @@
+import { APIResource } from './../../../core/utility/api-resource';
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzDropdownContextComponent, NzDropdownService, NzMenuItemDirective } from 'ng-zorro-antd';
-import { APIResource } from '@core/utility/api-resource';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 
@@ -1410,7 +1410,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
                 //        'component': 'form_view',
                 //        'formHeader': {
                 //          'header': [
- 
+
                 //            { title: '当前参数', width: 'auto' },
                 //            { title: '动作 / 操作参数', width: 'auto' },
                 //            { title: '所属动作/操作编号', width: '130px' }
@@ -1483,29 +1483,34 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
       },
     ]
   };
-  treeconfig = {
-    nzAutoExpandParent: true, // 是否自动展开父节点，当数字时展开最大节点 false
-    nzAllowChildLinkage: false, // 是否开启父节点的checkbox状态的会影响子节点状态 true
-    nzAllowParentLinkage: false, // 是否开启子节点的checkbox状态的会影响父节点状态 true
-    nzCheckable: false, //  在节点之前添加一个复选框 false
-    nzShowLine: false, // 显示连接线 false
-  };
-  treeConfig = {
-    'viewId': 'viewId_tree',
-    'ajax': {
-        'url': 'AppModuleConfig',
+  
+  tree_Config = {
+    'viewId': 'view_operationTree',
+    'asyncData': true, // 
+    'expandAll': true, //  
+    'checkable': false,  //    在节点之前添加一个复选框 false
+    'showLine': false,  //   显示连接线 fal
+    'columns': [ // 字段映射，映射成树结构所需
+        {title: '主键', field: 'key',  valueName: 'Id'},
+        {title: '父节点', field: 'parentId',  valueName: 'ParentId'},
+        {title: '标题', field: 'title',  valueName: 'Title'},
+    ],
+    'parent': [
+        { name: 'ParentId', type: 'tempValue', valueName: '_layoutId', value: '' }
+    ],
+    'ajaxConfig': {
+        'url': 'GetOperationTree',
+        'ajaxType': 'get',
         'params': [
-            {
-                '_select': 'Id as key,Name as title,ParentId'
-            }
+            { name: 'LayoutId', type: 'tempValue', valueName: '_layoutId', value: '' }                
         ]
     },
     'relations': [{
-        'relationViewId': 'viewId_tree',
+        'relationViewId': 'view_operationTree',
         'relationSendContent': [
           {
             'name': 'clickNode',
-            'sender': 'viewId_tree',
+            'sender': 'view_operationTree',
             'aop': 'after',
             'receiver': 'operation_sqlColumns',
             'relationData': {
@@ -1597,7 +1602,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   // region: func
   // 获取布局设置列表
   getLayoutConfigData(params) {
-    return this._http.getProj(APIResource.AppConfigPack, params).toPromise();
+    return this._http.getProj(APIResource.LayoutSetting, params).toPromise();
   }
 
   // 获取模块信息
@@ -1612,85 +1617,75 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     const str = [];
     if ($event.metadata) {
       (async () => {
-        const componentData = await this.getComponentByLayout($event.id);
-        let componentJson = [];
-        if (componentData && componentData.Status === 200) {
-          componentJson = componentData.Data;
-          // load operation
-          for (let i = 0, len = componentData.Data.length; i < len; i++) {
-            const operationData = await this.getOperationByBlock(componentData.Data[i].Name);
-            componentJson.push(...operationData.Data);
-          }
-        }
-        // $event.metadata 布局结构
-        // componentJson 节点数据
-        // this.nodes = this.arrayToTreeBylayout(this.dataToArray($event.metadata, componentJson, ''), '');
-        if ($event.metadata.rows) {
-          const treeNodeJson = [];
-          $event.metadata.rows.forEach(row => {
-            row.row.cols.forEach(col => {
-              if (col.rows) {
-                // 嵌套布局
-              } else {
-                // 获取区域ID，通过区域ID查找相应组件
-                componentJson.forEach(comp => {
-                  if (col.id === comp.Name) {
-                    const type = comp.TagB.substring(comp.TagB.lastIndexOf('.') + 1, comp.TagB.length);
-                    const node = {
-                      key: col.id,
-                      title: col.title,
-                      type: type === 'tabs' ? 'tabs' : 'component'
-                    };
-                    if (type === 'tabs') {
-                      node['children'] = [];
-                      // 获取当前tabs配置的元数据，解析称为节点配置
-                      const tabsMeta = JSON.parse(comp.Metadata);
-                      tabsMeta.forEach(meta => {
-                        const tabNode = {
-                          key: meta.id,
-                          title: meta.name,
-                          type: 'tab',
-                          children: []
-                        };
-                        componentJson.forEach(optData => {
-                          if (optData.ParentId === tabNode.key) {
-                            const optNode = {
-                              key: optData.Id,
-                              title: optData.Name,
-                              type: 'operation'
-                            };
-                            tabNode['children'].push(optNode);
-                          }
-                        });
-                        // 查找操作
+        // load block
+        const operationTreeData = [];
+        const operationData = await this._getOperationTree($event.id);
+        if (operationData && operationData.Status === 200) {
+          const columns = [
+            { title: '主键', field: 'key', valueName: 'Id' },
+            { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+            { title: '标题', field: 'title', valueName: 'Title' },
+          ];
 
-                        node['children'].push(tabNode);
-                      });
-                    }
-                    treeNodeJson.push(node);
-                  }
-                });
-              }
-            });
-          });
-          this.nodes = [...treeNodeJson];
+
         }
       })();
     }
 
+    
     const receiver = {
       name: 'initParameters',
-      receiver: 'viewId_tree',
+      receiver: 'view_operationTree',
       parent: {
-        // _Id: event.node.key,
         _optType: 'opt_sqlList',
         _moduleId: this._funcValue[this._funcValue.length - 1]
       }
     };
-    console.log('选中行发消息事件', receiver);
     this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
-
+    
   }
+
+  private _listToTreeData(data, parentid) {
+    const result = [];
+    let temp;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].ParentId === parentid) {
+        temp = this.listToTreeData(data, data[i].Id);
+        if (temp.length > 0) {
+          data[i]['children'] = temp;
+        } else {
+          data[i]['isLeaf'] = true;
+        }
+        result.push(data[i]);
+      }
+    }
+    return result;
+  }
+
+  // 获取区域信息
+  private async _getOperationTree(layoutId) {
+    const params = {
+      LayoutId: layoutId
+    };
+    return this._http.getProj(APIResource.GetOperationTree, params).toPromise();
+  }
+
+  // 获取组件
+  private async  _getViewByBlock(blockId) {
+    const params = {
+      BlockId: blockId
+    };
+    return this._http.getProj(APIResource.ViewSetting, params).toPromise();
+  }
+
+
+
+
+
+
+
+
+
 
   mouseAction(name: string, e: any): void {
     if (name === 'contextmenu') {
@@ -1794,12 +1789,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     return objs;
   }
 
-  async  getComponentByLayout(layoutId?) {
-    const params = {
-      ParentId: layoutId
-    };
-    return this._http.getProj(APIResource.AppConfigPack, params).toPromise();
-  }
+
 
   async getOperationByBlock(blockId) {
     const params = {
@@ -1971,7 +1961,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
     if (this._relativeResolver) {
       this._relativeResolver.unsubscribe();
     }
-    
+
   }
 
   closeOperationMenu(e: NzMenuItemDirective): void {

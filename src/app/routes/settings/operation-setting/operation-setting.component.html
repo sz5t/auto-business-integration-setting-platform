@@ -5,7 +5,7 @@
       <form nz-form (ngSubmit)="_submitForm($event)" [nzLayout]="'inline'">
         <nz-form-item>
           <nz-form-label>
-            <label [attr.for]="'功能模块'">功能模块</label>
+            功能模块
           </nz-form-label>
           <nz-form-control>
             <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue"
@@ -16,7 +16,7 @@
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>
-            <label [attr.for]="'布局'">模块布局列表</label>
+            模块布局列表
           </nz-form-label>
           <nz-form-control>
             <nz-select style="width:120px;" [(ngModel)]="_layoutNameValue" (ngModelChange)="_changeLayoutName($event)" [nzPlaceHolder]="'选择布局名称'"
@@ -37,7 +37,9 @@
       <!-- <nz-tree #tree (nzContextMenu)="mouseAction('contextmenu', $event)" [nzTreeData]="nodes" (nzClick)="onActivate($event)" [nzDefaultExpandAll]="treeconfig.nzAutoExpandParent"
         [nzCheckable]="treeconfig.nzCheckable" [nzShowLine]="treeconfig.nzShowLine">
       </nz-tree> -->
-      <cn-bsn-tree [config]="treeConfig"></cn-bsn-tree>
+      <cn-bsn-tree 
+        [config]="treeConfig"
+      ></cn-bsn-tree>
     </nz-card>
   </div>
   <div nz-col [nzSpan]="18">

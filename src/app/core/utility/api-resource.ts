@@ -186,6 +186,7 @@ export class APIResource {
   public static ViewSetting = 'SinoForce.SysData.ViewSetting';
 
 
+  public static GetOperationTree = 'SinoForce.SysData.GetOperationTree';
 
   /**
    * 配置平台标识代码
