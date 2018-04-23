@@ -9,7 +9,7 @@ import {ModuleOperationComponent} from './module-operation.component';
 @Injectable()
 export class ModuleService {
   moduleUrl = APIResource.AppModuleConfig;
-  moduleServiceUrl = `${APIResource.AppModuleConfig}/_root/${APIResource.AppModuleConfig}?_recursive=true&_deep=4&_root.ApplyId=3935eb43532d435398d5189d5ece0f5d&_root.parentid=in("",null)`;
+  moduleServiceUrl = `${APIResource.AppModuleConfig}/_root/${APIResource.AppModuleConfig}?_recursive=true&_deep=6&_root.ApplyId=${APIResource.AppApplyId}&_root.parentid=in("",null)`;
   getModule(pageIndex = 1, pageSize = 2, sortField, sortOrder) {
     return this.http.get(`${this.moduleServiceUrl}` , {
       _page: pageIndex, _rows: pageSize, _orderBy: `${sortField} ${sortOrder}`
@@ -64,7 +64,6 @@ export class ModuleManagerComponent implements OnInit {
   _sortField = 'order';
 
   ids: string[];
-  // items = [];
   dataItems;
   dataTree = [];
 
@@ -136,7 +135,8 @@ export class ModuleManagerComponent implements OnInit {
       this._moduleService.getModule(this._current, this._pageSize, this._sortField, this._sortValue).subscribe( (data: any) => {
         this._loading = false;
         this._total = data.Data.Total;
-        this._dataSet = this.arrayToTree(data.Data.Rows, '')
+
+        this._dataSet = this.arrayToTree(data.Data.Rows, '');
         this.dataTree = this.drarrayToTree(data.Data.Rows, '');
         this.cacheService.set('ModuleTree', this.dataTree);
         this._dataSet.forEach(item => {
@@ -144,8 +144,6 @@ export class ModuleManagerComponent implements OnInit {
         });
       });
     }
-
-
 
   refresh(event?){
     this._current = 1;
@@ -170,7 +168,7 @@ export class ModuleManagerComponent implements OnInit {
       }
     }
 
-    drarrayToTree(data, parentid) {
+  drarrayToTree(data, parentid) {
         const result = [];
         let temp;
         if(data)
@@ -192,12 +190,16 @@ export class ModuleManagerComponent implements OnInit {
         return result;
     }
 
+    idss = [];
   arrayToTree(data, parentid) {
     const result = [];
     let temp;
       if(data)
     for (let i = 0; i < data.length; i++) {
+        if(data[i].ParentId === '' || data[i].ParentId == null)
+            this.idss = [];
       if (data[i].ParentId == parentid || !data[i].ParentId) {
+          if(!(this.idss.indexOf(data[i].ParentId) >= 0) )this.idss.push(data[i].ParentId);
         const obj =
           { text: data[i].Name,
             id: data[i].Id,
@@ -205,21 +207,25 @@ export class ModuleManagerComponent implements OnInit {
             link: JSON.parse(data[i].ConfigData).link,
             icon: JSON.parse(data[i].ConfigData).icon,
             hide:  JSON.parse(data[i].ConfigData).hide,
-            ids: JSON.parse(data[i].ConfigData).ids,
             remark: data[i].Remark,
             order: data[i].Order,
             createtime: data[i].CreateTime,
             applyid: data[i].ApplyId,
             projid: data[i].ProjId,
-            platcustomerid: data[i].PlatCustomerId
+            platcustomerid: data[i].PlatCustomerId,
           };
         temp = this.arrayToTree(data[i].Children, data[i].Id);
         if (temp.length > 0) {
-          obj['children'] = temp;
+            obj['children'] = temp;
             obj['isLeaf'] = false;
         } else {
-          obj['isLeaf'] = true;
-          obj['checked'] = false;
+            obj['Ids'] =  this.idss.slice(0);
+            obj['isLeaf'] = true;
+            obj['checked'] = false;
+            if(data[i].ParentId === '' || data[i].ParentId == null)
+                this.idss = [];
+            else
+            this.idss.pop();
         }
         obj['selected'] = false;
         result.push(obj);
@@ -269,6 +275,7 @@ export class ModuleManagerComponent implements OnInit {
                     }
                 });
         });
+        this.loadData();
     }
 
     confirmEditData() {
@@ -296,6 +303,7 @@ export class ModuleManagerComponent implements OnInit {
                         }
                     });}
             });
+            this.loadData();
         }else if (this.dataItems.size > 1 ){
             this.msgSrv.warning('不能修改多条记录！');
         } else {

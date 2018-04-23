@@ -1,7 +1,6 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import {ApiService} from '@core/utility/api-service';
 import {APIResource} from '@core/utility/api-resource';
-import {CacheService} from '@delon/cache';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {UserOperationComponent} from './user-operation.component';
 
@@ -24,7 +23,7 @@ export class RandomUserService {
 
   addUser(data?){
       data['Password'] = '1';
-      data['PlatCustomerId'] = 'eb4332bbb4d01a4289457a891b6a0333';
+      data['PlatCustomerId'] = APIResource.AppPlatCustomerId;
       data['LoginLimitKind'] = 'None';   // { "Name":"None", "Value":0 },{"Name":"ByIp","Value":1},{"Name":"ByMac","Value":2},{"Name":"ByIpAndMac","Value":3}
       return this.http.post(`${this.randomUserUrl}`, data);
   }
@@ -55,8 +54,6 @@ export class RandomUserService {
     `
   ]
 })
-
-
 export class UserManagerComponent implements OnInit {
 
   _allChecked = false;
@@ -91,7 +88,7 @@ export class UserManagerComponent implements OnInit {
         this.refreshData();
     }
 
-    delete(data?) {
+    delete() {
         const idlist = this.getSelectId();
         if(idlist.length >= 1) {
             this._randomUser.deleteUser(idlist).subscribe(response => {

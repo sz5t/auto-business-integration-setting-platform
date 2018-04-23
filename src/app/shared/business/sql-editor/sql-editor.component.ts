@@ -189,7 +189,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             ResultType: 'Dynamic',
             ResultLength: 0
         };
-        return this._http.postProjSys(APIResource.DbCommandConfig, params).toPromise();
+        return this._http.postProj(APIResource.DbCommandConfig, params).toPromise();
     }
 
     private async addSqlRelative() {

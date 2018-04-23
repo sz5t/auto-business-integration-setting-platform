@@ -529,7 +529,10 @@ export class ComponentSettingComponent implements OnInit {
 
     // 布局块
     async getBlockConfigData(layoutId) {
-        return this._http.getProj(APIResource.BlockSetting, {LayoutId: layoutId }).toPromise();
+       // SinoForce.SysData.getComponentTree
+       // return this._http.getProj(APIResource.BlockSetting, {LayoutId: layoutId }).toPromise();
+        return this._http.get('SinoForce.SysData.GetComptTree', {}).toPromise();
+        
     }
 
     //   选择布局名称

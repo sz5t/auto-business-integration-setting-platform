@@ -219,4 +219,56 @@ export class APIResource {
    * @type {string}
    */
   public static localUrl =  'http://localhost:4200/assets/app-data.json';
+
+
+    /**
+     * 配置系统客户ID
+     * @type {string}
+     */
+  public static SysPlatCustomerId = 'f2771e4c90db29439e3c986d9859dc74';
+    /**
+     * 配置系统项目ID
+     * @type {string}
+     */
+    public static SysProjId = '0ac12f70c2a7a44794b57ef0c1c480c2';
+
+    /**
+     * 配置系统ApplyId
+     * @type {string}
+     */WEB前端标识
+    public static SysApplyId = 'b9743e6da0b940beb34345fe09240c2f';
+
+// ---------------------------------------------------------------------------------
+
+    /**
+     * 业务系统客户ID
+     * @type {string}
+     */
+    public static AppPlatCustomerId = 'eb4332bbb4d01a4289457a891b6a0333';
+
+    /**
+     * 业务系统项目ID
+     * @type {string}
+     */
+    public static AppProjId = '002905c7bf57c54c9e5e65ec0e5fafe8';
+
+    /**
+     * 业务系统ApplyId
+     * @type {string}
+     */ WEB应用运行平台
+    public static AppApplyId = '3935eb43532d435398d5189d5ece0f5d';
+
+    /**
+     * 运行平台资源所属ID
+     * @type {string}
+     */
+
+    public static AppDrmId = '57e76ec4a882334c85532f3a5f561a12';
+
+    /**
+     * 运行平台资源所属模块
+     * @type {string}
+     */
+     public static AppOwnerAssembly = 'SinoForce.AppData';
+
 }

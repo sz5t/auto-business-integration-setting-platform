@@ -23,6 +23,7 @@ import { HttpClient } from '@angular/common/http';
 export class UserLoginComponent implements OnInit, OnDestroy {
     form: FormGroup;
     error = '';
+    errorApp = '';
     type = 0;
     loading = false;
 
@@ -95,6 +96,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     submit() {
         this.error = '';
+        this.errorApp = '';
         if (this.type === 0) {
             this.userName.markAsDirty();
             this.userName.updateValueAndValidity();
@@ -133,7 +135,9 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 .then(response => {
                     this.onlineUser = { ...response.Data };
                     if (!this.onlineUser.Online) {
-                        this.error = this.onlineUser.Message;
+                        if(this.type === 0 )
+                            this.error = this.onlineUser.Message;
+                        else this.errorApp = this.onlineUser.Message;
                         return null;
                     }
                     this.cacheService.set('OnlineUser', this.onlineUser);
@@ -191,54 +195,22 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                 }
                             })
                             .catch(errMsg => {
-                                this.error = errMsg;
+                                this.showError(errMsg);
                             });
                     }
                 }
 
             ).catch(errMsg => {
-                this.error = errMsg;
+                this.showError(errMsg);
             });
         }, 1000);
     }
 
-    // region: social
-
-    // open(type: string, openType: SocialOpenType = 'href') {
-    //     let url = ``;
-    //     let callback = ``;
-    //     if (environment.production)
-    //         callback = 'https://cipchk.github.io/ng-alain/callback/' + type;
-    //     else
-    //         callback = 'http://localhost:4200/callback/' + type;
-    //     switch (type) {
-    //         case 'auth0':
-    //             url = `//cipchk.auth0.com/login?client=8gcNydIDzGBYxzqV0Vm1CX_RXH-wsWo5&redirect_uri=${decodeURIComponent(callback)}`;
-    //             break;
-    //         case 'github':
-    //             url = `//github.com/login/oauth/authorize?client_id=9d6baae4b04a23fcafa2&response_type=code&redirect_uri=${decodeURIComponent(callback)}`;
-    //             break;
-    //         case 'weibo':
-    //             url = `https://api.weibo.com/oauth2/authorize?client_id=1239507802&response_type=code&redirect_uri=${decodeURIComponent(callback)}`;
-    //             break;
-    //     }
-    //     if (openType === 'window') {
-    //         this.socialService.login(url, '/', {
-    //             type: 'window'
-    //         }).subscribe(res => {
-    //             if (res) {
-    //                 this.settingsService.setUser(res);
-    //                 this.router.navigateByUrl('/');
-    //             }
-    //         });
-    //     } else {
-    //         this.socialService.login(url, '/', {
-    //             type: 'href'
-    //         });
-    //     }
-    // }
-
-    // endregion
+    showError(errmsg) {
+        if(this.type === 0 )
+            this.error = errmsg;
+        else this.errorApp = errmsg;
+    }
 
     ngOnDestroy(): void {
         if (this.interval$) clearInterval(this.interval$);

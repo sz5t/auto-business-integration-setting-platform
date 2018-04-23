@@ -8,54 +8,53 @@
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="ParentId">所属模块</nz-form-label>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >所属模块</nz-form-label>
         <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
             <nz-cascader
                 formControlName = "ParentId"
                 nzChangeOnSelect
                 [nzOptions]="_tree"
                 [(ngModel)] = "values"
-                (nzChange)="onChanges($event)"
-                (nzSelectionChange) ="onSelectionChange($event)">
+                (nzChange)="onChanges($event)">
             </nz-cascader>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Group">是否分组</nz-form-label>
-        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >是否分组</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
             <label nz-checkbox formControlName="Group">
             </label>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Hide">是否禁用</nz-form-label>
-        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >是否禁用</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
             <label nz-checkbox formControlName="Hide">默认为启用状态
             </label>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Link">地址</nz-form-label>
-        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >地址</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
             <input nz-input  formControlName="Link" id="Link">
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Icon">图标</nz-form-label>
-        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >图标</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
             <input nz-input  formControlName="Icon" id="Icon" [(ngModel)]= "iconFlag" (click)="showModal()">
         </nz-form-control>
     </nz-form-item>
     <nz-form-item >
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Order">排序</nz-form-label>
-        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >排序</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
             <nz-input-number [nzSize]="'small'" formControlName="Order" ></nz-input-number>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Remark">备注</nz-form-label>
-        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-            <input nz-input  formControlName="Remark" id="Icon">
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >备注</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="Remark" id="Remark">
         </nz-form-control>
     </nz-form-item>
 

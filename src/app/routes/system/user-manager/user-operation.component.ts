@@ -10,8 +10,6 @@ import {CacheService} from '@delon/cache';
 export class UserOperationComponent implements OnInit {
 
     constructor(
-        private http: _HttpClient,
-        private cacheService: CacheService,
         private fb: FormBuilder,
         private modal: NzModalRef
     ) { }
@@ -28,7 +26,7 @@ export class UserOperationComponent implements OnInit {
     ngOnInit() {
         this.userOperForm = this.fb.group({
             Name     : [ null, [ Validators.required ] ],
-            Gender : [ 'Unknown', [ Validators.required ] ],
+            Gender : [ 'Unknown'],
             IdCardNumber     : [null, [ Validators.required ]],
             // Birthday     : [ null, [Validators.required]],
             Code     : [ ],
