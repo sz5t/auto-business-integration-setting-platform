@@ -33,15 +33,16 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             this._relativeResolver.reference = this;
             this._relativeResolver.relativeService = this._messageService;
             this._relativeResolver.initParameter = [this.loadTreeData];
-            this._relativeResolver.initParameterEvents = ['loadTreeData'];
+            this._relativeResolver.initParameterEvents = [this.loadTreeData];
             this._relativeResolver.relations = this.config.relations;
             this._relativeResolver.resolverRelation();
             this._tempValue = this._relativeResolver. _tempParameter;
         }
-        this.loadTreeData();
+       // this.loadTreeData();
     }
 
     async getTreeData() {
+        console.log('ajaxConfig', this.config.ajaxConfig);
         const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
         return ajaxData;
     }
