@@ -27,14 +27,12 @@ export class SingleTableComponent implements OnInit {
                 {
                   config: {
                     'viewId': 'singleTable',
-                    'component': 'bsnDataTable',
-                    'keyId': 'key',
-                    'nzIsPagination': false, // 是否分页
+                    'component': 'bsnTable',
+                    'keyId': 'Id',
+                    'nzIsPagination': true, // 是否分页
                     'nzShowTotal': true, // 是否显示总数据量
                     'pageSize': 5, // 默认每页数据条数
-                    'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
-                    'nzLoading': false, // 是否显示加载中
-                    'nzBordered': false, // 是否显示边框
+                    'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
                       'url': 'ShowCase',
                       'ajaxType': 'get',
@@ -52,7 +50,8 @@ export class SingleTableComponent implements OnInit {
                     }],
                     'columns': [
                       {
-                        title: 'Id', field: 'Id', width: 80, hidden: true, editor: {
+                        title: 'Id', field: 'Id', width: 80, hidden: true,
+                        editor: {
                           type: 'input',
                           field: 'Id',
                           options: {
@@ -67,7 +66,7 @@ export class SingleTableComponent implements OnInit {
                         title: '名称', field: 'CaseName', width: 80,
                         editor: {
                           type: 'input',
-                          field: 'name',
+                          field: 'CaseName',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -130,7 +129,7 @@ export class SingleTableComponent implements OnInit {
                         title: '数量', field: 'CaseCount', width: 80, hidden: false,
                         editor: {
                           type: 'input',
-                          field: 'age',
+                          field: 'CaseCount',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -182,7 +181,7 @@ export class SingleTableComponent implements OnInit {
                         title: '状态', field: 'Enable', width: 80, hidden: false,
                         editor: {
                           type: 'select',
-                          field: 'Type',
+                          field: 'Enable',
                           options: {
                             'type': 'select',
                             'labelSize': '6',
@@ -237,7 +236,7 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'enable': true,
+                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改',
                         'enables': {
                           'addRow': false,
                           'updateRow': true,
@@ -248,7 +247,7 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'enable': true,
+                        'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除',
                         'enables': {
                           'addRow': true,
                           'updateRow': true,
@@ -256,10 +255,68 @@ export class SingleTableComponent implements OnInit {
                           'saveRow': true,
                           'cancelRow': true,
                           'showDialog': true
+                        },
+                        'ajaxConfig': {
+                          delete: [{
+                            'actionName': 'delete',
+                            'url': 'ShowCase',
+                            'ajaxType': 'delete'
+                          }]
                         }
                       },
                       {
-                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'enable': false,
+                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'disabled': true,
+                        'enables': {
+                          'addRow': true,
+                          'updateRow': true,
+                          'deleteRow': true,
+                          'saveRow': false,
+                          'cancelRow': false,
+                          'showDialog': true
+                        },
+                        'type': 'method/action',
+                        'ajaxConfig': {
+                          post: [{
+                            'actionName': 'add',
+                            'url': 'ShowCase',
+                            'ajaxType': 'post',
+                            'params': [
+                              { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
+                              { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                              { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
+                              { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                              { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                              { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
+                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
+                              { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                            ],
+                            'output': [
+                              {
+                                name: '_id',
+                                type: '',
+                                dataName: 'Id'
+                              }
+                            ]
+                          }],
+                          put: [{
+                            'url': 'ShowCase',
+                            'ajaxType': 'put',
+                            'params': [
+                              { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
+                              { name: 'CaseName', type: 'componentValue', valueName: '', value: '' },
+                              { name: 'CaseCount', type: 'componentValue', valueName: '', value: '' },
+                              { name: 'CreateTime', type: 'componentValue', valueName: '', value: '' },
+                              { name: 'Enable', type: 'componentValue', valueName: '', value: '' },
+                              { name: 'Level', type: 'componentValue', valueName: '', value: '' },
+                              { name: 'ParentId', type: 'componentValue', valueName: '', value: '' },
+                              { name: 'Remark', type: 'componentValue', valueName: '', value: '' },
+                              { name: 'Type', type: 'componentValue', valueName: '', value: '' }
+                            ]
+                          }]
+                        }
+                      },
+                      {
+                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'disabled': true,
                         'enables': {
                           'addRow': true,
                           'updateRow': true,
@@ -270,18 +327,7 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'enable': false,
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': false,
-                          'cancelRow': false,
-                          'showDialog': true
-                        }
-                      },
-                      {
-                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '测试方法注入',
+                        'name': 'injectRow', 'class': 'editable-add-btn', 'text': '测试方法注入',
                         'enables': {
                           'addRow': true,
                           'updateRow': true,

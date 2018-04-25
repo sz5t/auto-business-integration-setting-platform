@@ -177,6 +177,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     const fieldIdentity = CommonUtility.uuID(10);
                     params[param.name] = fieldIdentity;
                 } else if (param.type === 'componentValue') {
+                    console.log(componentValue);
                     params[param.name] = componentValue.value;
                 }
             });
@@ -486,6 +487,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     }
                 } else {
                     // 新增保存
+                    console.log(pconfig['add']);
                     const ajaxData = await this.execAjax(pconfig['add'], null);
                     if (ajaxData) {
                         console.log('新增保存成功', ajaxData);

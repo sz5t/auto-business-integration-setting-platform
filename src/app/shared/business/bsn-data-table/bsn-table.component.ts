@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { TypeOperationComponent } from './../../../routes/system/data-manager/type-operation.component';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { CommonUtility } from '@core/utility/Common-utility';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
-import { RelativeService } from '@core/relative-Service/relative-service';
+import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 
 @Component({
     selector: 'cn-bsn-table,[cn-bsn-table]',
@@ -24,283 +25,309 @@ import { RelativeService } from '@core/relative-Service/relative-service';
 `
     ]
 })
-export class BsnTableComponent implements OnInit {
+export class BsnTableComponent implements OnInit, OnDestroy {
 
     @Input() config; // dataTables 的配置参数
     @Input() dataList = []; // 表格数据集合
 
-
-    pi = 1;
-    ps = 10;
-    total = 0; // mock total
+    // region: 分页默认参数
     loading = false;
-    args: any = {};
-    _indeterminate = false;
-    _allChecked = false;
-    events: any[] = [];
-    rowContent = {}; // 行填充
+    pageIndex = 1;
+    pageSize = 10;
+    total = 1;
+    // endregion
 
-    tempParameters = {
-    }; // 临时参数，如从外部进出值，均从此处走
+    // region: 表格操作
+    allChecked = false;
+    indeterminate = false;
+    // endregion
 
-    /**
-     * 当前组件属性【作为主表、作为子表、单表】优先级：子表-》主表-》单表；
-     */
-    componentType = {
-        parent: false,
-        child: false,
-        own: true
-    };
-    /**
-     * 事件API
-     */
-    _formEvent = {
-        selectRow: [], // 行选中
-        reLoad: [],      // 重新加载
-        selectRowBySetValue: []
-    };
-
-
-
-    async load(type?, pi?: number) {
-        if (typeof pi !== 'undefined') {
-            this.pi = pi || 1;
+    // region: 业务对象
+    _tempParameters = {};
+    _relativeResolver;
+    selfEvent = [
+        {
+            selectRow: []
+        },
+        {
+            selectRowBySetValue: []
+        },
+        {
+            load: []
         }
-        console.log('当前页', this.pi);
+    ];
+    _toolbar;
+    editCache = {};
+    rowContent = {};
+    // endregion
+
+    constructor(
+        private http: _HttpClient,
+        private _http: ApiService,
+        private message: NzMessageService,
+        private modalService: NzModalService,
+        private relativeMessage: RelativeService
+    ) { }
+
+    // region: 生命周期事件
+    ngOnInit() {
+        this._relativeResolver = new RelativeResolver();
+        if (this.config.relations && this.config.relations.length > 0) {
+            this._relativeResolver.reference = this;
+            this._relativeResolver.relativeService = this.relativeMessage;
+            this._relativeResolver.relations = this.config.relatins;
+            this._relativeResolver.initParameterEvents = [this.load];
+            this._relativeResolver.resolverRelation();
+        }
+        if (this.config.componentType) {
+            if (!this.config.componentType.child) {
+                this.load();
+            }
+        } else {
+            this.load();
+        }
+    }
+    ngOnDestroy() {
+        if (this._relativeResolver) {
+            this._relativeResolver.unsubscribe();
+        }
+    }
+    // endregion
+
+    // region: 功能实现
+    load(pageIndex = 1) {
+        this.pageIndex = pageIndex;
         this.loading = true;
-        this._allChecked = false;
-        this._indeterminate = false;
-        /* this._randomUser.getUsers(this.pi, this.ps, this.args)
-        .pipe(
-            map(data => {
-                data.results.forEach(item => {
-                    item.checked = false;
-                    item.price = +((Math.random() * (10000000 - 100)) + 100).toFixed(2);
-                });
-                return data;
-            })
-        )
-        .subscribe(data => {
-            this.loading = false;
-            this.dataList = data.results;
-        });
-        */
-        if (type === 'load') {
-            this.loading = true;
-            const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
-            if (ajaxData) {
-                console.log('异步加载表数据load', ajaxData);
-
-                if (ajaxData.Data) {
-                    if (ajaxData.Data.Rows) {
-                        console.log('加载成功', ajaxData.Data.Total);
-                        this.updateEditCacheByLoad(ajaxData.Data.Rows);
-                        this.dataList = ajaxData.Data.Rows;
-                        this.total = ajaxData.Data.Total;
-                        console.log('总页数', this.total);
-                    } else {
-                        this.dataList = [];
-                        this.updateEditCacheByLoad([]);
-                        this.total = 0;
-                    }
-
+        const url = this._buildURL(this.config.ajaxConfig.url);
+        const params = {
+            ...this._buildParameters(this.config.ajaxConfig.params),
+            ...this._buildPaging()
+        };
+        (async () => {
+            const loadData = await this._load(url, params);
+            if (loadData && loadData.Status === 200) {
+                if (loadData.Data && loadData.Data.Rows) {
+                    loadData.Data.Rows.forEach(row => {
+                        row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+                    });
+                    this.dataList = loadData.Data.Rows;
+                    this.total = loadData.Data.Total;
                 } else {
-                    this.dataList = [];
+                    this.dataList = loadData.Data;
                     this.total = 0;
-                    this.updateEditCacheByLoad([]);
                 }
-                // console.log('当前记录id', this.tempParameters['_id']);
             } else {
                 this.dataList = [];
                 this.total = 0;
-                this.updateEditCacheByLoad([]);
             }
+            this._updateEditCacheByLoad();
             this.loading = false;
-        }
-
-        // this.updateEditCache();
-        /*   this._http.getProj(APIResource[p.url], params).subscribe(data => {
-              console.log('异步加载表数据', data);
-              this.loading = false;
-              //this.dataList = data.Data.Metadata;
-              //this.total=data.Data.Metadata.length;
-          }); */
-
+        })();
     }
 
-    nzPageIndexChange(data?) {
+    private _buildParameters(paramsConfig) {
+        const params = {};
+        if (paramsConfig) {
+            paramsConfig.map(param => {
+                if (param['type'] === 'tempValue') {
 
-        console.log('页面变化', data);
-        console.log('页面变化-当前页', this.pi);
-    }
+                } else if (param['type'] === 'value') {
 
-    isString(obj) { // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === '[object String]';
-    }
-    /**
-     * 执行异步数据
-     * @param p 路由参数信息
-     * @param ajaxType 异步请求类别，post、put、get
-     * @param componentValue
-     */
-    async execAjax(p?, componentValue?, type?) {
-        const params = {
-        };
-        /*   p = {
-              url: 'AppConfigPack',
-              ajaxType:'post',
-              params: [
-                  { name: 'id', type: 'tempValue', valueName: '取值参数名称', value: '' },
-                  { name: 'id', type: 'value', valueName: '取值参数名称', value: '' },
-                  { name: 'id', type: 'componentValue', valueName: '取值参数名称', value: '' }
-              ]
-          } */
+                } else if (param['type'] === 'GUID') {
 
-        let tag = true;
-        let url;
-        if (p) {
-            p.params.forEach(param => {
-                if (param.type === 'tempValue') {
-                    if (type) {
-                        if (type === 'load') {
-                            if (this.tempParameters[param.valueName]) {
-                                params[param.name] = this.tempParameters[param.valueName];
-                            } else {
-                                console.log('参数不全不能加载');
-                                tag = false;
-                                return;
-                            }
-                        } else {
-                            params[param.name] = this.tempParameters[param.valueName];
-                        }
-                    } else {
-                        params[param.name] = this.tempParameters[param.valueName];
-                    }
+                } else if (param['type'] === 'componentValue') {
 
-                } else if (param.type === 'value') {
-
-                    params[param.name] = param.value;
-
-                } else if (param.type === 'GUID') {
-                    const fieldIdentity = CommonUtility.uuID(10);
-                    params[param.name] = fieldIdentity;
-                } else if (param.type === 'componentValue') {
-                    params[param.name] = componentValue[param.valueName];
                 }
             });
-            console.log('ppppppppppp', p);
-            if (this.isString(p.url)) {
-                url = APIResource[p.url];
-            } else {
-                let pc = 'null';
-                p.url.params.forEach(param => {
-                    if (param['type'] === 'value') {
-                        pc = param.value;
-                    } else if (param.type === 'GUID') {
-                        const fieldIdentity = CommonUtility.uuID(10);
-                        pc = fieldIdentity;
-                    } else if (param.type === 'componentValue') {
-                        pc = componentValue[param.valueName];
-                    } else if (param.type === 'tempValue') {
-                        pc = this.tempParameters[param.valueName];
-                    }
-                });
-
-                url = APIResource[p.url['parent']] + '/' + pc + '/' + APIResource[p.url['child']];
-            }
         }
-        if (p.ajaxType === 'get' && tag) {
-            console.log('get参数', params);
-            if (type === 'load') {
-                if (this.config['nzIsPagination']) {
-                    params['_page'] = this.pi;
-                    params['_rows'] = this.ps;
+        return params;
+    }
+
+    private _buildURL(urlConfig) {
+        let url = '';
+        if (urlConfig && this._isUrlString(urlConfig)) {
+            url = APIResource[urlConfig] ? APIResource[urlConfig] : urlConfig;
+        } else if (urlConfig) {
+            let parent = '';
+            urlConfig.params.map(param => {
+                if (param['type'] === 'tempValue') {
+                    parent = this._tempParameters[param.value];
+                } else if (param['type'] === 'value') {
+                    parent = param.value;
+                } else if (param['type'] === 'GUID') {
+                    // todo: 扩展功能
+                } else if (param['type'] === 'componentValue') {
+                    // parent = componentValue[param['valueName']];
                 }
-
-            }
-            /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
-             if (dd && dd.Status === 200) {
-                console.log('服务器返回执行成功返回',dd.Data);
-             }
-             console.log('服务器返回',dd); */
-
-            return this._http.getProj(url, params).toPromise();
-        } else if (p.ajaxType === 'put') {
-            console.log('put参数', params);
-            return this._http.putProj(url, params).toPromise();
-        } else if (p.ajaxType === 'post') {
-            console.log('post参数', params);
-            console.log(url);
-            return this._http.postProj(url, params).toPromise();
-        } else {
-            return null;
+            });
         }
+        return url;
     }
 
-    clear() {
-        this.args = {};
-        this.load('', 1);
+    private _buildPaging() {
+        const params = {};
+        if (this.config['nzIsPagination']) {
+            params['_page'] = this.pageIndex;
+            this.pageSize = this.pageSize ? this.pageSize : this.config.pageSize;
+            params['_rows'] = this.pageSize;
+        }
+        return params;
     }
 
-    _checkAll() {
-        this.dataList.forEach(item => item.checked = this._allChecked);
+    private _isUrlString(url) {
+        return Object.prototype.toString.call(url) === '[object String]';
+    }
+
+    private _updateEditCacheByLoad() {
+        this.dataList.forEach(item => {
+            if (!this.editCache[item.key]) {
+                this.editCache[item.key] = {
+                    edit: false,
+                    data: item
+                };
+            }
+        });
+    }
+
+    private selectRow($event, data) {
+        if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
+            return;
+        }
+        $event.stopPropagation();
+        this.dataList.map(row => {
+            row.selected = false;
+        });
+        data['selected'] = true;
+    }
+
+    private searchData(reset: boolean = false) {
+        if (reset) {
+            this.pageIndex = 1;
+        }
+        this.load(this.pageIndex);
+    }
+
+    // endregion
+
+    // region: 表格操作
+
+    checkAll(value) {
+        this.dataList.forEach(data => {
+            if (!data.disabled) {
+                data.checked = value;
+            }
+        });
         this.refChecked();
     }
+
     refChecked() {
         const checkedCount = this.dataList.filter(w => w.checked).length;
-        this._allChecked = checkedCount === this.dataList.length;
-        this._indeterminate = this._allChecked ? false : checkedCount > 0;
+        this.allChecked = checkedCount === this.dataList.length;
+        this.indeterminate = this.allChecked ? false : checkedCount > 0;
     }
-    // private _randomUser: RandomUserService,
-    constructor(private http: _HttpClient, private _http: ApiService,
-        private message: NzMessageService, private modalService: NzModalService,
-        private relativeMessage: RelativeService
-    ) {
-    }
-    async ngOnInit() {
-        this.analysisRelation(this.config);
-        if (this.config.ajaxConfig) {
-            if (this.config.componentType) {
-                if (!this.config.componentType.child) {
-                    this.load('load');
-                }
-            } else {
-                this.load('load');
+
+    async saveRow() {
+        const addRows = [];
+        const updateRows = [];
+        let isSuccess = false;
+        this.dataList.map(item => {
+            delete item['$type'];
+            if (item['row_status'] === 'adding') {
+                addRows.push(item);
+            } else if (item['row_status'] === 'updating') {
+                updateRows.push(item);
             }
-        } else {
-            this.updateEditCache();
-            this.total = this.dataList.length;
+        });
+        if (addRows.length > 0) {
+            // save add;
+            console.log(addRows);
+            isSuccess = await this.executeSave(addRows, 'post');
         }
-        //  this.http.get('/chart/visit').subscribe((res: any) => this.events = res);
-        this.getContent(); // 调用方法获取到行内填充数据格式
 
-
+        if (updateRows.length > 0) {
+            // 
+            console.log(updateRows);
+            isSuccess = await this.executeSave(updateRows, 'put');
+        }
+        return isSuccess;
     }
 
-    showMsg(msg: string) {
-        this.message.info(msg);
+    async executeSave(rowsData, method) {
+        const index = this.config.toolbar.findIndex(item => item.name === 'saveRow');
+        const postConfig = this.config.toolbar[index].ajaxConfig[method];
+        let isSuccess = false;
+        if (postConfig) {
+            for (let i = 0, len = postConfig.length; i < len; i++) {
+                const response = await this[method](postConfig[i].url, rowsData);
+                if (response && response.Status === 200) {
+                    this.message.create('success', '保存成功');
+                    isSuccess = true;
+                } else {
+                    this.message.create('error', response.Message);
+                }
+            }
+            if (isSuccess) {
+                rowsData.map(row => {
+                    this._saveEdit(row.key);
+                });
+                this.load();
+                
+            }
+        }
+        return isSuccess;
     }
 
-    /**
-     * 行内编辑
-     */
-    i = 100;
-    editCache = {};
+    async executeDelete(ids) {
+        let isSuccess = false;
+        if (ids && ids.length > 0) {
+            const index = this.config.toolbar.findIndex(item => item.name === 'deleteRow');
+            const deleteConfig = this.config.toolbar[index].ajaxConfig['delete'];
+            if (deleteConfig) {
+                for (let i = 0, len = deleteConfig.length; i < len; i++) {
+                    const params = {
+                        _ids: ids.join(',')
+                    };
+                    const response = await this['delete'](deleteConfig[i].url, params);
+                    if (response && response.Status === 200) {
+                        this.message.create('success', '删除成功');
+                        isSuccess = true;
+                    } else {
+                        this.message.create('error', response.Message);
+                    }
+                }
+                if (isSuccess) {
+                    this.load(); 
+                }
+            }
+        }
+        return isSuccess;
+    }
 
-    startEdit(key: string): void {
+    cancelRow() {
+        this.dataList.forEach(item => {
+            if (item.checked === true) {
+                this._cancelEdit(item.key);
+            }
+        });
+        return true;
+    }
+
+    private _startEdit(key: string): void {
+        console.log('start edit', key);
         this.editCache[key].edit = true;
     }
 
-    cancelEdit(key: string): void {
+    private _cancelEdit(key: string): void {
         const index = this.dataList.findIndex(item => item.key === key);
         this.editCache[key].edit = false;
         this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
     }
 
-    saveEdit(key: string): void {
+    private _saveEdit(key: string): void {
         const index = this.dataList.findIndex(item => item.key === key);
         let checked = false;
         let selected = false;
+
         if (this.dataList[index].checked) {
             checked = this.dataList[index].checked;
         }
@@ -313,15 +340,14 @@ export class BsnTableComponent implements OnInit {
         this.dataList[index].selected = selected;
 
         this.editCache[key].edit = false;
-        console.log('saveEdit更新后的数据', this.dataList);
     }
 
-    deleteEdit(i: string): void {
+    private _deleteEdit(i: string): void {
         const dataSet = this.dataList.filter(d => d.key !== i);
         this.dataList = dataSet;
     }
-    updateEditCache(): void {
-        // const datadataList=JSON.parse(JSON.stringify(this.dataList));
+
+    private _updateEditCache(): void {
         this.dataList.forEach(item => {
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
@@ -331,57 +357,9 @@ export class BsnTableComponent implements OnInit {
             }
         });
     }
-    updateEditCacheByLoad(dataList): void {
-        // const datadataList=JSON.parse(JSON.stringify(this.dataList));
-        dataList.forEach(item => {
-            if (!this.editCache[item.key]) {
-                this.editCache[item.key] = {
-                    edit: false,
-                    data: item
-                };
-            }
-        });
-    }
-    /**排序 */
-    sortName = null;
-    sortValue = null;
-    // copyData = [...this.dataList];
-    sortMap = {};
-    /**
-     * 排序
-     */
-    sort(sortName, value) {
-        this.sortName = sortName;
-        this.sortValue = value;
-        Object.keys(this.sortMap).forEach(key => {
-            if (key !== sortName) {
-                this.sortMap[key] = null;
-            } else {
-                this.sortMap[key] = value;
-            }
-        });
-        this.search();
-    }
-    /**
-     * 查询
-     */
-    search() {
 
-        this.dataList = [...this.dataList.sort((a, b) => {
-            if (a[this.sortName] > b[this.sortName]) {
-                return (this.sortValue === 'ascend') ? 1 : -1;
-            } else if (a[this.sortName] < b[this.sortName]) {
-                return (this.sortValue === 'ascend') ? -1 : 1;
-            } else {
-                return 0;
-            }
-        })];
-    }
-
-    /**
-     * 获取行内编辑是行填充数据
-     */
-    getContent() {
+    // 获取行内编辑是行填充数据 
+    private _getContent() {
         this.rowContent['key'] = null;
         this.config.columns.forEach(element => {
             const colsname = element.field.toString();
@@ -389,335 +367,108 @@ export class BsnTableComponent implements OnInit {
         });
     }
 
-    /**新增 */
-    addRow(): void {
+    addRow() {
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
         const fieldIdentity = CommonUtility.uuID(6);
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
+        rowContentNew['row_status'] = 'adding';
         this.dataList = [...this.dataList, rowContentNew];
         // this.dataList.push(this.rowContent);
-        this.updateEditCache();
-        this.startEdit(fieldIdentity.toString());
+        this._updateEditCache();
+        this._startEdit(fieldIdentity.toString());
 
+        return true;
     }
-    /**修改 */
-    updateRow(): void {
+
+    updateRow() {
         this.dataList.forEach(item => {
-            if (item.checked === true) {
-                this.startEdit(item.key);
+            if (item.checked) {
+                if (item['row_status'] && item['row_status'] === 'adding') {
+
+                } else {
+                    item['row_status'] = 'updating';
+                }
+                this._startEdit(item.key);
+            }
+        });
+        return true;
+    }
+
+    deleteRow() {
+        this.modalService.confirm({
+            nzTitle: '确认删除选中的记录？',
+            nzContent: '',
+            nzOnOk: () => {
+                const newData = [];
+                const serverData = [];
+                this.dataList.forEach(item => {
+                    if (item.checked === true && item['row_status'] === 'adding') {
+                       // 删除新增临时数据
+                       newData.push(item.key);
+                    }
+                    if (item.checked === true) {
+                       // 删除服务端数据
+                       serverData.push(item.Id);
+                    }
+                });
+                if (newData.length > 0) {
+                    newData.forEach(d => {
+                        this.dataList.splice(this.dataList.indexOf(d), 1);
+                    });
+                }
+                if (serverData.length > 0) {
+                    this.executeDelete(serverData);
+                }
+            },
+            nzOnCancel() {
             }
         });
     }
-    /**删除 */
-    deleteRow(): void {
-        // this.modalService.confirm({
-        //     title: '确认框',
-        //     content: '确认要删除？',
-        //     onOk: () => {
-        //         this.dataList.forEach(item => {
-        //             if (item.checked === true) {
-        //                 this.deleteEdit(item.key);
-        //             }
-        //         });
-        //     },
-        //     onCancel() {
-        //     }
-        // });
-    }
-    /**保存 */
-    async  saveRow() {
 
-
-        this.dataList.forEach(item => {
-            if (item.checked === true) {
-                this.saveEdit(item.key);
-            }
-        });
-        const dataList = JSON.parse(JSON.stringify(this.dataList));
-        console.log('saveRow', this.dataList);
-        // 创建新json，将checked，select 标签去除，写入到数据库中
-        // 需要判断当前是新增or修改=》保存，区别是看初次加载的时候，是否有数据库中有记录标识
-        // 当前记录数据集作为子表的时候，子表的一切操作均看是否有主表记录，才可以执行，否则操作均不能执行
-        // 创建新json，将checked，select 标签去除，
-        let selectRowData;
-        dataList.forEach(element => {
-            if (element.selected) {
-                selectRowData = JSON.parse(JSON.stringify(element));
-            }
-
-        });
-        const newdataList = [];
-        dataList.forEach(element => {
-            const row = {};
-            for (const d in element) {
-                if (d !== 'checked' && d !== 'selected') {
-                    row[d] = element[d];
-                }
-            }
-            newdataList.push(row);
-        });
-        this.tempParameters['dataList'] = JSON.stringify(newdataList);
-        console.log(this.tempParameters['dataList']);
-        if (this.config.toolbar) {
-            const index = this.config.toolbar.findIndex(item => item.name === 'saveRow');
-            if (this.config.toolbar[index].ajaxConfig) {
-                const pconfig = JSON.parse(JSON.stringify(this.config.toolbar[index].ajaxConfig));
-                if (this.tempParameters['_id']) {
-                    // 修改保存
-                    const ajaxData = await this.execAjax(pconfig['update'], selectRowData);
-                    if (ajaxData) {
-                        console.log('修改保存成功', ajaxData);
-                        this.dataList = JSON.parse(JSON.stringify(this.dataList));
-                    }
-                }else {
-                    // 新增保存
-                    if (Array.isArray(pconfig['add'])) {
-                        for (let i = 0; i < pconfig['add'].length; i++) {
-                            const ajaxData = await this.execAjax(pconfig['add'][i], selectRowData);
-                            if (ajaxData) {
-
-                                // console.log(ajaxData, pconfig['add'][i]);
-                                if (pconfig['add'][i]['output']) {
-                                    pconfig['add'][i]['output'].forEach(out => {
-                                        this.tempParameters[out.name] = ajaxData.Data[out['dataName']];
-                                    });
-                                }
-
-                                console.log('新增保存成功循环', ajaxData);
-                                this.dataList = JSON.parse(JSON.stringify(this.dataList));
-                            }
-                        }
-                    } else {
-                        const ajaxData = await this.execAjax(pconfig['add'], selectRowData);
-                        if (ajaxData) {
-                            console.log('新增保存成功', ajaxData);
-                            this.dataList = JSON.parse(JSON.stringify(this.dataList));
-                        }
-                    }
-                }
-            }
-
-
+    toolbarAction(btn) {
+        if (this[btn.name]) {
+            this[btn.name]() && this._toolbarEnables(btn.enables);
         }
-        console.log('需要保存的数据', newdataList);
-    }
-    /**取消 */
-    cancelRow(): void {
-        this.dataList.forEach(item => {
-            if (item.checked === true) {
-                this.cancelEdit(item.key);
-            }
-        });
-    }
-    /**
-     * 选中行
-     * @param data
-     * @param edit
-     */
-    selectRow(data?, edit?) {
-        console.log('selectRow', data);
-        this.dataList.forEach(item => {
-            item.selected = false;
-        });
-        data.selected = true; // 行选中
-        // 单选(check=select)，如果是未勾选，第一次点击选中，再次点击取消选中
-        // 多选（check=select），如果是未勾选，第一次点击选中，再次点击取消选中
-        // 多勾选单选中行（check》select）勾选和行选中各自独立，互不影响
 
-        console.log('注册api事件', this._formEvent);
-        this._formEvent['selectRow'].forEach(sendEvent => {
-            if (sendEvent.isRegister === true) {
-
-                console.log('关系描述', sendEvent);
-                const parent = {};
-
-                sendEvent.data.params.forEach(element => {
-                    parent[element['cid']] = data[element['pid']];
-                });
-
-                console.log('主子关系字段', parent);
-                const receiver = { name: 'refreshAsChild', receiver: sendEvent.receiver, parent: parent };
-                console.log('选中行发消息事件', receiver);
-                this.relativeMessage.sendMessage({ type: 'relation' }, receiver);
-                console.log('选中行发消息事件over');
-            }
-        });
-        this._formEvent['selectRowBySetValue'].forEach(sendEvent => {
-            if (sendEvent.isRegister === true) {
-                console.log('关系描述', sendEvent);
-                const parent = {};
-                sendEvent.data.params.forEach(element => {
-                    parent[element['cid']] = data[element['pid']];
-                });
-
-                console.log('主子关系字段', parent);
-                const receiver = { name: 'initComponentValue', receiver: sendEvent.receiver, parent: parent };
-                console.log('选中行发消息事件', receiver);
-                this.relativeMessage.sendMessage({ type: 'relation' }, receiver);
-                console.log('选中行发消息事件over');
-            }
-        });
     }
 
-    valueChange(data?) {
-        // console.log('子页面', data);
+    valueChange(data) {
         const index = this.dataList.findIndex(item => item.key === data.key);
         this.editCache[data.key].data[data.name] = data.data;
     }
 
-    /**
-     * 动态执行方法
-     * @param name
-     */
-    execFun(name?) {
-        switch (name) {
-            case 'refresh':
-                this.refresh();
-                break;
-            case 'addRow':
-                this.addRow();
-                break;
-            case 'updateRow':
-                this.updateRow();
-                break;
-            case 'deleteRow':
-                this.deleteRow();
-                break;
-            case 'saveRow':
-                this.saveRow();
-                break;
-            case 'cancelRow':
-                this.cancelRow();
-                break;
-            default:
-                break;
-        }
-    }
+    private _toolbarEnables(enables) {
 
-    /**
-     * 刷新
-     */
-    refresh() {
-
-    }
-
-
-    /** 刷新，作为子表的刷新*/
-    refreshAsChild(parentId?) {
-        console.log('刷新，作为子表的刷新', parentId);
-        for (const d in parentId) {
-            this.tempParameters[d] = parentId[d];
-        }
-        this.load('load'); // 调用子表的刷新
-        console.log('子表刷新是取到主表的值', this.tempParameters);
-    }
-
-    // 初始化参数列表，参数列表初始化后load（当前参数的取值）
-    initParameters(data?) {
-        for (const d in data) {
-            this.tempParameters[d] = data[d];
-        }
-        console.log('初始化参数', this.tempParameters);
-        this.load('load'); // 参数完成后加载刷新
-    }
-    // 初始化组件值
-    initComponentValue(data?) {
-        for (const d in data) {
-            if (d === 'dataList') {
-                this.dataList = JSON.parse(data[d]) ? JSON.parse(data[d]) : [];
-                this.total = this.dataList.length;
-            }else {
-                this.tempParameters[d] = data[d];
+        this.config.toolbar.map(btn => {
+            if (enables[btn.name]) {
+                delete btn['disabled'];
+            } else {
+                btn['disabled'] = '';
             }
-        }
+        });
     }
-    // 解析发布消息
-    formSendMessage(data?) {
-        // 当操作什么的时候发布消息
-        console.log('表单发布消息');
-        if (data) {
-            if (this._formEvent[data.name]) {
-                this._formEvent[data.name].push({ isRegister: true, receiver: data.receiver, data: data.relationData });
-            }
-        }
+    // endregion
+
+    // region: 服务区端交互
+    private async _load(url, params) {
+        return this._http.getProj(url, params).toPromise();
     }
 
-    // 接收消息
-    formReceiveMessage(data?) {
-        // 当操作什么的时候，接收消息
-        console.log('表单接收消息', data);
-        if (data) {
-            console.log('接收消息方法名称：', data.name);
-            switch (data.name) {
-                case 'refreshAsChild':
-                    this.refreshAsChild(data.parent);
-                    break;
-                case 'initParameters':
-                    this.initParameters(data.parent);
-                    break;
-                case 'initComponentValue':
-                    this.initComponentValue(data.parent);
-                    break;
-
-            }
-        }
+    private async post(url, body) {
+        return this._http.postProj(url, body).toPromise();
     }
 
-    // 解析关系
-    analysisRelation(data?) {
-        // 判断组件的关系是否存在
-        if (this.config.relation) {
-            console.log('解析关系信息数据', this.config.relation);
-            // 遍历关系，对于每个组件的
-            this.config.relation.forEach(relation => {
-                if (relation.relationSendContent) {
-                    relation.relationSendContent.forEach(relationSend => {
-                        this.formSendMessage(relationSend);
-                    });
-                }
-                // 接收消息 (接收到消息后，触发自己的操作)
-                if (relation.relationReceiveContent) {
-                    const subMessage = this.relativeMessage.getMessage().subscribe(value => {
-                        console.log('收到消息', value);
-                        switch (value.type.type) {
-                            case 'relation':
-                                if (value.data.receiver === this.config.viewId) {
-                                    this.formReceiveMessage(value.data);
-                                }
-                                break;
-                            case 'initParameters':
-                                console.log(value.data.receiver, this.config);
-                                if (value.data.receiver === this.config.viewId) {
-                                    this.formReceiveMessage(value.data);
-                                }
-                                break;
-                        }
-                    });
-                    if (subMessage) {
-                        this._subscribArr.push(subMessage);
-                    }
-                }
-
-            });
-
-        }
-
-
-        console.log('解析关系信息', data);
-
+    private async put(url, body) {
+        return this._http.putProj(url, body).toPromise();
     }
 
-    // 销毁
-    _subscribArr: any[] = [];
-    // tslint:disable-next-line:use-life-cycle-interface
-    ngOnDestroy() {
-        if (this._subscribArr.length > 0) {
-            this._subscribArr.forEach(sub => {
-                sub.unsubscribe();
-            });
-        }
+    private async delete(url, params) {
+        return this._http.deleteProj(url, params).toPromise();
     }
 
+    private async get() {
 
+    }
+    // endregion
 }

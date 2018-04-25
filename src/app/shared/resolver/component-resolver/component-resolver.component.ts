@@ -1,3 +1,4 @@
+import { BsnTableComponent } from './../../business/bsn-data-table/bsn-table.component';
 import {
   Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnInit, Type, ViewChild,
   ViewContainerRef
@@ -9,6 +10,7 @@ import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edi
 const component: { [type: string]: Type<any> } = {
   code_edit: CnCodeEditComponent,
   bsnDataTable: BsnDataTableComponent,
+  bsnTable: BsnTableComponent,
   form_view: FormResolverComponent
 };
 @Component({
