@@ -36,7 +36,7 @@
     </thead>
     <tbody>
         <ng-container *ngFor="let data of nzTable.data">
-            <tr (click)="selectRow($event, data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+            <tr (click)="selectRow(data, $event)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
                 <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
                 </td>
                 <ng-container *ngFor="let col of config.columns">

@@ -6,6 +6,7 @@ import { CommonUtility } from '@core/utility/Common-utility';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 
 @Component({
     selector: 'cn-bsn-table,[cn-bsn-table]',
@@ -25,7 +26,7 @@ import { RelativeService, RelativeResolver } from '@core/relative-Service/relati
 `
     ]
 })
-export class BsnTableComponent implements OnInit, OnDestroy {
+export class BsnTableComponent extends CnComponentBase implements OnInit, OnDestroy {
 
     @Input() config; // dataTables 的配置参数
     @Input() dataList = []; // 表格数据集合
@@ -45,17 +46,11 @@ export class BsnTableComponent implements OnInit, OnDestroy {
     // region: 业务对象
     _tempParameters = {};
     _relativeResolver;
-    selfEvent = [
-        {
-            selectRow: []
-        },
-        {
-            selectRowBySetValue: []
-        },
-        {
-            load: []
-        }
-    ];
+    selfEvent = {
+        selectRow: [],
+        selectRowBySetValue: [],
+        load: []
+    };
     _toolbar;
     editCache = {};
     rowContent = {};
@@ -67,7 +62,9 @@ export class BsnTableComponent implements OnInit, OnDestroy {
         private message: NzMessageService,
         private modalService: NzModalService,
         private relativeMessage: RelativeService
-    ) { }
+    ) {
+        super();
+    }
 
     // region: 生命周期事件
     ngOnInit() {
@@ -75,7 +72,7 @@ export class BsnTableComponent implements OnInit, OnDestroy {
         if (this.config.relations && this.config.relations.length > 0) {
             this._relativeResolver.reference = this;
             this._relativeResolver.relativeService = this.relativeMessage;
-            this._relativeResolver.relations = this.config.relatins;
+            this._relativeResolver.relations = this.config.relations;
             this._relativeResolver.initParameterEvents = [this.load];
             this._relativeResolver.resolverRelation();
         }
@@ -130,13 +127,14 @@ export class BsnTableComponent implements OnInit, OnDestroy {
         if (paramsConfig) {
             paramsConfig.map(param => {
                 if (param['type'] === 'tempValue') {
-
+                    params[param['name']] = this._tempParameters[param['valueName']];
                 } else if (param['type'] === 'value') {
-
+                    params[param.name] = param.value;
                 } else if (param['type'] === 'GUID') {
-
+                    const fieldIdentity = CommonUtility.uuID(10);
+                    params[param.name] = fieldIdentity;
                 } else if (param['type'] === 'componentValue') {
-
+                    // params[param.name] = componentValue[param.valueName];
                 }
             });
         }
@@ -189,7 +187,7 @@ export class BsnTableComponent implements OnInit, OnDestroy {
         });
     }
 
-    private selectRow($event, data) {
+    private selectRow(data, $event) {
         if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
             return;
         }
@@ -241,6 +239,7 @@ export class BsnTableComponent implements OnInit, OnDestroy {
         if (addRows.length > 0) {
             // save add;
             console.log(addRows);
+
             isSuccess = await this.executeSave(addRows, 'post');
         }
 
@@ -258,7 +257,23 @@ export class BsnTableComponent implements OnInit, OnDestroy {
         let isSuccess = false;
         if (postConfig) {
             for (let i = 0, len = postConfig.length; i < len; i++) {
-                const response = await this[method](postConfig[i].url, rowsData);
+                const submitData = [];
+                postConfig[i].params.map(param => {
+                    rowsData.map(rowData => {
+                        const submitItem = {};
+                        if (param.type === 'tempValue') {
+                            submitItem[param['name']] = this._tempParameters[param['valueName']];
+                        } else if (param.type === 'componentValue') {
+                            submitItem[param['name']] = rowData[param['valueName']];
+                        } else if (param.type === 'GUID') {
+        
+                        } else if (param.type === 'value') {
+                            submitItem[param['name']] = rowData[param['value']];
+                        }
+                    });
+                   
+                });
+                const response = await this[method](postConfig[i].url, submitData);
                 if (response && response.Status === 200) {
                     this.message.create('success', '保存成功');
                     isSuccess = true;
@@ -271,7 +286,7 @@ export class BsnTableComponent implements OnInit, OnDestroy {
                     this._saveEdit(row.key);
                 });
                 this.load();
-                
+
             }
         }
         return isSuccess;
@@ -296,7 +311,7 @@ export class BsnTableComponent implements OnInit, OnDestroy {
                     }
                 }
                 if (isSuccess) {
-                    this.load(); 
+                    this.load();
                 }
             }
         }
@@ -404,12 +419,12 @@ export class BsnTableComponent implements OnInit, OnDestroy {
                 const serverData = [];
                 this.dataList.forEach(item => {
                     if (item.checked === true && item['row_status'] === 'adding') {
-                       // 删除新增临时数据
-                       newData.push(item.key);
+                        // 删除新增临时数据
+                        newData.push(item.key);
                     }
                     if (item.checked === true) {
-                       // 删除服务端数据
-                       serverData.push(item.Id);
+                        // 删除服务端数据
+                        serverData.push(item.Id);
                     }
                 });
                 if (newData.length > 0) {

@@ -86,7 +86,8 @@ export class RelativeResolver {
               if (sendEvent.isRegister) {
                 const parent = {};
                 sendEvent.data.params.forEach(param => {
-                  parent[param['cid']] = e[0].node[param['pid']];
+                  console.log(e[0][param['pid']], param['pid']);
+                  parent[param['cid']] = e[0].node ? e[0].node[param['pid']] : e[0][param['pid']];
                 });
                 const receiver = {
                   name: sendContent.relationData.name,
@@ -158,7 +159,7 @@ export class RelativeResolver {
     for (const d in parent) {
       this._tempParameter[d] = parent[d];
     }
-    // call event
+    this._reference.load();
   }
 
   private initParameters(data) {
