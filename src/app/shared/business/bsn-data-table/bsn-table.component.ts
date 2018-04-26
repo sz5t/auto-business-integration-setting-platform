@@ -56,7 +56,13 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     selfEvent = {
         selectRow: [],
         selectRowBySetValue: [],
-        load: []
+        load: [],
+        saveRow: [],
+        deleteRow: [],
+        delete: [],
+        post: [],
+        put: [],
+        get: []
     };
     _toolbar;
     editCache = {};
