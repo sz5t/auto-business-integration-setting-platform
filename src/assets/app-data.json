@@ -120,6 +120,11 @@
                       "i18n": ""
                     },
                     {
+                      "text": "树+表单",
+                      "link": "/template/treeAndForm",
+                      "i18n": ""
+                    },
+                    {
                       "text": "树+主子表",
                       "link": "/template/treeAndMulitTable",
                       "i18n": ""

@@ -38,6 +38,13 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             this._relativeResolver.resolverRelation();
             this._tempValue = this._relativeResolver. _tempParameter;
         }
+        if (this.config.componentType) {
+            if (!this.config.componentType.child) {
+                this.loadTreeData();
+            }
+        } else {
+            this.loadTreeData();
+        }
        // this.loadTreeData();
     }
 
@@ -48,6 +55,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     loadTreeData() {
+        console.log ( '执行树刷新');
         (async () => {
             const data = await this.getTreeData();
             if (data.Data && data.Status === 200) {
@@ -67,7 +75,9 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                             parent = this._tempValue[param.valueName];
 
                         } else if (param.type === 'value') {
-
+                            if (param.value === 'null') {
+                                param.value = null;
+                            }
                             parent = param.value;
 
                         } else if (param.type === 'GUID') {
@@ -82,6 +92,9 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         })();
     }
 
+    load() {
+        this.loadTreeData();
+    }
     listToTreeData(data, parentid) {
         const result = [];
         let temp;
@@ -115,6 +128,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     async execAjax(p?, componentValue?, type?) {
+        
         const params = {
         };
         let url;

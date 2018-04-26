@@ -578,8 +578,6 @@ export class ComponentSettingComponent implements OnInit {
         }
         return result;
     }
-
-
     tree_Config = {
         'viewId': 'component_viewId_tree',
         'asyncData': true, // 
@@ -627,74 +625,6 @@ export class ComponentSettingComponent implements OnInit {
        // this[actionName]($event);
     }
 
-    /**生成结构树-》 布局简析 */
-    layoutToarry(data?, component?, pid?) {
-        let result = [];
-        let temp;
-        if (data.rows) {
-            data.rows.forEach(rdata => {
-                if (rdata.row.cols) {
-                    rdata.row.cols.forEach(cdata => {
-                        const obj = { 'Name': cdata.title, 'Id': cdata.id, 'ParentId': pid };
-                        if (cdata.rows) {
-                            temp = this.layoutToarry(cdata, component, pid);  //  递归调用行
-                        }
-                        if (temp) {
-                            if (temp.length > 0) {
-                                result = [...result, ...temp];
-                            }
-                        }
-                        if (!cdata.rows) {
-                            result.push(obj);
-                            const cobj = this.componentToarry(component, cdata.id, component);
-                            if (cobj) {
-                                result = [...result, ...cobj];
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        if (data.tabs) {
-            data.tabs.forEach(tab => {
-                const obj = { 'Name': tab.name, 'Id': tab.id, ParentId: pid };
-                result.push(obj);
-                const cobj = this.componentToarry(component, tab.id, component);
-                if (cobj) {
-                    result = [...result, ...cobj];
-                }
-            });
-        }
-        return result;
-    }
-    /**生成结构树-》组件简析 */
-    componentToarry(data?, pid?, component?) {
-
-        let obj = [];
-        let temp;
-        if (data) {
-
-            const a = {};
-
-            const index = data.findIndex(item => item.Name === pid);
-            const type = data[index].TagB.substring(data[index].TagB.lastIndexOf('.') + 1, data[index].TagB.length);
-            a['Id'] = data[index].Id;
-            a['Name'] = type; //  data[index].TagB;
-            a['ParentId'] = data[index].Name;
-            obj.push(a);
-            if (type === 'tabs') {
-                temp = this.layoutToarry({ tabs: JSON.parse(data[index].Metadata) }, component, data[index].Id);  //  递归调用行
-                if (temp) {
-                    obj = [...obj, ...temp];
-                }
-            }
-
-        }
-        return obj;
-    }
-
-
     async  getComponentByLayout(layoutId?) {
         const params = {
             ParentId: layoutId
@@ -731,23 +661,6 @@ export class ComponentSettingComponent implements OnInit {
         this._selectedModuleText = `【${selectedOptions.map(o => o.label).join(' / ')}】`;
     }
 
-    arrayToTreeBylayout(data, parentid) {
-        const result = [];
-        let temp;
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid) {
-                const obj = { 'name': data[i].Name, 'id': data[i].Id };
-                temp = this.arrayToTreeBylayout(data, data[i].Id);
-                if (temp.length > 0) {
-                    obj['children'] = temp;
-                } else {
-                    obj['isLeaf'] = true;
-                }
-                result.push(obj);
-            }
-        }
-        return result;
-    }
     arrayToTree(data, parentid) {
         const result = [];
         let temp;

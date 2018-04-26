@@ -8,6 +8,7 @@ import { TreeAndTableComponent } from './tree-and-table/tree-and-table.component
 import { TreeAndTabsComponent } from './tree-and-tabs/tree-and-tabs.component';
 import { RouterModule, Routes } from '@angular/router';
 import { TreeAndMultiTableComponent } from './tree-and-multi-table/tree-and-multi-table.component';
+import { TreeAndFormComponent } from './tree-and-form/tree-and-form.component';
 
 const routes: Routes = [
   { path: 'singleTable', component: SingleTableComponent },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'treeTable', component: TreeTableComponent },
   { path: 'treeAndTable', component: TreeAndTableComponent },
   { path: 'treeAndMulitTable', component: TreeAndMultiTableComponent },
-  { path: 'treeAndTabs', component: TreeAndTabsComponent }
+  { path: 'treeAndTabs', component: TreeAndTabsComponent },
+  { path: 'treeAndForm', component: TreeAndFormComponent }
 ];
 
 const COMPONENT_NOROUNT = [
@@ -24,7 +26,8 @@ const COMPONENT_NOROUNT = [
   TreeTableComponent,
   TreeAndTableComponent,
   TreeAndTabsComponent,
-  TreeAndMultiTableComponent
+  TreeAndMultiTableComponent,
+  TreeAndFormComponent
 ];
 
 @NgModule({
@@ -34,7 +37,8 @@ const COMPONENT_NOROUNT = [
     RouterModule.forChild(routes)
   ],
   declarations: [
-    COMPONENT_NOROUNT
+    COMPONENT_NOROUNT,
+    TreeAndFormComponent
   ],
   entryComponents: COMPONENT_NOROUNT
 })

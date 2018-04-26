@@ -197,14 +197,16 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
   _relativeResolver;
   selfEvent = {
-    initParameters: []
+    initParameters: [],
+    saveForm: []
   };
+  _tempParameters = {};
   constructor(
     private http: _HttpClient,
     private formBuilder: FormBuilder,
     private _http: ApiService,
     private message: NzMessageService, private modalService: NzModalService,
-    private relativeMessage: RelativeService
+    private _messageService: RelativeService
   ) {
     super();
   }
@@ -230,10 +232,21 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   ngOnInit() {
     console.log(this.config);
     this.form = this.createGroup();
-    this._relativeResolver = new RelativeResolver();
-    this._relativeResolver.relations = this.config.relations;
-    this._relativeResolver.reference = this;
-    this._relativeResolver.relativeService = this.relativeMessage;
+    // this._relativeResolver = new RelativeResolver();
+    // this._relativeResolver.relations = this.config.relations;
+    // this._relativeResolver.reference = this;
+    // this._relativeResolver.relativeService = this.relativeMessage;
+    if (this.config.relations) {
+      this._relativeResolver = new RelativeResolver();
+      this._relativeResolver.reference = this;
+      this._relativeResolver.relativeService = this._messageService;
+      this._relativeResolver.initParameter = [this.load];
+      this._relativeResolver.initParameterEvents = [this.load];
+      this._relativeResolver.relations = this.config.relations;
+      this._relativeResolver.resolverRelation();
+      this._tempParameters = this._relativeResolver. _tempParameter;
+  }
+
     if (this.config.ajaxConfig) {
       if (this.config.componentType) {
         if (!this.config.componentType.child) {
@@ -306,7 +319,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   }
 
 
-  tempParameters = {};
+
   /**
    * 执行异步数据
    * @param p 路由参数信息
@@ -324,18 +337,18 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
           if (param.type === 'tempValue') {
             if (type) {
               if (type === 'load') {
-                if (this.tempParameters[param.valueName]) {
-                  params[param.name] = this.tempParameters[param.valueName];
+                if (this._tempParameters[param.valueName]) {
+                  params[param.name] = this._tempParameters[param.valueName];
                 } else {
                   console.log('参数不全不能加载');
                   tag = false;
                   return;
                 }
               } else {
-                params[param.name] = this.tempParameters[param.valueName];
+                params[param.name] = this._tempParameters[param.valueName];
               }
             } else {
-              params[param.name] = this.tempParameters[param.valueName];
+              params[param.name] = this._tempParameters[param.valueName];
             }
 
           } else if (param.type === 'value') {
@@ -364,7 +377,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
           } else if (param.type === 'componentValue') {
             pc = componentValue[param.valueName];
           } else if (param.type === 'tempValue') {
-            pc = this.tempParameters[param.valueName];
+            pc = this._tempParameters[param.valueName];
           }
         });
 
@@ -404,18 +417,18 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
         // 给主键赋值
         if (this.config.keyId) {
-          this.tempParameters['_id'] = ajaxData.Data[0][this.config.keyId];
+          this._tempParameters['_id'] = ajaxData.Data[0][this.config.keyId];
         } else {
           if (ajaxData.Data[0]['Id']) {
-            this.tempParameters['_id'] = ajaxData.Data[0]['Id'];
+            this._tempParameters['_id'] = ajaxData.Data[0]['Id'];
           }
         }
 
       } else {
-        this.tempParameters['_id'] && delete this.tempParameters['_id'];
+        this._tempParameters['_id'] && delete this._tempParameters['_id'];
       }
     } else {
-      this.tempParameters['_id'] && delete this.tempParameters['_id'];
+      this._tempParameters['_id'] && delete this._tempParameters['_id'];
     }
   }
   async saveForm() {
@@ -437,12 +450,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       const index = this.config.toolbar.findIndex(item => item.name === 'saveForm');
       if (this.config.toolbar[index].ajaxConfig) {
         const pconfig = JSON.parse(JSON.stringify(this.config.toolbar[index].ajaxConfig));
-        if (this.tempParameters['_id']) {
+        if (this._tempParameters['_id']) {
           // 修改保存
           const ajaxData = await this.execAjax(pconfig['update'], this.value);
           if (ajaxData) {
             console.log('修改保存成功', ajaxData);
-            // this.tempParameters['_id'] = ajaxData.Data[0].Id;
+            // this._tempParameters['_id'] = ajaxData.Data[0].Id;
 
           }
         } else {
@@ -455,7 +468,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 // console.log(ajaxData, pconfig['add'][i]);
                 if (pconfig['add'][i]['output']) {
                   pconfig['add'][i]['output'].forEach(out => {
-                    this.tempParameters[out.name] = ajaxData.Data[out['dataName']];
+                    this._tempParameters[out.name] = ajaxData.Data[out['dataName']];
                   });
                 }
 
@@ -495,17 +508,17 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
   initParameters(data?) {
     for (const d in data) {
-      this.tempParameters[d] = data[d];
+      this._tempParameters[d] = data[d];
     }
-    console.log('初始化参数', this.tempParameters);
+    console.log('初始化参数', this._tempParameters);
   }
 
   initParametersLoad(data?) {
     for (const d in data) {
-      this.tempParameters[d] = data[d];
+      this._tempParameters[d] = data[d];
     }
     this.load();
-    console.log('初始化参数并load', this.tempParameters);
+    console.log('初始化参数并load', this._tempParameters);
   }
 
 }
