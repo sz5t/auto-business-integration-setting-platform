@@ -1,5 +1,8 @@
+import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
+import { ComponentSettingResolverComponent } from '@shared/resolver/component-resolver/component-setting-resolver.component';
+import { LayoutResolverComponent } from './../../resolver/layout-resolver/layout-resolver.component';
 import { TypeOperationComponent } from './../../../routes/system/data-manager/type-operation.component';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Type } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { CommonUtility } from '@core/utility/Common-utility';
@@ -7,6 +10,10 @@ import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
+const component: { [type: string]: Type<any> } = {
+    layout: LayoutResolverComponent,
+    form: FormResolverComponent
+  };
 
 @Component({
     selector: 'cn-bsn-table,[cn-bsn-table]',
@@ -114,17 +121,20 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     loadData.Data.Rows.forEach(row => {
                         row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
                     });
+                    this._updateEditCacheByLoad(loadData.Data.Rows);
                     this.dataList = loadData.Data.Rows;
                     this.total = loadData.Data.Total;
                 } else {
+                    this._updateEditCacheByLoad([]);
                     this.dataList = loadData.Data;
                     this.total = 0;
                 }
             } else {
+                this._updateEditCacheByLoad([]);
                 this.dataList = [];
                 this.total = 0;
             }
-            this._updateEditCacheByLoad();
+            
             this.loading = false;
         })();
     }
@@ -158,6 +168,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 if (param['type'] === 'tempValue') {
                     parent = this._tempParameters[param.value];
                 } else if (param['type'] === 'value') {
+                    if (param.value === 'null') {
+                        param.value = null;
+                    }
                     parent = param.value;
                 } else if (param['type'] === 'GUID') {
                     // todo: 扩展功能
@@ -183,8 +196,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return Object.prototype.toString.call(url) === '[object String]';
     }
 
-    private _updateEditCacheByLoad() {
-        this.dataList.forEach(item => {
+    private _updateEditCacheByLoad(dataList) {
+        this.editCache = {};
+        dataList.forEach(item => {
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
@@ -259,6 +273,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     async executeSave(rowsData, method) {
+        // Todo: 优化配置
         const index = this.config.toolbar.findIndex(item => item.name === 'saveRow');
         const postConfig = this.config.toolbar[index].ajaxConfig[method];
         let isSuccess = false;
@@ -269,7 +284,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     const submitItem = {};
                     postConfig[i].params.map(param => {
                         if (param.type === 'tempValue') {
-                            console.log(this._tempParameters[param['valueName']]);
                             submitItem[param['name']] = this._tempParameters[param['valueName']];
                         } else if (param.type === 'componentValue') {
                             submitItem[param['name']] = rowData[param['valueName']];
@@ -371,6 +385,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.dataList = dataSet;
     }
 
+    
     private _updateEditCache(): void {
         this.dataList.forEach(item => {
             if (!this.editCache[item.key]) {
@@ -453,8 +468,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     toolbarAction(btn) {
         if (this[btn.name]) {
             this[btn.name]() && this._toolbarEnables(btn.enables);
+        } else if (this[btn.type]) {
+            const buttons = this.config.toolbar.filter(button => button.type === btn.type);
+            const index = buttons.findIndex(button => button.name === btn.name);
+            if (index >= 0) {
+                this[buttons[index].type](buttons[index].dialogConfig);
+                
+            }
         }
-
     }
 
     valueChange(data) {
@@ -465,11 +486,55 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     private _toolbarEnables(enables) {
 
         this.config.toolbar.map(btn => {
-            if (enables[btn.name]) {
+            if (!enables[btn.name]) {
                 delete btn['disabled'];
             } else {
                 btn['disabled'] = '';
             }
+        });
+    }
+    // endregion
+
+    // region: 弹出UI
+    private showForm(dialog) {
+        const footer = [];
+        if (dialog.buttons) {
+            dialog.buttons.forEach(btn => {
+                const button = {};
+                button['label'] = btn.text;
+                button['onClick'] = (componentInstance) => {
+                    componentInstance.saveForm();
+                };
+                footer.push(button);
+            });
+            
+        }
+        const modal = this.modalService.create({
+            nzTitle: dialog.title,
+            nzWidth: dialog.width,
+            nzContent: dialog.forms ? component['form'] : dialog. component['layout'],
+            nzComponentParams: {
+                config: dialog
+            },
+            nzFooter: footer
+        });
+    }
+
+    private showLayout(dialog) {
+        const modal = this.modalService.create({
+            nzTitle: '',
+            nzContent: dialog.forms ? component['form'] : dialog. component['layout'],
+            nzComponentParams: {
+                config: dialog
+            },
+            nzFooter: [
+                {
+                    label: dialog.title ? dialog.title : '',
+                    onClick: (componentInstance) => {
+                        console.log('component click');
+                    }
+                }
+            ]
         });
     }
     // endregion
