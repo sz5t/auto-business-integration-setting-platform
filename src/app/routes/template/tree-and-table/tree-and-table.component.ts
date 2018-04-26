@@ -282,7 +282,7 @@ export class TreeAndTableComponent implements OnInit {
                             'labelSize': '6',
                             'controlSize': '10',
                             'inputType': 'submit',
-                            'name': 'sex',
+                            'name': 'Enable',
                             'notFoundContent': '',
                             'selectModel': false,
                             'showSearch': true,
@@ -294,12 +294,12 @@ export class TreeAndTableComponent implements OnInit {
                             'options': [
                               {
                                 'label': '启用',
-                                'value': 1,
+                                'value': true,
                                 'disabled': false
                               },
                               {
                                 'label': '禁用',
-                                'value': 0,
+                                'value': false,
                                 'disabled': false
                               }
                             ]
