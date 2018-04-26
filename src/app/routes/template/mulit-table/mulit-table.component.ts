@@ -38,7 +38,7 @@ export class MulitTableComponent implements OnInit {
                       'ajaxType': 'get',
                       'params': [
                         {
-                          name: 'ParentId', type: 'value', valueName: '', 'value': ''
+                          name: 'ParentId', type: 'value', valueName: '', 'value': 'null'
                         }
                       ]
                     },

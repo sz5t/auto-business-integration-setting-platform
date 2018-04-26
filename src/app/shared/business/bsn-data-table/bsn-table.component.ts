@@ -1,5 +1,8 @@
+import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
+import { ComponentSettingResolverComponent } from '@shared/resolver/component-resolver/component-setting-resolver.component';
+import { LayoutResolverComponent } from './../../resolver/layout-resolver/layout-resolver.component';
 import { TypeOperationComponent } from './../../../routes/system/data-manager/type-operation.component';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Type } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { CommonUtility } from '@core/utility/Common-utility';
@@ -7,6 +10,10 @@ import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
+const component: { [type: string]: Type<any> } = {
+    layout: LayoutResolverComponent,
+    form: FormResolverComponent
+  };
 
 @Component({
     selector: 'cn-bsn-table,[cn-bsn-table]',
@@ -152,6 +159,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 if (param['type'] === 'tempValue') {
                     parent = this._tempParameters[param.value];
                 } else if (param['type'] === 'value') {
+                    if (param.value === 'null') {
+                        param.value = null;
+                    }
                     parent = param.value;
                 } else if (param['type'] === 'GUID') {
                     // todo: 扩展功能
@@ -447,8 +457,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     toolbarAction(btn) {
         if (this[btn.name]) {
             this[btn.name]() && this._toolbarEnables(btn.enables);
+        } else if (this[btn.type]) {
+            const buttons = this.config.toolbar.filter(button => button.type === btn.type);
+            const index = buttons.findIndex(button => button.name === btn.name);
+            if (index >= 0) {
+                this[buttons[index].type](buttons[index].dialogConfig);
+                
+            }
         }
-
     }
 
     valueChange(data) {
@@ -464,6 +480,54 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             } else {
                 btn['disabled'] = '';
             }
+        });
+    }
+    // endregion
+
+    // region: 弹出UI
+    private showForm(dialog) {
+        const footer = [];
+        if (dialog.buttons) {
+            dialog.buttons.forEach(btn => {
+                const button = {};
+                button['lable'] = btn.text;
+                button['onClick'] = (componentInstance) => {
+                    componentInstance.saveForm();
+                };
+            });
+        }
+        const modal = this.modalService.create({
+            nzTitle: dialog.title,
+            nzContent: dialog.forms ? component['form'] : dialog. component['layout'],
+            nzComponentParams: {
+                config: dialog
+            },
+            nzFooter: [
+                {
+                    label: dialog.title ? dialog.title : '',
+                    onClick: (componentInstance) => {
+                        console.log('component click');
+                    }
+                }
+            ]
+        });
+    }
+
+    private showLayout(dialog) {
+        const modal = this.modalService.create({
+            nzTitle: '',
+            nzContent: dialog.forms ? component['form'] : dialog. component['layout'],
+            nzComponentParams: {
+                config: dialog
+            },
+            nzFooter: [
+                {
+                    label: dialog.title ? dialog.title : '',
+                    onClick: (componentInstance) => {
+                        console.log('component click');
+                    }
+                }
+            ]
         });
     }
     // endregion

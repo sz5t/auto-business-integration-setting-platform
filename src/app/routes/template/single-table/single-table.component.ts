@@ -327,7 +327,7 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'injectRow', 'class': 'editable-add-btn', 'text': '测试方法注入',
+                        'name': 'showModal', 'class': 'editable-add-btn', 'text': '测试方法注入',
                         'enables': {
                           'addRow': true,
                           'updateRow': true,
@@ -336,7 +336,7 @@ export class SingleTableComponent implements OnInit {
                           'cancelRow': false,
                           'showDialog': true
                         },
-                        'type': 'method/action',
+                        'type': 'modal',
                         'ajaxConfig': {
                           add: {
                             'url': 'AppConfigPack_test',
@@ -361,8 +361,242 @@ export class SingleTableComponent implements OnInit {
                         },
                       },
                       {
-                        'name': 'showDialog', 'class': 'editable-add-btn', 'text': '弹出框'
+                        'name': 'showDialogForm', 'class': 'editable-add-btn', 'text': '弹出表单',
+                        'type': 'showForm', 'dialogConfig': {
+                          'keyId': 'Id',
+                          'title' : '表单',
+                          'ajaxConfig': {
+                            'url': 'AppModuleConfig',
+                            'ajaxType': 'get',
+                            'params': []
+                          },
+                          'componentType': {
+                            'parent': false,
+                            'child': false,
+                            'own': true
+                          },
+                          'forms':
+                            [
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'text',
+                                'name': 'Name',
+                                'label': '名称',
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default'
+                              },
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'text',
+                                'name': 'operationName',
+                                'label': '操作名称',
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default'
+                              },
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'text',
+                                'name': 'operationIcon',
+                                'label': '操作图标',
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default'
+                              },
+                              {
+                                'type': 'select',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'submit',
+                                'name': 'operationType',
+                                'label': '操作类型',
+                                'notFoundContent': '',
+                                'selectModel': false,
+                                'showSearch': true,
+                                'placeholder': '--请选择--',
+                                'disabled': false,
+                                'size': 'default',
+                                'options': [
+                                  {
+                                    'label': '无',
+                                    'value': 'none'
+                                  },
+                                  {
+                                    'label': '刷新数据',
+                                    'value': 'refresh'
+                                  },
+                                  {
+                                    'label': '执行SQL',
+                                    'value': 'exec_sql'
+                                  },
+                                  {
+                                    'label': '执行SQL后刷新',
+                                    'value': 'after_sql'
+                                  },
+                                  {
+                                    'label': '弹出确认框',
+                                    'value': 'confirm'
+                                  },
+                                  {
+                                    'label': '弹出窗体',
+                                    'value': 'dialog'
+                                  },
+                                  {
+                                    'label': '弹出表单',
+                                    'value': 'form'
+                                  },
+                                  {
+                                    'label': '执行SQL后刷新主界面',
+                                    'value': 'refresh_parent'
+                                  }
+                                ]
+                              },
+                              {
+                                'type': 'select',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'submit',
+                                'name': 'operationActionType',
+                                'label': '动作类型',
+                                'notFoundContent': '',
+                                'selectModel': false,
+                                'showSearch': true,
+                                'placeholder': '--请选择--',
+                                'disabled': false,
+                                'size': 'default',
+                                'options': [
+                                  {
+                                    'label': '操作',
+                                    'value': 'operation'
+                                  },
+                                  {
+                                    'label': '动作',
+                                    'value': 'action'
+                                  }
+                                ]
+                              },
+                              {
+                                'type': 'select',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'submit',
+                                'name': 'operationStatus',
+                                'label': '操作后状态',
+                                'notFoundContent': '',
+                                'selectModel': false,
+                                'showSearch': true,
+                                'placeholder': '--请选择--',
+                                'disabled': false,
+                                'size': 'default',
+                                'options': [
+                                  {
+                                    'label': '浏览状态',
+                                    'value': 'normal'
+                                  },
+                                  {
+                                    'label': '新增状态',
+                                    'value': 'new'
+                                  },
+                                  {
+                                    'label': '编辑状态',
+                                    'value': 'edit'
+                                  }
+                                ]
+                              },
+                              {
+                                'type': 'select',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'submit',
+                                'name': 'operationNullData',
+                                'label': '空数据状态',
+                                'notFoundContent': '',
+                                'selectModel': false,
+                                'showSearch': true,
+                                'placeholder': '--请选择--',
+                                'disabled': false,
+                                'size': 'default',
+                                'options': [
+                                  {
+                                    'label': '启用',
+                                    'value': true
+                                  },
+                                  {
+                                    'label': '禁用',
+                                    'value': false
+                                  }
+                                ]
+                              },
+                              {
+                                'type': 'select',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'submit',
+                                'name': 'operationDefaultStatus',
+                                'label': '默认状态',
+                                'notFoundContent': '',
+                                'selectModel': false,
+                                'showSearch': true,
+                                'placeholder': '--请选择--',
+                                'disabled': false,
+                                'size': 'default',
+                                'options': [
+                                  {
+                                    'label': '启用',
+                                    'value': true
+                                  },
+                                  {
+                                    'label': '禁用',
+                                    'value': false
+                                  }
+                                ]
+                              },
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '10',
+                                'inputType': 'text',
+                                'name': 'operationOrder',
+                                'label': '顺序',
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default'
+                              },
+
+                            ],
+                          'buttons':
+                            [
+                              {
+                                'name': 'saveForm', 'class': 'editable-add-btn', 'text': '保存'
+                              },
+                              { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
+                            ],
+
+                          'dataList': [],
+                          'relations': [
+                            {
+                              relationViewId: 'viewId_testList',
+                              relationSendContent: [],
+                              relationReceiveContent: []
+                            }
+                          ]
+                        }
                       },
+                      {
+                        'name': 'showDialogPage', 'class': 'editable-add-btn', 'text': '弹出页面',
+                        'type': 'showDialog'
+                      }
                     ]
                   },
                   dataList: []
