@@ -43,7 +43,7 @@ export class SingleTableComponent implements OnInit {
                       'child': false,
                       'own': true
                     },
-                    'relation': [{
+                    'relations': [{
                       'relationViewId': 'singleTable',
                       'relationSendContent': [],
                       'relationReceiveContent': []

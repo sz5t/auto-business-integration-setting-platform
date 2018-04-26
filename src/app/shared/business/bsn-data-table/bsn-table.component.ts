@@ -74,6 +74,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this._relativeResolver.relativeService = this.relativeMessage;
             this._relativeResolver.relations = this.config.relations;
             this._relativeResolver.initParameterEvents = [this.load];
+            this._relativeResolver.tempParameter = this._tempParameters;
             this._relativeResolver.resolverRelation();
         }
         if (this.config.componentType) {
@@ -258,21 +259,23 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (postConfig) {
             for (let i = 0, len = postConfig.length; i < len; i++) {
                 const submitData = [];
-                postConfig[i].params.map(param => {
-                    rowsData.map(rowData => {
-                        const submitItem = {};
+                rowsData.map(rowData => {
+                    const submitItem = {};
+                    postConfig[i].params.map(param => {
                         if (param.type === 'tempValue') {
+                            console.log(this._tempParameters[param['valueName']]);
                             submitItem[param['name']] = this._tempParameters[param['valueName']];
                         } else if (param.type === 'componentValue') {
                             submitItem[param['name']] = rowData[param['valueName']];
                         } else if (param.type === 'GUID') {
-        
+
                         } else if (param.type === 'value') {
                             submitItem[param['name']] = rowData[param['value']];
                         }
                     });
-                   
+                    submitData.push(submitItem);
                 });
+
                 const response = await this[method](postConfig[i].url, submitData);
                 if (response && response.Status === 200) {
                     this.message.create('success', '保存成功');
