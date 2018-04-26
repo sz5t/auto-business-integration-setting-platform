@@ -32,7 +32,7 @@ export class SingleTableComponent implements OnInit {
                     'nzIsPagination': true, // 是否分页
                     'nzShowTotal': true, // 是否显示总数据量
                     'pageSize': 5, // 默认每页数据条数
-                    'pageSizeOptions': [5, 10, 20, 30, 40, 50],
+                    'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
                       'url': 'ShowCase',
                       'ajaxType': 'get',
@@ -57,7 +57,7 @@ export class SingleTableComponent implements OnInit {
                           options: {
                             'type': 'input',
                             'labelSize': '6',
-                            'controlSize': '10',
+                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -70,7 +70,7 @@ export class SingleTableComponent implements OnInit {
                           options: {
                             'type': 'input',
                             'labelSize': '6',
-                            'controlSize': '10',
+                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -83,7 +83,7 @@ export class SingleTableComponent implements OnInit {
                           options: {
                             'type': 'select',
                             'labelSize': '6',
-                            'controlSize': '10',
+                            'controlSize': '18',
                             'inputType': 'submit',
                             'name': 'sex',
                             'label': 'Type',
@@ -133,7 +133,7 @@ export class SingleTableComponent implements OnInit {
                           options: {
                             'type': 'input',
                             'labelSize': '6',
-                            'controlSize': '10',
+                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -146,7 +146,7 @@ export class SingleTableComponent implements OnInit {
                           options: {
                             'type': 'input',
                             'labelSize': '6',
-                            'controlSize': '10',
+                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -159,7 +159,7 @@ export class SingleTableComponent implements OnInit {
                           options: {
                             'type': 'input',
                             'labelSize': '6',
-                            'controlSize': '10',
+                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -172,7 +172,7 @@ export class SingleTableComponent implements OnInit {
                           options: {
                             'type': 'input',
                             'labelSize': '6',
-                            'controlSize': '10',
+                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -185,7 +185,7 @@ export class SingleTableComponent implements OnInit {
                           options: {
                             'type': 'select',
                             'labelSize': '6',
-                            'controlSize': '10',
+                            'controlSize': '18',
                             'inputType': 'submit',
                             'name': 'Enable',
                             'notFoundContent': '',
@@ -308,12 +308,18 @@ export class SingleTableComponent implements OnInit {
                         'name': 'showDialogForm', 'class': 'editable-add-btn', 'text': '弹出新增表单',
                         'type': 'showForm', 'dialogConfig': {
                           'keyId': 'Id',
-                          'title': '表单',
-                          'width': '500',
+                          'layout': 'horizontal',
+                          'title': '新增数据',
+                          'width': '600',
+                          'isCard': true,
                           'ajaxConfig': {
-                            'url': 'AppModuleConfig',
+                            'url': 'ShowCase',
                             'ajaxType': 'get',
-                            'params': []
+                            'params': [
+                              {
+                                name: 'Id', type: 'tempValue', valueName: '_id', value: ''
+                              }
+                            ]
                           },
                           'componentType': {
                             'parent': false,
@@ -325,9 +331,9 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'input',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'text',
-                                'name': 'Name',
+                                'name': 'CaseName',
                                 'label': '名称',
                                 'placeholder': '',
                                 'disabled': false,
@@ -335,12 +341,53 @@ export class SingleTableComponent implements OnInit {
                                 'size': 'default'
                               },
                               {
+                                'type': 'select',
+                                'labelSize': '6',
+                                'controlSize': '18',
+                                'inputType': 'submit',
+                                'name': 'Type',
+                                'label': '类别Id',
+                                'notFoundContent': '',
+                                'selectModel': false,
+                                'showSearch': true,
+                                'placeholder': '--请选择--',
+                                'disabled': false,
+                                'size': 'default',
+                                'options': [
+                                  {
+                                    'label': '表',
+                                    'value': '1',
+                                    'disabled': false
+                                  },
+                                  {
+                                    'label': '树',
+                                    'value': '2',
+                                    'disabled': false
+                                  },
+                                  {
+                                    'label': '树表',
+                                    'value': '3',
+                                    'disabled': false
+                                  },
+                                  {
+                                    'label': '表单',
+                                    'value': '4',
+                                    'disabled': false
+                                  },
+                                  {
+                                    'label': '标签页',
+                                    'value': '5',
+                                    'disabled': false
+                                  }
+                                ]
+                              },
+                              {
                                 'type': 'input',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'text',
-                                'name': 'operationName',
-                                'label': '操作名称',
+                                'name': 'CaseCount',
+                                'label': '数量',
                                 'placeholder': '',
                                 'disabled': false,
                                 'readonly': false,
@@ -349,10 +396,22 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'input',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'text',
-                                'name': 'operationIcon',
-                                'label': '操作图标',
+                                'name': 'Level',
+                                'label': '级别',
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default'
+                              },
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '18',
+                                'inputType': 'text',
+                                'name': 'Remark',
+                                'label': '备注',
                                 'placeholder': '',
                                 'disabled': false,
                                 'readonly': false,
@@ -361,110 +420,10 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'select',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'submit',
-                                'name': 'operationType',
-                                'label': '操作类型',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                  {
-                                    'label': '无',
-                                    'value': 'none'
-                                  },
-                                  {
-                                    'label': '刷新数据',
-                                    'value': 'refresh'
-                                  },
-                                  {
-                                    'label': '执行SQL',
-                                    'value': 'exec_sql'
-                                  },
-                                  {
-                                    'label': '执行SQL后刷新',
-                                    'value': 'after_sql'
-                                  },
-                                  {
-                                    'label': '弹出确认框',
-                                    'value': 'confirm'
-                                  },
-                                  {
-                                    'label': '弹出窗体',
-                                    'value': 'dialog'
-                                  },
-                                  {
-                                    'label': '弹出表单',
-                                    'value': 'form'
-                                  },
-                                  {
-                                    'label': '执行SQL后刷新主界面',
-                                    'value': 'refresh_parent'
-                                  }
-                                ]
-                              },
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'submit',
-                                'name': 'operationActionType',
-                                'label': '动作类型',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                  {
-                                    'label': '操作',
-                                    'value': 'operation'
-                                  },
-                                  {
-                                    'label': '动作',
-                                    'value': 'action'
-                                  }
-                                ]
-                              },
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'submit',
-                                'name': 'operationStatus',
-                                'label': '操作后状态',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                  {
-                                    'label': '浏览状态',
-                                    'value': 'normal'
-                                  },
-                                  {
-                                    'label': '新增状态',
-                                    'value': 'new'
-                                  },
-                                  {
-                                    'label': '编辑状态',
-                                    'value': 'edit'
-                                  }
-                                ]
-                              },
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'submit',
-                                'name': 'operationNullData',
-                                'label': '空数据状态',
+                                'name': 'Enable',
+                                'label': '状态',
                                 'notFoundContent': '',
                                 'selectModel': false,
                                 'showSearch': true,
@@ -474,68 +433,25 @@ export class SingleTableComponent implements OnInit {
                                 'options': [
                                   {
                                     'label': '启用',
-                                    'value': true
+                                    'value': true,
+                                    'disabled': false
                                   },
                                   {
                                     'label': '禁用',
-                                    'value': false
+                                    'value': false,
+                                    'disabled': false
                                   }
                                 ]
-                              },
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'submit',
-                                'name': 'operationDefaultStatus',
-                                'label': '默认状态',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                  {
-                                    'label': '启用',
-                                    'value': true
-                                  },
-                                  {
-                                    'label': '禁用',
-                                    'value': false
-                                  }
-                                ]
-                              },
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'text',
-                                'name': 'operationOrder',
-                                'label': '顺序',
-                                'placeholder': '',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default'
                               },
 
                             ],
                           'buttons':
                             [
+                              { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'type': 'default' },
                               {
-                                'name': 'saveForm', 'class': 'editable-add-btn', 'text': '保存'
-                              },
-                              { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
-                            ],
-
-                          'dataList': [],
-                          'relations': [
-                            {
-                              relationViewId: 'viewId_testList',
-                              relationSendContent: [],
-                              relationReceiveContent: []
-                            }
-                          ]
+                                'name': 'saveForm', 'class': 'editable-add-btn', 'text': '保存', 'type': 'primary'
+                              }
+                            ]
                         }
                       },
                       {
@@ -543,12 +459,16 @@ export class SingleTableComponent implements OnInit {
                         'type': 'showForm',
                         'dialogConfig': {
                           'keyId': 'Id',
-                          'title': '表单',
-                          'width': '500',
+                          'title': '编辑',
+                          'width': '600',
                           'ajaxConfig': {
-                            'url': 'AppModuleConfig',
+                            'url': 'ShowCase',
                             'ajaxType': 'get',
-                            'params': []
+                            'params': [
+                              {
+                                name: 'Id', type: 'tempValue', valueName: '_id', value: ''
+                              }
+                            ]
                           },
                           'componentType': {
                             'parent': false,
@@ -560,7 +480,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'input',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'text',
                                 'name': 'Name',
                                 'label': '名称',
@@ -572,7 +492,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'input',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'text',
                                 'name': 'operationName',
                                 'label': '操作名称',
@@ -584,7 +504,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'input',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'text',
                                 'name': 'operationIcon',
                                 'label': '操作图标',
@@ -596,7 +516,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'select',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'submit',
                                 'name': 'operationType',
                                 'label': '操作类型',
@@ -644,7 +564,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'select',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'submit',
                                 'name': 'operationActionType',
                                 'label': '动作类型',
@@ -668,7 +588,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'select',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'submit',
                                 'name': 'operationStatus',
                                 'label': '操作后状态',
@@ -696,7 +616,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'select',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'label': '空数据状态',
                                 'notFoundContent': '',
                                 'selectModel': false,
@@ -718,7 +638,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'select',
                                 'labelSize': '6',
-                                'controlSize': '10',                       
+                                'controlSize': '18',
                                 'label': '默认状态',
                                 'notFoundContent': '',
                                 'selectModel': false,
@@ -740,7 +660,7 @@ export class SingleTableComponent implements OnInit {
                               {
                                 'type': 'input',
                                 'labelSize': '6',
-                                'controlSize': '10',
+                                'controlSize': '18',
                                 'inputType': 'text',
                                 'name': 'operationOrder',
                                 'label': '顺序',
@@ -758,15 +678,7 @@ export class SingleTableComponent implements OnInit {
                               },
                               { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
                             ],
-
                           'dataList': [],
-                          'relations': [
-                            {
-                              relationViewId: 'viewId_testList',
-                              relationSendContent: [],
-                              relationReceiveContent: []
-                            }
-                          ]
                         }
                       },
                       {

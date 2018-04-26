@@ -51,6 +51,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     // endregion
 
     // region: 业务对象
+    _selectRow = {};
     _tempParameters = {};
     _relativeResolver;
     selfEvent = {
@@ -107,6 +108,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     // region: 功能实现
     load(pageIndex = 1) {
+        this._selectRow = {};
         this.pageIndex = pageIndex;
         this.loading = true;
         const url = this._buildURL(this.config.ajaxConfig.url);
@@ -217,6 +219,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             row.selected = false;
         });
         data['selected'] = true;
+        this._selectRow = data;
     }
 
     private searchData(reset: boolean = false) {
@@ -502,6 +505,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             dialog.buttons.forEach(btn => {
                 const button = {};
                 button['label'] = btn.text;
+                button['type'] = btn.type ? btn.type : 'default';
                 button['onClick'] = (componentInstance) => {
                     componentInstance.saveForm();
                 };
@@ -509,12 +513,18 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             });
             
         }
+
+        const obj = {
+            _id: this._selectRow[dialog.keyId]
+        };
+        console.log(obj);
         const modal = this.modalService.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
-            nzContent: dialog.forms ? component['form'] : dialog. component['layout'],
+            nzContent: component['form'],
             nzComponentParams: {
-                config: dialog
+                config: dialog,
+                ref: obj
             },
             nzFooter: footer
         });

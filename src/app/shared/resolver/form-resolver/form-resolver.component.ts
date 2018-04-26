@@ -191,8 +191,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     ]
   };
-
   @Input() dataList;
+  @Input() ref;
   form: FormGroup;
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
   _relativeResolver;
@@ -244,9 +244,13 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       this._relativeResolver.initParameterEvents = [this.load];
       this._relativeResolver.relations = this.config.relations;
       this._relativeResolver.resolverRelation();
-      this._tempParameters = this._relativeResolver. _tempParameter;
-  }
-
+      this._tempParameters = this._relativeResolver._tempParameter;
+    }
+    if (this.ref) {
+      for (const p in this.ref ) {
+        this._tempParameters[p] = this.ref[p];
+      }
+    }
     if (this.config.ajaxConfig) {
       if (this.config.componentType) {
         if (!this.config.componentType.child) {
@@ -443,7 +447,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     //   operationStatus: 'normal',
     //   operationType: 'refresh',
     // };
-   // this.setFormValue(testValue);
+    // this.setFormValue(testValue);
     console.log('执行保存方法', this.value);
 
     if (this.config.toolbar) {
@@ -496,11 +500,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   execFun(name?) {
     switch (name) {
       case 'saveForm':
-      this.saveForm();
-      break;
+        this.saveForm();
+        break;
       case 'initParametersLoad':
-      this.initParametersLoad();
-      break;
+        this.initParametersLoad();
+        break;
       default:
         break;
     }
