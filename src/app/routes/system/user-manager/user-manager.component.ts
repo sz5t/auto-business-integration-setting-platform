@@ -227,4 +227,8 @@ export class UserManagerComponent implements OnInit {
             this.msgSrv.warning('请选中要修改的记录！');
         }
     }
+
+    settingRole() {
+        console.log('aaaa');
+    }
 }

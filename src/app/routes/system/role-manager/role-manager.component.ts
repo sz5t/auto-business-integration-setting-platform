@@ -3,6 +3,7 @@ import {ApiService} from '@core/utility/api-service';
 import {APIResource} from '@core/utility/api-resource';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {RoleOperationComponent} from './role-operation.component';
+import {AppPermission, FuncResPermission} from '../../../model/APIModel/AppPermission';
 
 @Injectable()
 export class RoleService {
@@ -23,8 +24,9 @@ export class RoleService {
 
     addRole(data?) {
       data['OwnerId'] = APIResource.AppPlatCustomerId;
-      data['ProjId'] = APIResource.AppProject;
-      data['AppPermission'] = JSON.parse('{"$type":"SinoForce.User.AppPermission, SinoForce.Data","DataResPermission":{"$type":"SinoForce.User.DataResPermission, SinoForce.Data","ResourceTypePermissions":[{"$type":"SinoForce.User.ResourceTypePermission, SinoForce.Data","PropPermissions":[],"QueryFilter":"ApplyId=754EEF73A2781F4D81A9C37ED83B43B9","UpdateFilter":"","DeleteFilter":"","RowPermissions":[],"Id":"282daf2270ff45aba76e221fb8605923","Name":"UnstructData","OpPermissions":[{"$type":"SinoForce.User.OpPermission, SinoForce.Data","Name":"GET","Permission":"Permitted","PermissionExpText":""}]}],"Id":"b48d78bf8883e944939bad7e123f0248","Name":"任意类型","OpPermissions":[]},"FuncResPermission":null}');
+      data['ProjId'] = APIResource.AppProjId;
+      // data['AppPermission'] = JSON.parse('{"$type":"SinoForce.User.AppPermission, SinoForce.Data","DataResPermission":{"$type":"SinoForce.User.DataResPermission, SinoForce.Data","ResourceTypePermissions":[{"$type":"SinoForce.User.ResourceTypePermission, SinoForce.Data","PropPermissions":[],"QueryFilter":"ApplyId=754EEF73A2781F4D81A9C37ED83B43B9","UpdateFilter":"","DeleteFilter":"","RowPermissions":[],"Id":"282daf2270ff45aba76e221fb8605923","Name":"UnstructData","OpPermissions":[{"$type":"SinoForce.User.OpPermission, SinoForce.Data","Name":"GET","Permission":"Permitted","PermissionExpText":""}]}],"Id":"b48d78bf8883e944939bad7e123f0248","Name":"任意类型","OpPermissions":[]},"FuncResPermission":null}');
+      data['AppPermission'] = JSON.parse('{"DataResPermission": null,"FuncResPermission": null}');
         return this.http.post(`${this.roleServiceUrl}`, data);
     }
 
@@ -175,10 +177,12 @@ export class RoleManagerComponent implements OnInit {
             nzTitle          : '新增数据',
             nzContent        : RoleOperationComponent,
             nzFooter         : null,
+            nzWidth          : 800,
             nzComponentParams: {
                 name: '',
             }
         });
+
         subscription.afterClose.subscribe((result) => {
             if(typeof result === 'object')
                 this._randomRole.addRole(result).subscribe( response => {
@@ -198,7 +202,7 @@ export class RoleManagerComponent implements OnInit {
             let itemId = items.pop();
             let ITEM = {};
             this._dataSet.forEach( (item) =>{
-                if(item.Id == itemId)
+                if(item.Id === itemId)
                     ITEM = item;
             } )
 
@@ -206,12 +210,13 @@ export class RoleManagerComponent implements OnInit {
                 nzTitle          : '修改数据',
                 nzContent        : RoleOperationComponent,
                 nzFooter         : null,
+                nzWidth          : 800,
                 nzComponentParams: {
                     data: ITEM
                 }
             });
             subscription.afterClose.subscribe(result => {
-                if(typeof result === 'object'){
+                if(typeof result === 'object') {
                     result['Id'] = itemId;
                     this._randomRole.updateRole(result).subscribe( response => {
                         if(response.Status === 200){

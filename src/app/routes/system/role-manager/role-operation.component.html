@@ -17,20 +17,37 @@
             </nz-select>
         </nz-form-control>
     </nz-form-item>
-
-    <nz-form-item>
-        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >配置内容</nz-form-label>
-        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
-            <input nz-input  formControlName="AppPermission" id="AppPermission">
-        </nz-form-control>
-    </nz-form-item>
-
     <nz-form-item>
         <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >备注</nz-form-label>
         <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
             <input nz-input  formControlName="Remark" id="Remark">
         </nz-form-control>
     </nz-form-item>
+    <nz-form-item style="vertical-align: center">
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >配置内容</nz-form-label>
+        <nz-form-control nz-col [nzSm]="10" [nzXs]="18" >
+            <div style="padding-left: 7px;border:1px solid #000; margin-right:10px;">资源列表<br>
+            <nz-tree
+                formControlName = "AppPermission"
+                [nzShowLine]="true"
+                [(ngModel)]="nodes"
+                [nzCheckable]="true"
+                [nzMultiple]="false"
+                [nzDefaultCheckedKeys]="checkedKeys"
+                [nzDefaultExpandAll]="expandDefault"
+                (nzClick)="mouseAction('click',$event)"
+                (nzCheckBoxChange) = "mouseAction('click',$event)">
+            </nz-tree>
+            </div>
+        </nz-form-control>
+        <nz-form-control nz-col [nzSm]="4" [nzXs]="6" >
+            <div style="border:1px solid #000;padding-left: 7px;">操作列表<br>
+                <nz-checkbox-group  formControlName="Operations" [(ngModel)]="checkOptionsOne"></nz-checkbox-group>
+            </div>
+        </nz-form-control>
+    </nz-form-item>
+
+
     <div class="customize-footer">
         <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="emitDataOutside($event)">
             保存
