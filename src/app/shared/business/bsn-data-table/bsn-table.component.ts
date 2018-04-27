@@ -1,3 +1,4 @@
+
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { ComponentSettingResolverComponent } from '@shared/resolver/component-resolver/component-setting-resolver.component';
 import { LayoutResolverComponent } from './../../resolver/layout-resolver/layout-resolver.component';
@@ -13,7 +14,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
-  };
+};
 
 @Component({
     selector: 'cn-bsn-table,[cn-bsn-table]',
@@ -68,10 +69,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _toolbar;
     editCache = {};
     rowContent = {};
+    _dataSet = {};
     // endregion
 
     constructor(
-        private http: _HttpClient,
         private _http: ApiService,
         private message: NzMessageService,
         private modalService: NzModalService,
@@ -90,6 +91,19 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this._relativeResolver.initParameterEvents = [this.load];
             this._relativeResolver.tempParameter = this._tempParameters;
             this._relativeResolver.resolverRelation();
+        }
+        if (this.config.dataSet) {
+            (async() => {
+                for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
+                    const url = this._buildURL(this.config.dataSet[i].ajaxConfig);
+                    const params = this._buildParameters(this.config.dataSet[i].params);
+                    const data = await this.get(url, params);
+                    if (data && data.Status === 200) {
+                        this._dataSet[this.config.dataSet[i].name] = data.Data;
+                    }
+                }
+            })();
+            
         }
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
@@ -136,7 +150,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 this.dataList = [];
                 this.total = 0;
             }
-            
+
             this.loading = false;
         })();
     }
@@ -388,7 +402,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.dataList = dataSet;
     }
 
-    
     private _updateEditCache(): void {
         this.dataList.forEach(item => {
             if (!this.editCache[item.key]) {
@@ -476,7 +489,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             const index = buttons.findIndex(button => button.name === btn.name);
             if (index >= 0) {
                 this[buttons[index].type](buttons[index].dialogConfig);
-                
+
             }
         }
     }
@@ -501,23 +514,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     // region: 弹出UI
     private showForm(dialog) {
         const footer = [];
-        if (dialog.buttons) {
-            dialog.buttons.forEach(btn => {
-                const button = {};
-                button['label'] = btn.text;
-                button['type'] = btn.type ? btn.type : 'default';
-                button['onClick'] = (componentInstance) => {
-                    componentInstance.saveForm();
-                };
-                footer.push(button);
-            });
-            
-        }
-
         const obj = {
             _id: this._selectRow[dialog.keyId]
         };
-        console.log(obj);
         const modal = this.modalService.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
@@ -528,12 +527,46 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             },
             nzFooter: footer
         });
+
+        if (dialog.buttons) {
+            dialog.buttons.forEach(btn => {
+                const button = {};
+                button['label'] = btn.text;
+                button['type'] = btn.type ? btn.type : 'default';
+                button['onClick'] = (componentInstance) => {
+                    if (btn['name'] === 'save') {
+                        (async () => {
+                            const result = await componentInstance.buttonAction(btn);
+                            if (result) {
+                                modal.close();
+                                // todo: 操作完成当前数据后需要定位
+                                this.load();
+                            }
+                        })();
+                    } else if (btn['name'] === 'close') {
+                        modal.close();
+                    } else if (btn['name'] === 'reset') {
+                        this._resetForm(componentInstance);
+                    }
+
+                };
+                footer.push(button);
+            });
+
+        }
+
+
     }
+
+    private _resetForm(comp: FormResolverComponent) {
+        comp.resetForm();
+    }
+
 
     private showLayout(dialog) {
         const modal = this.modalService.create({
             nzTitle: '',
-            nzContent: dialog.forms ? component['form'] : dialog. component['layout'],
+            nzContent: dialog.forms ? component['form'] : dialog.component['layout'],
             nzComponentParams: {
                 config: dialog
             },
@@ -566,8 +599,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return this._http.deleteProj(url, params).toPromise();
     }
 
-    private async get() {
-
+    private async get(url, params) {
+        return this._http.getProj(url, params).toPromise();
     }
     // endregion
 }

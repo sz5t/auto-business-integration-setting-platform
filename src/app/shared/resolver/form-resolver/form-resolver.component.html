@@ -1,21 +1,22 @@
 <!-- <nz-card nzType="inner" [nzTitle]="config.title?config.title:''">
 
 </nz-card> -->
-
-<form nz-form [nzLayout]="config.layout?config.layout:'horizontal'" [formGroup]="form" (ngSubmit)="_submitForm($event)">
-  <!-- 垂直表单布局-->
-  <ng-container cnFormResolverDirective *ngFor="let field of config.forms" [formGroup]="form" [config]="field">
-  </ng-container>
-  <!-- 水平表单布局-->
-  <!-- <div *ngIf="config.horizontial" nz-row [nzGutter]="8">
-    <div nz-col [nzSpan]="8" *ngFor="let field of config">
-      <ng-container cnFormResolverDirective [formGroup]="form" [config]="field"></ng-container>
-    </div>
-  </div> -->
-
-   <div class="table-operations" *ngIf="config.toolbar">
-    <ng-container *ngFor="let bar of config.toolbar">
-      <input nz-button type="button" (click)="execFun(bar.name)" class="editable-add-btn" value="{{bar.text}}"/>
+<nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
+  <form nz-form [nzLayout]="config.layout?config.layout:'horizontal'" [formGroup]="form" (ngSubmit)="_submitForm($event)">
+    <!-- 垂直表单布局-->
+    <ng-container cnFormResolverDirective *ngFor="let field of config.forms" [formGroup]="form" [config]="field">
     </ng-container>
-  </div> 
-</form>
+    <!-- 水平表单布局-->
+    <!-- <div *ngIf="config.horizontial" nz-row [nzGutter]="8">
+      <div nz-col [nzSpan]="8" *ngFor="let field of config">
+        <ng-container cnFormResolverDirective [formGroup]="form" [config]="field"></ng-container>
+      </div>
+    </div> -->
+  
+     <div class="table-operations" *ngIf="config.toolbar">
+      <ng-container *ngFor="let bar of config.toolbar">
+        <input nz-button type="button" (click)="execFun(bar.name)" class="editable-add-btn" value="{{bar.text}}"/>
+      </ng-container>
+    </div> 
+  </form>
+</nz-spin>

@@ -231,48 +231,16 @@ export class MulitTableComponent implements OnInit {
                     ],
                     'toolbar': [
                       {
-                        'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': true
-                        }
+                        'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
                       },
                       {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': false,
-                          'deleteRow': false,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': false
-                        }
+                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
                       },
                       {
-                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改',
-                        'enables': {
-                          'addRow': false,
-                          'updateRow': true,
-                          'deleteRow': false,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': false
-                        }
+                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改'
                       },
                       {
                         'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': true
-                        },
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
@@ -282,15 +250,7 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'disabled': true,
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': false,
-                          'cancelRow': false,
-                          'showDialog': true
-                        },
+                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存',
                         'type': 'method/action',
                         'ajaxConfig': {
                           post: [{
@@ -333,15 +293,7 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'disabled': true,
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': false,
-                          'cancelRow': false,
-                          'showDialog': true
-                        }
+                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消',
                       },
                       {
                         'name': 'injectRow', 'class': 'editable-add-btn', 'text': '测试方法注入',
@@ -596,48 +548,20 @@ export class MulitTableComponent implements OnInit {
                     ],
                     'toolbar': [
                       {
-                        'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': true
-                        }
+                        'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                        
                       },
                       {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': false,
-                          'deleteRow': false,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': false
-                        }
+                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
+                        
                       },
                       {
-                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改',
-                        'enables': {
-                          'addRow': false,
-                          'updateRow': true,
-                          'deleteRow': false,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': false
-                        }
+                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改'
+                        
                       },
                       {
                         'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': true
-                        },
+          
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
@@ -647,15 +571,8 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'disabled': true,
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': false,
-                          'cancelRow': false,
-                          'showDialog': true
-                        },
+                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存',
+                        
                         'type': 'method/action',
                         'ajaxConfig': {
                           post: [{
@@ -698,15 +615,7 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'disabled': true,
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': false,
-                          'cancelRow': false,
-                          'showDialog': true
-                        }
+                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消'
                       },
                       {
                         'name': 'injectRow', 'class': 'editable-add-btn', 'text': '测试方法注入',

@@ -15,182 +15,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 })
 export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges {
 
-  @Input() config = {
-    keyId: 'Id',
-    ajaxConfig: {
-    },
-    componentType: {
-      'parent': false,
-      'child': false,
-      'own': true
-    },
-    forms: [
-      {
-        'type': 'input',
-        'labelSize': '6',
-        'controlSize': '10',
-        'inputType': 'text',
-        'name': 'userName',
-        'label': '用户姓名',
-        'placeholder': '例如：Company.cn.app',
-        'disabled': false,
-        'readonly': false,
-        'size': 'default',
-        'validations': [
-          {
-            'validator': 'required',
-            'errorMessage': '不能为空'
-          },
-          {
-            'validator': 'minlength',
-            'length': 6,
-            'errorMessage': '最小长度为6'
-          }
-        ],
-        'validation': [Validators.required, Validators.minLength(6)]
-      },
-      {
-        'type': 'input',
-        'labelSize': '6',
-        'controlSize': '10',
-        'inputType': 'text',
-        'name': 'userPassword',
-        'label': '用户密码',
-        'placeholder': '',
-        'disabled': false,
-        'readonly': false,
-        'size': 'default',
-        /*'validations': [
-          {
-            'validator': 'required',
-            'errorMessage': ''
-          },
-          {
-            'validator': 'minLength',
-            'length': 6,
-            'errorMessage': ''
-          }
-        ]*/
-      },
-      {
-        'type': 'select',
-        'labelSize': '6',
-        'controlSize': '10',
-        'inputType': 'submit',
-        'name': 'sex',
-        'label': '性别',
-        'notFoundContent': '',
-        'selectModel': false,
-        'showSearch': true,
-        'placeholder': '--请选择--',
-        'disabled': false,
-        'size': 'default',
-        'options': [
-          {
-            'label': '男',
-            'value': '1',
-            'disabled': false
-          },
-          {
-            'label': '女',
-            'value': '2',
-            'disabled': false
-          }
-        ]
-      },
-      {
-        'type': 'datePicker',
-        'labelSize': '6',
-        'controlSize': '10',
-        'name': 'datePicker',
-        'label': '日期',
-        'placeholder': '--请选择日期--',
-        'dateModel': 'day',
-        'format': 'YYYY-MM-DD',
-        'disabled': false,
-        'readonly': false,
-        'size': 'default'
-      },
-      {
-        'type': 'timePicker',
-        'labelSize': '6',
-        'controlSize': '10',
-        'format': 'HH:mm:ss',
-        'name': 'timePicker',
-        'label': '时间',
-        'placeholder': '--请选择时间--',
-        'disabled': false,
-        'readonly': false,
-        'size': 'default'
-      },
-      {
-        'type': 'rangePicker',
-        'labelSize': '6',
-        'controlSize': '10',
-        'format': 'YYYY-MM-DD',
-        'name': 'dateRangePicker',
-        'dateModel': 'day',
-        'label': '日期',
-        'placeholder': ['--开始日期--', '--结束日期--'],
-        'disabled': false,
-        'readonly': false,
-        'size': 'default'
-      },
-      {
-        'type': 'checkbox',
-        'labelSize': '6',
-        'controlSize': '10',
-        'name': 'checkbox',
-        'label': '爱好',
-        'disabled': false
-      },
-      {
-        'type': 'checkboxGroup',
-        'labelSize': '6',
-        'controlSize': '10',
-        'name': 'checkbox',
-        'label': '特长',
-        'disabled': false,
-        'options': [
-          { label: 'Apple', value: 'Apple', checked: true },
-          { label: 'Pear', value: 'Pear' },
-          { label: 'Orange', value: 'Orange' }
-        ]
-      },
-      {
-        'type': 'radioGroup',
-        'labelSize': '6',
-        'controlSize': '10',
-        'name': 'radioGroup',
-        'label': '专业',
-        'disabled': false,
-        'options': [
-          { label: 'Apple', value: 'Apple', checked: true },
-          { label: 'Pear', value: 'Pear' },
-          { label: 'Orange', value: 'Orange' }
-        ]
-      },
-      {
-        'type': 'submit',
-        'offsetSize': '6',
-        'controlSize': '10',
-        'name': 'submit'
-      }
-    ],
-    toolbar: [
-      {
-        'name': 'saveFrom', 'class': 'editable-add-btn', 'text': '保存',
-        'ajaxConfig': {}
-      },
-      {
-        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消',
-        'ajaxConfig': {}
-      }
-    ],
-    relations: [
-
-    ]
-  };
+  @Input() config;
   @Input() dataList;
   @Input() ref;
   form: FormGroup;
@@ -201,8 +26,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     saveForm: []
   };
   _tempParameters = {};
+  isSpinning = false;
   constructor(
-    private http: _HttpClient,
     private formBuilder: FormBuilder,
     private _http: ApiService,
     private message: NzMessageService, private modalService: NzModalService,
@@ -211,31 +36,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     super();
   }
 
-  get controls() {
-    return this.config.forms.filter(({ type }) => {
-      return type !== 'button' && type !== 'submit';
-    });
-  }
-
-  get changes() {
-    return this.form.valueChanges;
-  }
-
-  get valid() {
-    return this.form.valid;
-  }
-
-  get value() {
-    return this.form.value;
-  }
-
+  // region: 组件生命周期事件
   ngOnInit() {
     console.log(this.config);
     this.form = this.createGroup();
-    // this._relativeResolver = new RelativeResolver();
-    // this._relativeResolver.relations = this.config.relations;
-    // this._relativeResolver.reference = this;
-    // this._relativeResolver.relativeService = this.relativeMessage;
     if (this.config.relations) {
       this._relativeResolver = new RelativeResolver();
       this._relativeResolver.reference = this;
@@ -247,7 +51,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       this._tempParameters = this._relativeResolver._tempParameter;
     }
     if (this.ref) {
-      for (const p in this.ref ) {
+      for (const p in this.ref) {
         this._tempParameters[p] = this.ref[p];
       }
     }
@@ -278,6 +82,31 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         });
     }
   }
+  // endregion
+
+  // region: 表单功能实现
+  get controls() {
+    return this.config.forms.filter(({ type }) => {
+      return type !== 'button' && type !== 'submit';
+    });
+  }
+
+  get changes() {
+    return this.form.valueChanges;
+  }
+
+  get valid() {
+    return this.form.valid;
+  }
+
+  get value() {
+    return this.form.value;
+  }
+
+  resetForm() {
+    this.form.reset();
+  }
+
   createGroup() {
     const group = this.formBuilder.group({});
     this.controls.forEach(control => group.addControl(control.name, this.createControl(control)));
@@ -300,18 +129,13 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     this.submit.emit(this.value);
   }
 
-  /**
-   * 表单元素赋值
-   */
   setValue(name: string, value: any) {
     const control = this.form.controls[name];
     if (control) {
       control.setValue(value, { emitEvent: true });
     }
   }
-  /**
-   * 表单赋值
-   */
+
   setFormValue(data) {
     if (data) {
       for (const d in data) {
@@ -321,15 +145,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       }
     }
   }
+  // endregion
 
-
-
-  /**
-   * 执行异步数据
-   * @param p 路由参数信息
-   * @param ajaxType 异步请求类别，post、put、get
-   * @param componentValue
-   */
+  // region: 数据处理
   async execAjax(p?, componentValue?, type?) {
     const params = {
     };
@@ -408,17 +226,14 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     return Object.prototype.toString.call(obj) === '[object String]';
   }
 
-  /**
-   * 默认远程加载数据
-   */
   async load() {
+    this.isSpinning = true;
     const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
     if (ajaxData) {
       console.log('异步加载表单数据load', ajaxData);
       if (ajaxData.Data) {
         console.log('待赋值的表单数据', ajaxData.Data);
         this.setFormValue(ajaxData.Data[0]);
-
         // 给主键赋值
         if (this.config.keyId) {
           this._tempParameters['_id'] = ajaxData.Data[0][this.config.keyId];
@@ -434,20 +249,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     } else {
       this._tempParameters['_id'] && delete this._tempParameters['_id'];
     }
+    this.isSpinning = false;
   }
-  async saveForm() {
 
-    // const testValue = {
-    //   operationActionType: 'operation',
-    //   operationDefaultStatus: 'true',
-    //   operationIcon: '1',
-    //   operationName: '操作名称',
-    //   operationNullData: 'true',
-    //   operationOrder: '3',
-    //   operationStatus: 'normal',
-    //   operationType: 'refresh',
-    // };
-    // this.setFormValue(testValue);
+  async saveForm() {
     console.log('执行保存方法', this.value);
 
     if (this.config.toolbar) {
@@ -493,10 +298,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     }
   }
-  /**
-   * 动态执行方法
-   * @param name
-   */
+
   execFun(name?) {
     switch (name) {
       case 'saveForm':
@@ -508,6 +310,116 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       default:
         break;
     }
+  }
+
+  async buttonAction(btn) {
+    let result = false;
+    if (this[btn.name] && btn.ajaxConfig) {
+      result =  await this[btn.name](btn.ajaxConfig);
+    }
+    return result;
+  }
+
+  async save(ajaxConfig) {
+    if (ajaxConfig.post) {
+      return this.post(ajaxConfig.post);
+    }
+    if (ajaxConfig.put) {
+      return this.put(ajaxConfig.put);
+    }
+  }
+
+  private async post(postConfig) {
+    let result = false;
+    for (let i = 0, len = postConfig.length; i < len; i++) {
+      const url = this._buildURL(postConfig[i].url);
+      const body = this._buildParameters(postConfig[i].params);
+      const res = await this._post(url, body);
+      if (res && res.Status === 200) {
+        result = true;
+        this.message.create('success', '保存成功');
+        // 发送消息 刷新其他界面
+      } else {
+        this.message.create('error', res.Message);
+      }
+    }
+    return result;
+  }
+
+  private async put(putConfig) {
+    let result = false;
+    for (let i = 0, len = putConfig.length; i < len; i++) {
+      const url = this._buildURL(putConfig[i].url);
+      const body = this._buildParameters(putConfig[i].params);
+      const res = await this._put(url, body);
+      if (res && res.Status === 200) {
+        result = true;
+        this.message.create('success', '保存成功');
+        // 发送消息 刷新其他界面
+      } else {
+        this.message.create('error', res.Message);
+      }
+    }
+    return result;
+  }
+
+  private _buildParameters(paramsConfig) {
+    const params = {};
+    if (paramsConfig) {
+      paramsConfig.map(param => {
+        if (param['type'] === 'tempValue') {
+          params[param['name']] = this._tempParameters[param['valueName']];
+        } else if (param['type'] === 'value') {
+          params[param.name] = param.value;
+        } else if (param['type'] === 'GUID') {
+          const fieldIdentity = CommonUtility.uuID(10);
+          params[param.name] = fieldIdentity;
+        } else if (param['type'] === 'componentValue') {
+          params[param.name] = this.value[param.valueName];
+        }
+      });
+    }
+    return params;
+  }
+
+  private _buildURL(urlConfig) {
+    let url = '';
+    if (urlConfig && this._isUrlString(urlConfig)) {
+      url = APIResource[urlConfig] ? APIResource[urlConfig] : urlConfig;
+    } else if (urlConfig) {
+      let parent = '';
+      urlConfig.params.map(param => {
+        if (param['type'] === 'tempValue') {
+          parent = this._tempParameters[param.value];
+        } else if (param['type'] === 'value') {
+          if (param.value === 'null') {
+            param.value = null;
+          }
+          parent = param.value;
+        } else if (param['type'] === 'GUID') {
+          // todo: 扩展功能
+        } else if (param['type'] === 'componentValue') {
+          parent = this.value[param['valueName']];
+        }
+      });
+    }
+    return url;
+  }
+
+  private _isUrlString(url) {
+    return Object.prototype.toString.call(url) === '[object String]';
+  }
+
+  private setParamsValue(params) {
+
+  }
+
+  private async _post(url, body) {
+    return this._http.postProj(url, body).toPromise();
+  }
+
+  private async _put(url, body) {
+    return this._http.putProj(url, body).toPromise();
   }
 
   initParameters(data?) {
@@ -525,5 +437,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     console.log('初始化参数并load', this._tempParameters);
   }
 
+  // endregion
 }
 

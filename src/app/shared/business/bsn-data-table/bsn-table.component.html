@@ -45,7 +45,12 @@
                             <div *ngIf="!editCache[data.key].edit">
                                 {{data[col.field]}}
                             </div>
-                            <ng-container [bsnData]="tempParameters" [rowData]="data" CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options"
+                            <ng-container 
+                                [bsnData]="tempParameters" 
+                                [rowData]="data" 
+                                CnGridEditorDirective 
+                                *ngIf="editCache[data.key].edit" 
+                                [config]="col.editor.options"
                                 [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field]}"
                                 (updateValue)="valueChange($event)">
                             </ng-container>
