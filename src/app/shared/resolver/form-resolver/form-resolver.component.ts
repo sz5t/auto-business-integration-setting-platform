@@ -23,7 +23,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   _relativeResolver;
   selfEvent = {
     initParameters: [],
-    saveForm: []
+    saveForm: [],
+    searchFormByValue: []
   };
   _tempParameters = {};
   isSpinning = false;
@@ -187,7 +188,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       }
 
       if (this.isString(p.url)) {
-        url = APIResource[p.url];
+        url = p.url;
       } else {
         let pc = 'null';
         p.url.params.forEach(param => {
@@ -203,7 +204,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
           }
         });
 
-        url = APIResource[p.url['parent']] + '/' + pc + '/' + APIResource[p.url['child']];
+        url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
       }
     }
     if (p.ajaxType === 'get' && tag) {
@@ -294,8 +295,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
           }
         }
       }
-
-
     }
   }
 
@@ -312,10 +311,22 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
   }
 
+  searchForm() {
+    this.searchFormByValue(this.value);
+  }
+
+  searchFormByValue(data) {
+    console.log(data);
+  }
+
+
   async buttonAction(btn) {
+    console.log(btn);
     let result = false;
     if (this[btn.name] && btn.ajaxConfig) {
       result =  await this[btn.name](btn.ajaxConfig);
+    } else if (this[btn.name]) {
+      this[btn.name]();
     }
     return result;
   }
@@ -385,7 +396,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   private _buildURL(urlConfig) {
     let url = '';
     if (urlConfig && this._isUrlString(urlConfig)) {
-      url = APIResource[urlConfig] ? APIResource[urlConfig] : urlConfig;
+      url = urlConfig;
     } else if (urlConfig) {
       let parent = '';
       urlConfig.params.map(param => {

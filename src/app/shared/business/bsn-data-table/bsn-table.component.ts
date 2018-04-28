@@ -54,6 +54,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     // region: 业务对象
     _selectRow = {};
     _tempParameters = {};
+    _searchParameters = {};
     _relativeResolver;
     selfEvent = {
         selectRow: [],
@@ -69,7 +70,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _toolbar;
     editCache = {};
     rowContent = {};
-    _dataSet = {};
+    dataSet = {};
     // endregion
 
     constructor(
@@ -93,17 +94,31 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this._relativeResolver.resolverRelation();
         }
         if (this.config.dataSet) {
-            (async() => {
+            (async () => {
                 for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
                     const url = this._buildURL(this.config.dataSet[i].ajaxConfig);
                     const params = this._buildParameters(this.config.dataSet[i].params);
                     const data = await this.get(url, params);
                     if (data && data.Status === 200) {
-                        this._dataSet[this.config.dataSet[i].name] = data.Data;
+                        if (this.config.dataSet[i].fields) {
+                            const dataSetObjs = [];
+                            data.Data.map(d => {
+                                const setObj = {};
+                                this.config.dataSet[i].fields.map(fieldItem => {
+                                    if (d[fieldItem.field]) {
+                                        setObj[fieldItem.name] = d[fieldItem.field];
+                                    }
+                                });
+                                dataSetObjs.push(setObj);
+                            });
+                             this.dataSet[this.config.dataSet[i].name] = dataSetObjs;
+                        } else {
+                            this.dataSet[this.config.dataSet[i].name] = data.Data;
+                        }
+
                     }
                 }
             })();
-            
         }
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
@@ -128,7 +143,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const url = this._buildURL(this.config.ajaxConfig.url);
         const params = {
             ...this._buildParameters(this.config.ajaxConfig.params),
-            ...this._buildPaging()
+            ...this._buildPaging(),
+            ...this._buildFilter(this.config.ajaxConfig.filter)
         };
         (async () => {
             const loadData = await this._load(url, params);
@@ -155,6 +171,19 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         })();
     }
 
+    private _buildFilter(filterConfig) {
+        const filter = {};
+        if (filterConfig) {
+            filterConfig.map(param => {
+                if ( this._tempParameters[param['valueName']]) {
+                    filter[param['name']] = this._tempParameters[param['valueName']];
+                }
+               
+            });
+        }
+        return filter;
+    }
+
     private _buildParameters(paramsConfig) {
         const params = {};
         if (paramsConfig) {
@@ -168,6 +197,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     params[param.name] = fieldIdentity;
                 } else if (param['type'] === 'componentValue') {
                     // params[param.name] = componentValue[param.valueName];
+                } else if (param['type'] === 'searchValue') {
+                    if (this._searchParameters[param['name']]) {
+                        params[param['name']] = this._searchParameters[param['valueName']];
+                    }
                 }
             });
         }
@@ -177,7 +210,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     private _buildURL(urlConfig) {
         let url = '';
         if (urlConfig && this._isUrlString(urlConfig)) {
-            url = APIResource[urlConfig] ? APIResource[urlConfig] : urlConfig;
+            url = urlConfig;
         } else if (urlConfig) {
             let parent = '';
             urlConfig.params.map(param => {

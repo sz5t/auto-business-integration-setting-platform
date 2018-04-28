@@ -185,11 +185,11 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             NeedAlterDb: true,
             IssueFlag: '已发布',
             ShareScope: 'Project',
-            DrmId: '787008d9029c4b40847d08c32a18699d',
+            // DrmId: '787008d9029c4b40847d08c32a18699d',
             ResultType: 'Dynamic',
             ResultLength: 0
         };
-        return this._http.postProj(APIResource.DbCommandConfig, params).toPromise();
+        return this._http.postProjSys(APIResource.DbCommandConfig, params).toPromise();
     }
 
     private async addSqlRelative() {
@@ -198,12 +198,12 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             RightId: this._relativeResolver.tempParameter['_id'],
             LinkNode: 'sql'
         };
-        return this._http.postProj(APIResource.SysDataLink, params).toPromise();
+        return this._http.postProjSys(APIResource.SysDataLink, params).toPromise();
     }
 
     
     private async delSql(id) {
-        return this._http.deleteProj(APIResource.DbCommandConfig, {Id: id}).toPromise();
+        return this._http.deleteProjSys(APIResource.DbCommandConfig, {Id: id}).toPromise();
     }
 
    
@@ -217,7 +217,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             LeftId: this._relativeResolver.tempParameter['_moduleId'],
             LinkNote: 'sql'
         };
-        return this._http.deleteProj(APIResource.SysDataLink, params).toPromise();
+        return this._http.deleteProjSys(APIResource.SysDataLink, params).toPromise();
     }
 
     private async updateSql(sql) {
@@ -232,7 +232,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             ShareScope: 'Project',
             DrmId: '787008d9029c4b40847d08c32a18699d'
         };
-        return this._http.putProj(APIResource.DbCommandConfig, params).toPromise();
+        return this._http.putProjSys(APIResource.DbCommandConfig, params).toPromise();
     }
 
     ngOnDestroy () {

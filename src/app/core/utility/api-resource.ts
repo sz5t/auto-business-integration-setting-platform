@@ -39,7 +39,7 @@ export class APIResource {
    */
   public static SysDataCategoryLink = 'SinoForce.SysData.SysDataCategoryLink';	//
   public static DataCategoryLink = 'SinoForce.AppData.DataCategoryLink';	//
-  public static ShowCase = 'SinoForce.SysData.ShowCase';
+  public static ShowCase = 'SinoForce.AppData.ShowCase';
 
   /**
    * 资源访问令牌

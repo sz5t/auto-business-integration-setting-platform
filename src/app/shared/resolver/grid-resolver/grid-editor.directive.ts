@@ -42,6 +42,7 @@ export class GridEditorDirective implements OnInit, OnChanges {
   @Input() value;
   @Input() rowData;
   @Input() bsnData;
+  @Input() dataSet;
   @Output() updateValue = new EventEmitter();
   component: ComponentRef<any>;
   constructor(private resolver: ComponentFactoryResolver, private container: ViewContainerRef) { }
@@ -52,7 +53,6 @@ export class GridEditorDirective implements OnInit, OnChanges {
     }
   }
   ngOnInit() {
-    console.log('config11111111111', this.config);
     if (!components[this.config.type]) {
       const supportedTypes = Object.keys(components).join(', ');
       throw new Error(
@@ -65,6 +65,9 @@ export class GridEditorDirective implements OnInit, OnChanges {
     this.component.instance.value = this.value;
     this.component.instance.bsnData = this.bsnData;
     this.component.instance.rowData = this.rowData;
+    if (this.dataSet) {
+      this.component.instance.dataSet = this.dataSet;
+    }
     this.component.instance.updateValue.subscribe(event => {
       this.setValue(event);
     });

@@ -48,6 +48,7 @@
                             <ng-container 
                                 [bsnData]="tempParameters" 
                                 [rowData]="data" 
+                                [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                 CnGridEditorDirective 
                                 *ngIf="editCache[data.key].edit" 
                                 [config]="col.editor.options"

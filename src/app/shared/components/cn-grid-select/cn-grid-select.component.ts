@@ -11,6 +11,7 @@ export class CnGridSelectComponent implements OnInit {
   @Input() value;
   @Input() bsnData;
   @Input() rowData;
+  @Input() dataSet;
   @Output() updateValue = new EventEmitter();
   _options = [];
   // _selectedMultipleOption:any[];
@@ -20,7 +21,11 @@ export class CnGridSelectComponent implements OnInit {
   _selectedMultipleOption;
 
   async ngOnInit() {
-    if (this.config.ajaxConfig) {
+    if (this.dataSet) {
+      // 加载数据集
+      console.log(this.dataSet);
+      this._options = this.dataSet;
+    } else if (this.config.ajaxConfig) {
       // 异步加载options
       const result = await this.asyncLoadOptions(this.config.ajaxConfig);
       if (this.config.valueType && this.config.valueType === 'list') {
@@ -41,7 +46,6 @@ export class CnGridSelectComponent implements OnInit {
       // 加载固定数据
       this._options = this.config.options;
     }
-
     this.selectedByLoaded();
   }
 

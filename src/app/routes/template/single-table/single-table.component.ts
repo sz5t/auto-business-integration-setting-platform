@@ -13,6 +13,180 @@ export class SingleTableComponent implements OnInit {
         row: {
           cols: [
             {
+              id: 'area2',
+              title: '右表单',
+              span: 18,
+              size: {
+                nzXs: 18,
+                nzSm: 18,
+                nzMd: 18,
+                nzLg: 18,
+                ngXl: 18
+              },
+              viewCfg: [
+                {
+                  config: {
+                    'viewId': 'search_form',
+                    'component': 'form_view',
+                    'keyId': 'Id',
+                    componentType: {
+                      'parent': true,
+                      'child': false,
+                      'own': true
+                    },
+                    'forms':
+                      [
+                        {
+                          'type': 'input',
+                          'labelSize': '6',
+                          'controlSize': '10',
+                          'inputType': 'text',
+                          'name': 'CaseName',
+                          'label': '名称',
+                          'placeholder': '',
+                          'disabled': false,
+                          'readonly': false,
+                          'size': 'default'
+                        },
+                        {
+                          'type': 'select',
+                          'labelSize': '6',
+                          'controlSize': '10',
+                          'inputType': 'submit',
+                          'name': 'Type',
+                          'label': '类别Id',
+                          'notFoundContent': '',
+                          'selectModel': false,
+                          'showSearch': true,
+                          'placeholder': '--请选择--',
+                          'disabled': false,
+                          'size': 'default',
+                          'options': [
+                            {
+                              'label': '表',
+                              'value': '1',
+                              'disabled': false
+                            },
+                            {
+                              'label': '树',
+                              'value': '2',
+                              'disabled': false
+                            },
+                            {
+                              'label': '树表',
+                              'value': '3',
+                              'disabled': false
+                            },
+                            {
+                              'label': '表单',
+                              'value': '4',
+                              'disabled': false
+                            },
+                            {
+                              'label': '标签页',
+                              'value': '5',
+                              'disabled': false
+                            }
+                          ]
+                        },
+                        {
+                          'type': 'input',
+                          'labelSize': '6',
+                          'controlSize': '10',
+                          'inputType': 'text',
+                          'name': 'CaseCount',
+                          'label': '数量',
+                          'placeholder': '',
+                          'disabled': false,
+                          'readonly': false,
+                          'size': 'default'
+                        },
+                        {
+                          'type': 'input',
+                          'labelSize': '6',
+                          'controlSize': '10',
+                          'inputType': 'text',
+                          'name': 'Level',
+                          'label': '级别',
+                          'placeholder': '',
+                          'disabled': false,
+                          'readonly': false,
+                          'size': 'default'
+                        },
+                        {
+                          'type': 'input',
+                          'labelSize': '6',
+                          'controlSize': '10',
+                          'inputType': 'text',
+                          'name': 'Remark',
+                          'label': '备注',
+                          'placeholder': '',
+                          'disabled': false,
+                          'readonly': false,
+                          'size': 'default'
+                        },
+                        {
+                          'type': 'select',
+                          'labelSize': '6',
+                          'controlSize': '10',
+                          'inputType': 'submit',
+                          'name': 'Enable',
+                          'label': '状态',
+                          'notFoundContent': '',
+                          'selectModel': false,
+                          'showSearch': true,
+                          'placeholder': '--请选择--',
+                          'disabled': false,
+                          'size': 'default',
+                          'options': [
+                            {
+                              'label': '启用',
+                              'value': 1,
+                              'disabled': false
+                            },
+                            {
+                              'label': '禁用',
+                              'value': 0,
+                              'disabled': false
+                            }
+                          ]
+                        },
+
+                      ],
+                    'toolbar':
+                      [
+                        {
+                          'name': 'searchForm', 'class': 'editable-add-btn', 'text': '查询'
+                        },
+                        { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '重置' }
+                      ],
+
+                    'dataList': [],
+                    'relations': [{
+                      'relationViewId': 'search_form',
+                      'relationSendContent': [
+                        {
+                          name: 'searchFormByValue',
+                          sender: 'search_form',
+                          aop: 'after',
+                          receiver: 'singleTable',
+                          relationData: {
+                            name: 'refreshAsChild',
+                            params: [
+                              { pid: 'CaseName', cid: '_caseName' },
+                              { pid: 'Type', cid: '_type' },
+                            ]
+                          },
+                        }
+                      ],
+                      'relationReceiveContent': []
+                    }],
+                  },
+                  dataList: []
+                }
+              ]
+            },
+            {
               id: 'area1',
               title: '单表',
               span: 24,
@@ -34,9 +208,14 @@ export class SingleTableComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'ShowCase',
+                      'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
-                      'params': []
+                      'params': [],
+                      'filter': [
+                        {
+                          name: 'CaseName', valueName: '_caseName', type: '', value: ''
+                        }
+                      ]
                     },
                     'componentType': {
                       'parent': true,
@@ -95,6 +274,7 @@ export class SingleTableComponent implements OnInit {
                             'size': 'default',
                             'clear': true,
                             'width': '130px',
+                            'dataSet': 'moduleDataSet',
                             'options': [
                               {
                                 'label': '表',
@@ -227,7 +407,7 @@ export class SingleTableComponent implements OnInit {
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'delete'
                           }]
                         }
@@ -238,7 +418,7 @@ export class SingleTableComponent implements OnInit {
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'post',
                             'params': [
                               { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
@@ -259,7 +439,7 @@ export class SingleTableComponent implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
@@ -416,7 +596,7 @@ export class SingleTableComponent implements OnInit {
                                 'name': 'save', 'class': 'editable-add-btn', 'text': '保存',
                                 'ajaxConfig': {
                                   post: [{
-                                    'url': 'ShowCase',
+                                    'url': 'SinoForce.AppData.ShowCase',
                                     'params': [
                                       { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
                                       { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
@@ -443,7 +623,7 @@ export class SingleTableComponent implements OnInit {
                           'title': '编辑',
                           'width': '600',
                           'ajaxConfig': {
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'get',
                             'params': [
                               {
@@ -584,7 +764,7 @@ export class SingleTableComponent implements OnInit {
                                 'type': 'primary',
                                 'ajaxConfig': {
                                   put: [{
-                                    'url': 'ShowCase',
+                                    'url': 'SinoForce.AppData.ShowCase',
                                     'params': [
                                       { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
                                       { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
@@ -599,7 +779,7 @@ export class SingleTableComponent implements OnInit {
                                   }]
                                 }
                               }
-                              
+
                             ],
                           'dataList': [],
                         }
@@ -612,10 +792,10 @@ export class SingleTableComponent implements OnInit {
                     'dataSet': [
                       {
                         'name': 'moduleDataSet',
-                        'ajaxConfig': 'AppModuleConfig',
+                        'ajaxConfig': 'AppUser',
                         'ajaxType': 'get',
                         'params': [],
-                        'fields' : [
+                        'fields': [
                           {
                             'label': 'ID',
                             'field': 'Id',

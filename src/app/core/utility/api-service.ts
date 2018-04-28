@@ -1,17 +1,18 @@
-import { HttpHeaders, HttpParams, HttpClient} from '@angular/common/http';
-import {Inject, Injectable} from '@angular/core';
-import {DA_SERVICE_TOKEN, ITokenService} from '@delon/auth';
+import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { APIResource } from '@core/utility/api-resource';
 import { _HttpClient } from '@delon/theme';
 import { Observable } from 'rxjs/Observable';
+import { environment } from '@env/environment';
 
 @Injectable()
 export class ApiService {
   httpClient;
   constructor(@Inject(DA_SERVICE_TOKEN)
-              private tokenService: ITokenService,
-              private http: HttpClient) {
-                this.httpClient = new _HttpClient(http);
+  private tokenService: ITokenService,
+    private http: HttpClient) {
+    this.httpClient = new _HttpClient(http);
   }
 
 
@@ -77,11 +78,21 @@ export class ApiService {
 
   // region  操作项目配置的相关api
 
-  postProj(resource, body?, params?) {
-    body['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
-    body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
-    body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
-    // let param: HttpParams = this.setParamsProj(params)
+  postProj(resource, body, params?) {
+    if (environment.COMMONCODE !== APIResource.LoginCommonCode) {
+      if (Array.isArray(body)) {
+        body.map(d => {
+          d['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
+          d['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+          d['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+        });
+      } else {
+        body['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
+        body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+        body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+      }
+    }
+    
     return this.httpClient.post(
       resource,
       body,
@@ -90,24 +101,12 @@ export class ApiService {
         headers: this.setHeaders()
       });
   }
-
-  postProjSys(resource, body?, params?) {
-    body['ProjId'] = '0ac12f70c2a7a44794b57ef0c1c480c2';
-    body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
-    body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
-    // let param: HttpParams = this.setParamsProj(params)
-    return this.httpClient.post(
-      resource,
-      body,
-      params,
-      {
-        headers: this.setHeaders()
-      });
-  }
-
 
   getProj(resource, params?) {
-    params = this.setParamsObjProj(params);
+    if (environment.COMMONCODE !== APIResource.LoginCommonCode) {
+      params = this.setParamsObjProj(params);
+    }
+   
     return this.httpClient.get(
       resource,
       params,
@@ -177,6 +176,91 @@ export class ApiService {
       paramObj['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
       return paramObj;
     }
+  }
+  // endregion
+
+
+  // region: business
+
+  /**
+   * 添加访问业务系统是必须的参数信息
+   * @param param
+   * @returns {HttpParams}
+   */
+  setParamsObjProjSys(param?) {
+    if (param) {
+      param['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
+      param['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+      param['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+      param['DrmId'] = '57e76ec4a882334c85532f3a5f561a12';
+      return param;
+    } else {
+      const paramObj = {};
+      param['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
+      param['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+      param['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+      param['DrmId'] = '57e76ec4a882334c85532f3a5f561a12';
+      return paramObj;
+    }
+  }
+
+  postProjSys(resource, body?, params?) {
+    body['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
+    body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+    body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+    body['DrmId'] = '57e76ec4a882334c85532f3a5f561a12';
+    // body['ProjId'] = '0ac12f70c2a7a44794b57ef0c1c480c2';
+    // body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+    // body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+    // let param: HttpParams = this.setParamsProj(params)
+    return this.httpClient.post(
+      resource,
+      body,
+      params,
+      {
+        headers: this.setHeaders()
+      });
+  }
+
+  putProjSys(resource, body?, params?) {
+    body['ProjId'] = '002905c7bf57c54c9e5e65ec0e5fafe8';
+    body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+    body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+    body['DrmId'] = '57e76ec4a882334c85532f3a5f561a12';
+    // body['ProjId'] = '0ac12f70c2a7a44794b57ef0c1c480c2';
+    // body['ApplyId'] = '3935eb43532d435398d5189d5ece0f5d';
+    // body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
+    // let param: HttpParams = this.setParamsProj(params)
+    return this.httpClient.post(
+      resource,
+      body,
+      params,
+      {
+        headers: this.setHeaders()
+      });
+  }
+
+  deleteProjSys(resource, params?) {
+    params = this.setParamsObjProj(params);
+    return this.httpClient.delete(
+      resource,
+      params,
+      {
+        headers: this.setHeaders()
+      });
+  }
+
+  getProjSys(resource, body?, params?) {
+
+    params = this.setParamsObjProjSys(params);
+    return this.httpClient.get(
+      resource,
+      params,
+      {
+        responseType: 'json',
+        headers: this.setHeaders()
+
+      });
   }
   // endregion
 

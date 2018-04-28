@@ -15,7 +15,7 @@
   
      <div class="table-operations" *ngIf="config.toolbar">
       <ng-container *ngFor="let bar of config.toolbar">
-        <input nz-button type="button" (click)="execFun(bar.name)" class="editable-add-btn" value="{{bar.text}}"/>
+        <input nz-button type="button" (click)="buttonAction(bar)" class="editable-add-btn" value="{{bar.text}}"/>
       </ng-container>
     </div> 
   </form>
