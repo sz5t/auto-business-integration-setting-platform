@@ -276,7 +276,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                     text: data[i].Name,
                     id: data[i].Id,
                     group: JSON.parse(data[i].ConfigData).group,
-                    link: JSON.parse(data[i].ConfigData).link,
+                    link: (JSON.parse(data[i].ConfigData).link)? JSON.parse(data[i].ConfigData).link: '',
                     icon: JSON.parse(data[i].ConfigData).icon,
                     hide: JSON.parse(data[i].ConfigData).hide ? true : false
                 };
