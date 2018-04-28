@@ -206,7 +206,7 @@ export class ModuleManagerComponent implements OnInit {
             group: JSON.parse(data[i].ConfigData).group,
             link: JSON.parse(data[i].ConfigData).link,
             icon: JSON.parse(data[i].ConfigData).icon,
-            hide:  JSON.parse(data[i].ConfigData).hide,
+            isDisableCheckbox:  JSON.parse(data[i].ConfigData).isDisableCheckbox,
             remark: data[i].Remark,
             order: data[i].Order,
             createtime: data[i].CreateTime,

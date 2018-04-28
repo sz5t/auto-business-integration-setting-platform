@@ -32,7 +32,7 @@ export class APIResource {
    * 应用访问许可集
    * @type {string}
    */
-  public static AppPermission = 'SinoForce.User.AppPermission';	//
+  public static AppPermission = 'AppPermission';	//
   /**
    * 平台通用数据分类连接关系
    * @type {string}

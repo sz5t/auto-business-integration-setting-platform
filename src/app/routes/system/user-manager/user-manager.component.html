@@ -6,6 +6,7 @@
     <button nz-button (click)="showUserForComponent('Add')">新增</button>
     <button nz-button (click)="showUserForComponent('Edit')">修改</button>
     <button nz-button (click)="delete($event)">删除</button>
+      <button nz-button (click)="settingRole($event)">角色设置</button>
   </div>
   <nz-table #nzTable
             [nzData]="_dataSet"
