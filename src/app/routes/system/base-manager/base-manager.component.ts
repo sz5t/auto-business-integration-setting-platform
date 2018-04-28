@@ -4,6 +4,8 @@ import {ApiService} from '@core/utility/api-service';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import { ModalBaseComponent } from './modal-base.component';
 import {CacheService} from '@delon/cache';
+import {AppPermission, FuncResPermission, OpPermission, PermissionValue} from '../../../model/APIModel/AppPermission';
+import {TIMEOUT} from 'dns';
 
 
 @Injectable()
@@ -457,5 +459,90 @@ export class BaseManagerComponent implements OnInit {
         });} else {
         this.msgSrv.warning('请选中要修改的记录！');
       }
+    }
+
+    // region
+    testApp() {
+        const appPermission: AppPermission = new AppPermission();
+        const funcResPermissionroot: FuncResPermission = new FuncResPermission();
+        const funcResPermissionwqd: FuncResPermission = new FuncResPermission('SinoForce.Web前端', 'SinoForce.Web前端');
+
+        this.AddPermission(funcResPermissionwqd,this._dataTree);
+
+        funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd)
+        appPermission.FuncResPermission = funcResPermissionroot;
+        console.log(JSON.stringify(appPermission));
+        return appPermission;
+    }
+
+    AddPermission(funcResPermissionwqd: FuncResPermission, moduleTree: any) {
+        moduleTree.forEach(item => {
+            const funcResPermissionsub = new FuncResPermission(item.value, item.label);
+            funcResPermissionsub.OpPermissions.push(new OpPermission('Open', PermissionValue.Permitted));
+            // this.AddOperation(funcResPermissionsub);
+            funcResPermissionwqd.SubFuncResPermissions.push(funcResPermissionsub);
+            if (!item.isLeaf) {
+            this.AddPermission(funcResPermissionsub, item.children);
+            }
+        });
+    }
+
+    AddOperation(funcResPermissionsub: FuncResPermission) {
+        const operations: string[] =['新增' , '修改' , '删除'];
+        operations.forEach(item => {
+            funcResPermissionsub.OpPermissions.push(new OpPermission(item, PermissionValue.Permitted));
+        });
+    }
+    //endregion
+
+
+    appPerMerge(){
+        const menus = this.cacheService.getNone('Menus');
+        const data = this.cacheService.getNone('AppPermission')
+        const permis = data['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions;
+
+        this.eachModule(menus, permis);
+    }
+
+    eachModule(menus, data){
+        menus.forEach(item => {
+            var strPer = JSON.stringify(this.searchModule(item.id, data));
+            var Perer = JSON.parse(strPer.substring(strPer.indexOf('[{'),strPer.lastIndexOf('}]')+2));
+            // console.log(Perer[0].Permission)
+            // if(Perer.OpPermissions[0].Permission == PermissionValue.Invisible)
+            switch(Perer[0].Permission){
+                case 'Invisible':
+                    // console.log(111, item.hide);
+                    item.hide = true;
+                    // console.log(222, item.hide);
+                    break;
+                case 'Permitted':
+                    // console.log(333, item.hide);
+                    item.hide = false;
+                    // console.log(444, item.hide);
+                    break;
+                default:
+                    // console.log(555, item.hide);
+            }
+                if(item.children) {
+                    this.eachModule(item.children, data);
+                }
+            }
+        )
+        // console.log(444,menus);
+    }
+
+    searchModule(moduleId, data): string  {
+        var aaa:any=[];
+        if(data && data.length > 0) {
+            data.forEach( item => {
+                if (item.Id === moduleId) {
+                    aaa.push(item.OpPermissions);
+                }else {
+                    if(this.searchModule(moduleId, item.SubFuncResPermissions) && item.Name.length>0)
+                    aaa.push(this.searchModule(moduleId, item.SubFuncResPermissions))
+                };
+            });
+        } return aaa;
     }
 }

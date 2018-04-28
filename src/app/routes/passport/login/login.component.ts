@@ -172,26 +172,29 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                             .then((menuList) => {
 
                                 if (environment.COMMONCODE === APIResource.LoginCommonCode) {
-                                    const Menu = this.arrayToTree(menuList.Data, '');
+                                    //运行平台菜单
+                                    let Menu  = this.arrayToTree(menuList.Data, '');
+                                    this.cacheService.set('Menus', Menu);
                                     this.menuService.add(Menu);
-                                    this.cacheService.set('Menus', this.arrayToTree(menuList.Data, ''));
                                 } else {
-                                    //需要调整部分
+                                    //需要调整部分  配置平台菜单
                                     this.httpClient.get<any>(APIResource.localUrl).toPromise().then(apprem => {
                                         this.cacheService.set('Menus', apprem.menu);
                                         this.menuService.add(apprem.menu);
                                     })
                                 }
-                                return this.apiService.get(APIResource.AppPermission + '/Func.SinoForceWeb端').toPromise();
+                                return this.apiService.get(APIResource.AppPermission + '/Func.SinoForceWeb前端').toPromise();
                             })
                             .then((appPermission) => {
                                 if (appPermission['Status'].toString() === '200') {
                                     if(this.type === 0){
                                         this.router.navigate(['/']);
                                     }else{
+                                        const appper = appPermission.Data;
+                                        // this.cacheService.set('AppPermission', appper);
+                                        this.appPerMerge(appper);
                                         this.router.navigate(['/dashboard/analysis']);
                                     }
-
                                 }
                             })
                             .catch(errMsg => {
@@ -206,6 +209,54 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         }, 1000);
     }
 
+    appPerMerge(data) {
+        const menus: any[] = this.cacheService.getNone('Menus');
+        const permis = data['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions;
+        this.seachModule(menus, permis);
+        this.cacheService.set('Menus', menus);
+        this.menuService.add(menus);
+}
+
+    seachModule(menus, data) {
+        menus.forEach(item => {
+                const strPer = JSON.stringify(this.searchAppper(item.id, data));
+                const Perer = JSON.parse(strPer.substring(strPer.indexOf('[{'), strPer.lastIndexOf('}]') + 2));
+                switch(Perer[0].Permission){
+                    case 'Invisible':
+                        // console.log(111, item.hide);
+                        item.hide = true;
+                        // console.log(222, item.hide);
+                        break;
+                    case 'Permitted':
+                        // console.log(333, item.hide);
+                        item.hide = false;
+                        // console.log(444, item.hide);
+                        break;
+                    default:
+                        // console.log(555, item.hide);
+                }
+                if(item.children) {
+                    this.seachModule(item.children, data);
+                }
+            }
+        )
+    }
+
+    searchAppper(moduleId, data): string  {
+        var OpPer:any=[];
+        if(data && data.length > 0) {
+            data.forEach( item => {
+                if (item.Id === moduleId) {
+                    OpPer.push(item.OpPermissions);
+                }else {
+                    var getAppper = this.searchAppper(moduleId, item.SubFuncResPermissions)
+                    if(getAppper && item.Name.length>0)
+                        OpPer.push(getAppper);
+                };
+            });
+        } return OpPer;
+    }
+
     showError(errmsg) {
         if(this.type === 0 )
             this.error = errmsg;
@@ -216,11 +267,11 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         if (this.interval$) clearInterval(this.interval$);
     }
 
-    arrayToTree(data, parentid) {
+    arrayToTree(data, parentid): any[] {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId == parentid || !data[i].ParentId) {
+            if (data[i].ParentId === parentid || !data[i].ParentId) {
                 const obj = {
                     text: data[i].Name,
                     id: data[i].Id,
@@ -233,7 +284,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 if (temp.length > 0) {
                     obj['children'] = temp;
                 } else {
-                    obj["isLeaf"] = true;
+                    obj['isLeaf'] = true;
                 }
                 result.push(obj);
             }

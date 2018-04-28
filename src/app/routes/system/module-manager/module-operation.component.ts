@@ -57,7 +57,8 @@ export class ModuleOperationComponent implements OnInit {
                 group: this.validateForm.controls['Group'].value ? this.validateForm.controls['Group'].value : false,
                 link: this.validateForm.controls['Link'].value,
                 icon: this.validateForm.controls['Icon'].value,
-                hide: this.validateForm.controls['Hide'].value ? this.validateForm.controls['Hide'].value : false
+                isDisableCheckbox: this.validateForm.controls['isDisableCheckbox'].value ? this.validateForm.controls['isDisableCheckbox'].value : false,
+                hide: true
             }),
             Name:   this.validateForm.controls['Name'].value,
             Order:  this.validateForm.controls['Order'].value,
@@ -87,7 +88,7 @@ export class ModuleOperationComponent implements OnInit {
             Name     : [ null, [ Validators.required ] ],
             ParentId : [ null],
             Group    : [ null],
-            Hide     : [ null ],
+            isDisableCheckbox     : [ null ],
             Link     : [ null],
             Icon     : [ ],
             Remark   : [ null],
@@ -99,7 +100,7 @@ export class ModuleOperationComponent implements OnInit {
             this.validateForm.controls['Group'].setValue(this._name.group);
             this.validateForm.controls['Link'].setValue(this._name.link);
             this.validateForm.controls['Icon'].setValue(this._name.icon);
-            this.validateForm.controls['Hide'].setValue(this._name.hide);
+            this.validateForm.controls['isDisableCheckbox'].setValue(this._name.isDisableCheckbox);
             this.iconFlag = this._name.icon;
             this.validateForm.controls['Order'].setValue(this._name.order);
             this.validateForm.controls['Remark'].setValue(this._name.remark);

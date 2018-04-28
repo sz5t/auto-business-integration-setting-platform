@@ -82,7 +82,7 @@ export class TreeAndFormComponent implements OnInit {
                         },
                         {
                             id: 'area2',
-                            title: '右表',
+                            title: '右表单',
                             span: 18,
                             size: {
                                 nzXs: 18,
@@ -215,16 +215,16 @@ export class TreeAndFormComponent implements OnInit {
                                                     'size': 'default',
                                                     'options': [
                                                         {
-                                                          'label': '启用',
-                                                          'value': 1,
-                                                          'disabled': false
+                                                            'label': '启用',
+                                                            'value': 1,
+                                                            'disabled': false
                                                         },
                                                         {
-                                                          'label': '禁用',
-                                                          'value': 0,
-                                                          'disabled': false
+                                                            'label': '禁用',
+                                                            'value': 0,
+                                                            'disabled': false
                                                         }
-                                                      ]
+                                                    ]
                                                 },
 
                                             ],

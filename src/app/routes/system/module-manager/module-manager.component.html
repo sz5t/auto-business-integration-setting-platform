@@ -37,7 +37,7 @@
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
           <ng-template ngFor let-item [ngForOf]="expandDataCache[data.id]">
             <tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)">
-              <td  [nzDisabled]="!!item.children"  nzShowCheckbox  [nzChecked]="false" (nzCheckedChange)="refChecked($event,item)">
+              <td   nzShowCheckbox  [nzChecked]="false" (nzCheckedChange)="refChecked($event,item)"> <!--[nzDisabled]="!!!item.children"-->
               <td [nzIndentSize]="item.level*20" [(nzExpand)]="item.expand" (nzExpandChange)="collapse(expandDataCache[data.id],item,$event)"  [nzShowExpand]="!!item.children">
                 {{item.text}}
               </td>
