@@ -3,10 +3,12 @@ import {ApiService} from '@core/utility/api-service';
 import {APIResource} from '@core/utility/api-resource';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {UserOperationComponent} from './user-operation.component';
+import {UserRoleComponent} from './user-role.component';
 
 @Injectable()
 export class RandomUserService {
   randomUserUrl = APIResource.AppUser;
+  roleUrl = APIResource.PrivRole;
 
   getUsers(pageIndex = 1, pageSize = 2, sortField, sortOrder, genders) {
     return this.http.get(`${this.randomUserUrl}`, {
@@ -14,6 +16,11 @@ export class RandomUserService {
     });
   }
 
+  getRole() {
+      return this.http.get(`${this.roleUrl}`, {
+          _select: 'Id as value,Name as label,false as checked'
+      });
+  }
   deleteUser(idlist) {
       const ids = idlist.join(',');
       if( ids.length > 0 ) {
@@ -24,12 +31,12 @@ export class RandomUserService {
   addUser(data?){
       data['Password'] = '1';
       data['PlatCustomerId'] = APIResource.AppPlatCustomerId;
-      data['LoginLimitKind'] = 'None';   // { "Name":"None", "Value":0 },{"Name":"ByIp","Value":1},{"Name":"ByMac","Value":2},{"Name":"ByIpAndMac","Value":3}
+      data['LoginLimitKind'] = 'None';
       return this.http.post(`${this.randomUserUrl}`, data);
   }
 
     updateUser(data?) {
-      return this.http.put(`${this.randomUserUrl}` ,data);
+      return this.http.put(`${this.randomUserUrl}`, data);
     }
   constructor(private http: ApiService) {
   }
@@ -60,6 +67,9 @@ export class UserManagerComponent implements OnInit {
   _indeterminate = false;
   _cacheMapData;
 
+
+  _roleDataset = [];
+  _roleInit = [];
   _current = 1;
   _pageSize = 10;
   _total = 1;
@@ -68,6 +78,7 @@ export class UserManagerComponent implements OnInit {
   _sortValue = 'asc';
   _sortField = 'CreateTime';
   _filterGender = [];
+    isVisible = false;
 
   Gender= {Unknown: '未知', Male: '男', Female: '女'};
 
@@ -153,8 +164,15 @@ export class UserManagerComponent implements OnInit {
     }
   ngOnInit() {
     this.refreshData();
+    this.getRole();
     }
 
+    getRole() {
+        this._randomUser.getRole().subscribe(  (data) => {
+            this._roleDataset = data.Data;
+            this._roleInit = data.Data;
+        })
+    }
 
     showUserForComponent(flag?) {
         switch (flag) {
@@ -229,6 +247,18 @@ export class UserManagerComponent implements OnInit {
     }
 
     settingRole() {
-        console.log('aaaa');
+        this.confirmRoleUser();
+    }
+
+    confirmRoleUser() {
+        const subscription = this.modalService.create({
+            nzTitle          : '角色设置',
+            nzContent        : UserRoleComponent,
+            nzFooter         : null,
+            nzComponentParams: {
+                dataSet: this._dataSet,
+                dataDataset: this._roleDataset
+            }
+        });
     }
 }
