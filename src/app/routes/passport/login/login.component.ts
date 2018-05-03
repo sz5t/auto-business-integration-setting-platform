@@ -175,7 +175,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                     //运行平台菜单
                                     let Menu  = this.arrayToTree(menuList.Data, '');
                                     this.cacheService.set('Menus', Menu);
-                                    this.menuService.add(Menu);
+                                    // this.menuService.add(Menu);
                                 } else {
                                     //需要调整部分  配置平台菜单
                                     this.httpClient.get<any>(APIResource.localUrl).toPromise().then(apprem => {
@@ -193,7 +193,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                         const appper = appPermission.Data;
                                         // this.cacheService.set('AppPermission', appper);
                                         this.appPerMerge(appper);
-                                        this.router.navigate(['/dashboard/analysis']);
+
                                     }
                                 }
                             })
@@ -211,10 +211,17 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     appPerMerge(data) {
         const menus: any[] = this.cacheService.getNone('Menus');
-        const permis = data['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions;
-        this.seachModule(menus, permis);
-        this.cacheService.set('Menus', menus);
-        this.menuService.add(menus);
+        if(data['FuncResPermission']){
+            const permis = data['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions;
+            this.seachModule(menus, permis);
+            this.cacheService.set('Menus', menus);
+
+
+            this.menuService.add(menus);
+            this.router.navigate(['/dashboard/analysis']);
+        }else {
+            this.showError('该用户没有任何权限');
+        }
 }
 
     seachModule(menus, data) {
@@ -244,13 +251,14 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     searchAppper(moduleId, data): string  {
         var OpPer:any=[];
+        // console.log(111,moduleId,data);
         if(data && data.length > 0) {
             data.forEach( item => {
                 if (item.Id === moduleId) {
                     OpPer.push(item.OpPermissions);
                 }else {
                     var getAppper = this.searchAppper(moduleId, item.SubFuncResPermissions)
-                    if(getAppper && item.Name.length>0)
+                    if(getAppper && item.Name.length > 0 )
                         OpPer.push(getAppper);
                 };
             });
