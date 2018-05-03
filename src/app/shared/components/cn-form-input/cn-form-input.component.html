@@ -1,26 +1,13 @@
-<nz-form-item>
-  <nz-form-label nz-col [nzSm]="config.labelSize" [nzXs]="24">
-   {{config.label}}
-  </nz-form-label>
-  <nz-form-control [formGroup]="formGroup" [nzSm]="config.controlSize" [nzXs]="24">
-    <nz-input-group 
-    [nzCompact]="false" 
-    [nzSize]="'default'" 
-    nzAddOnBefore="{{config.addonBefore}}" 
-    nzAddOnAfter="{{config.addonAfter}}"
-    [nzSuffix]="suffixTemplate" 
-    nzPrefixIcon="{{config.perfix}}"
-    >
-        <input nz-input
-        type="{{config.inputType}}"
-        formControlName="{{config.name}}"
-        [nzSize]="config.size"
-        placeholder="{{config.placeholder}}"
-        [(ngModel)]="model"
-      />
-    </nz-input-group>
-  </nz-form-control>
-</nz-form-item>
-  <ng-template *ngIf="config.suffix" #suffixTemplate>
-    <i class="anticon anticon-close-circle" (click)="model=null" *ngIf="model"></i>
-  </ng-template>
+<nz-form-label [nzSpan]="config.labelSize">
+  {{config.label}}
+</nz-form-label>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+  <nz-input-group [nzCompact]="false" [nzSize]="'default'" nzAddOnBefore="{{config.addonBefore}}" nzAddOnAfter="{{config.addonAfter}}"
+    [nzSuffix]="suffixTemplate" nzPrefixIcon="{{config.perfix}}">
+    <input nz-input type="{{config.inputType}}" formControlName="{{config.name}}" [nzSize]="config.size" placeholder="{{config.placeholder}}"
+      [(ngModel)]="model" />
+  </nz-input-group>
+</nz-form-control>
+<ng-template *ngIf="config.suffix" #suffixTemplate>
+  <i class="anticon anticon-close-circle" (click)="model=null" *ngIf="model"></i>
+</ng-template>

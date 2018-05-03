@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 
 @Component({
@@ -6,7 +6,8 @@ import { _HttpClient } from '@delon/theme';
   templateUrl: './cn-form-select.component.html',
 })
 export class CnFormSelectComponent implements OnInit {
-
+    @Input() config;
+    @Input() formGroup;
     constructor(
         private http: _HttpClient
     ) { }

@@ -43,6 +43,8 @@ import { SettingComponentComponent } from './resolver/setting-resolver/setting-c
 import { SettingLayoutEditorComponent } from './resolver/setting-resolver/setting-layout/setting-layout-editor.component';
 import { SettingComponentEditorComponent } from '@shared/resolver/setting-resolver/setting-component/setting-component-editor.component';
 import { BsnTreeTableComponent } from './business/bsn-tree-table/bsn-tree-table.component';
+import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-resolver.component';
+import { CnFormSearchComponent } from './components/cn-form-search/cn-form-search.component';
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -89,7 +91,9 @@ const COMPONENTS = [
     SettingLayoutComponent,
     SettingComponentComponent,
     SettingComponentEditorComponent,
-    SettingLayoutEditorComponent
+    SettingLayoutEditorComponent,
+    SearchResolverComponent,
+    CnFormSearchComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

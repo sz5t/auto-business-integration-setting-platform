@@ -1,16 +1,14 @@
-<nz-form-item>
-  <nz-form-label [nzSm]="config.labelSize" [nzXs]="24">
-   {{config.label}}
-  </nz-form-label>
-  <nz-form-control [formGroup]="formGroup" [nzSm]="config.controlSize" [nzXs]="24">
-    <nz-select
-      formControlName="{{config.name}}"
-      [nzSize]="config.size"
-      [nzPlaceHolder]="config.placeholder">
-      <nz-option *ngFor="let option of config.options"
-                 nzLabel="{{option.label}}"
-                 nzValue="{{option.value}}"
-      ></nz-option>
-    </nz-select>
-  </nz-form-control>
-</nz-form-item>
+<nz-form-label [nzSpan]="config.labelSize">
+    {{config.label}}
+   </nz-form-label>
+   <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+     <nz-select
+       formControlName="{{config.name}}"
+       [nzSize]="config.size"
+       [nzPlaceHolder]="config.placeholder">
+       <nz-option *ngFor="let option of config.options"
+                  nzLabel="{{option.label}}"
+                  nzValue="{{option.value}}"
+       ></nz-option>
+     </nz-select>
+   </nz-form-control>

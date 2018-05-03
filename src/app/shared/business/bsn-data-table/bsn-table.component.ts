@@ -111,7 +111,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                 });
                                 dataSetObjs.push(setObj);
                             });
-                             this.dataSet[this.config.dataSet[i].name] = dataSetObjs;
+                            this.dataSet[this.config.dataSet[i].name] = dataSetObjs;
                         } else {
                             this.dataSet[this.config.dataSet[i].name] = data.Data;
                         }
@@ -175,10 +175,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const filter = {};
         if (filterConfig) {
             filterConfig.map(param => {
-                if ( this._tempParameters[param['valueName']]) {
+                if (this._tempParameters[param['valueName']]) {
                     filter[param['name']] = this._tempParameters[param['valueName']];
                 }
-               
+
             });
         }
         return filter;

@@ -10,10 +10,10 @@ import { concat } from 'rxjs/observable/concat';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 
 @Component({
-  selector: 'cn-form-resolver,[cn-form-resolver]',
-  templateUrl: './form-resolver.component.html',
+  selector: 'cn-search-resolver,[cn-search-resolver]',
+  templateUrl: './search-resolver.component.html',
 })
-export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges {
+export class SearchResolverComponent extends CnComponentBase implements OnInit, OnChanges {
 
   @Input() config;
   @Input() dataList;
@@ -69,7 +69,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
   ngOnChanges() {
     if (this.form) {
-      console.log('load form');
       const controls = Object.keys(this.form.controls);
       const configControls = this.controls.map(item => item.name);
 
@@ -95,7 +94,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       });
       controls.push(...items);
     });
-    console.log(controls);
     return controls;
   }
 
@@ -133,7 +131,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   _submitForm($event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log(this.value);
     this.submit.emit(this.value);
   }
 

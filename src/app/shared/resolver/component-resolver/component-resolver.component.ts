@@ -1,3 +1,4 @@
+import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-resolver.component';
 import { BsnTableComponent } from './../../business/bsn-data-table/bsn-table.component';
 import {
   Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnInit, Type, ViewChild,
@@ -13,6 +14,7 @@ const component: { [type: string]: Type<any> } = {
   bsnDataTable: BsnDataTableComponent,
   bsnTable: BsnTableComponent,
   form_view: FormResolverComponent,
+  search_view: SearchResolverComponent,
   bsnTree: CnBsnTreeComponent
 };
 @Component({

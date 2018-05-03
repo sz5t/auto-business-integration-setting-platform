@@ -11,6 +11,7 @@ import {CnFormRangePickerComponent} from '@shared/components/cn-form-range-picke
 import {CnFormCheckboxComponent} from '@shared/components/cn-form-checkbox/cn-form-checkbox.component';
 import {CnFormCheckboxGroupComponent} from '@shared/components/cn-form-checkbox-group/cn-form-checkbox-group.component';
 import {CnFormRadioGroupComponent} from '@shared/components/cn-form-radio-group/cn-form-radio-group.component';
+import {CnFormSearchComponent} from '@shared/components/cn-form-search/cn-form-search.component';
 const components: {[type: string]: Type<any>} = {
   input: CnFormInputComponent,
   submit: CnFormSubmitComponent,
@@ -20,7 +21,8 @@ const components: {[type: string]: Type<any>} = {
   rangePicker: CnFormRangePickerComponent,
   checkbox: CnFormCheckboxComponent,
   checkboxGroup: CnFormCheckboxGroupComponent,
-  radioGroup: CnFormRadioGroupComponent
+  radioGroup: CnFormRadioGroupComponent,
+  search: CnFormSearchComponent
 };
 @Directive({
   selector: '[cnFormResolverDirective]'
@@ -49,6 +51,12 @@ export class FormResolverDirective implements OnInit, OnChanges {
     this.component.instance.config = this.config;
     if (this.config.type !== 'submit' || this.config.type !== 'button') {
       this.component.instance.formGroup = this.formGroup;
+    }
+    if (this.config.type === 'search') {
+      // 测试事件上抛
+      (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
+        console.log('search');
+      });
     }
 
   }

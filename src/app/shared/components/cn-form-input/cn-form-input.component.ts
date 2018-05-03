@@ -25,7 +25,7 @@ import {Component, Input, OnInit} from '@angular/core';
 export class CnFormInputComponent implements OnInit {
     @Input() config;
     @Input() formGroup;
-    _model
+    _model;
     constructor(
     ) { }
 

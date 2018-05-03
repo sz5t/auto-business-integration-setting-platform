@@ -2,7 +2,13 @@
   <div nz-row [nzGutter]="8" *ngFor="let row of config.rows">
     <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs" [nzMd]="c.size.nzMd"
       [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
-      <cn-layout-resolver *ngFor="let cfg of c.viewCfg" [layoutId]="layoutId" [config]="cfg"></cn-layout-resolver>
+      <nz-card [nzTitle]="cardTitle">
+        <ng-template #cardTitle *ngIf="c.title">
+            <i class="{{c.icon}}"></i>
+          {{c.title}}
+        </ng-template>
+        <cn-layout-resolver *ngFor="let cfg of c.viewCfg" [layoutId]="layoutId" [config]="cfg"></cn-layout-resolver>
+      </nz-card>
     </div>
   </div>
 </ng-container>
@@ -22,9 +28,7 @@
       </nz-tabset>
 </nz-card>
 
-<nz-card *ngIf="!config.rows && !config.tabs" nzTitle="{{config.title}}">
-    <cn-component-resolver 
-    [layoutId]="layoutId" 
-    [blockId]="config.id" 
-    [config]="config"></cn-component-resolver>
-</nz-card>
+<cn-component-resolver  *ngIf="!config.rows && !config.tabs"
+[layoutId]="layoutId" 
+[blockId]="config.id" 
+[config]="config"></cn-component-resolver>
