@@ -8,5 +8,5 @@ export const environment = {
     production: false,
     hmr: false,
     useHash: true,
-    COMMONCODE: ``,
+    COMMONCODE: `{WEB应用运行平台}`,
 };

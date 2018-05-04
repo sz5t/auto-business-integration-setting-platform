@@ -1,5 +1,5 @@
 <nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
-  <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="_submitForm($event)">
+  <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="save($event)">
 
     <ng-container *ngFor="let formItem of config.forms">
         <div nz-row [nzGutter]="24">

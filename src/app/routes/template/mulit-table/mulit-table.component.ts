@@ -34,7 +34,7 @@ export class MulitTableComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'ShowCase',
+                      'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         {
@@ -244,7 +244,7 @@ export class MulitTableComponent implements OnInit {
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'delete'
                           }]
                         }
@@ -255,7 +255,7 @@ export class MulitTableComponent implements OnInit {
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'post',
                             'params': [
                               { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
@@ -276,7 +276,7 @@ export class MulitTableComponent implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
@@ -366,7 +366,7 @@ export class MulitTableComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'ShowCase',
+                      'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' }
@@ -565,7 +565,7 @@ export class MulitTableComponent implements OnInit {
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'delete'
                           }]
                         }
@@ -577,7 +577,7 @@ export class MulitTableComponent implements OnInit {
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'post',
                             'params': [
                               { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
@@ -598,7 +598,7 @@ export class MulitTableComponent implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },

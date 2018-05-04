@@ -166,7 +166,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 }
             });
             if (this.isString(p.url)) {
-                url = APIResource[p.url];
+                url = p.url;
             } else {
                 let pc = 'null';
                 p.url.params.forEach(param => {
@@ -181,7 +181,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                         pc = this._tempValue[param.valueName];
                     }
                 });
-                url = APIResource[p.url['parent']] + '/' + pc + '/' + APIResource[p.url['child']];
+                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
         if (p.ajaxType === 'get' && tag) {

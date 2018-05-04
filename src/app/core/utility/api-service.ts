@@ -103,6 +103,7 @@ export class ApiService {
   }
 
   getProj(resource, params?) {
+    console.log('environment', environment);
     if (environment.COMMONCODE !== APIResource.LoginCommonCode) {
       params = this.setParamsObjProj(params);
     }

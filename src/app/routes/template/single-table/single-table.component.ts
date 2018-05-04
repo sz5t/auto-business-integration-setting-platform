@@ -231,7 +231,7 @@ export class SingleTableComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.ShowCase',
+                      'url': 'SinoForce.AppData.GetCase',
                       'ajaxType': 'get',
                       'params': [],
                       'filter': [
@@ -278,7 +278,7 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '类别Id', field: 'Type', width: 80, hidden: false,
+                        title: '类别', field: 'TypeName', width: 80, hidden: false,
                         editor: {
                           type: 'select',
                           field: 'Type',
@@ -358,6 +358,7 @@ export class SingleTableComponent implements OnInit {
                         title: '创建时间', field: 'CreateTime', width: 80, hidden: false,
                         editor: {
                           type: 'input',
+                          pipe: 'datetime',
                           field: 'CreateTime',
                           options: {
                             'type': 'input',
@@ -381,7 +382,7 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '状态', field: 'Enable', width: 80, hidden: false,
+                        title: '状态', field: 'EnableText', width: 80, hidden: false,
                         editor: {
                           type: 'select',
                           field: 'Enable',
@@ -514,12 +515,12 @@ export class SingleTableComponent implements OnInit {
                                     'options': [
                                       {
                                         'label': '启用',
-                                        'value': 1,
+                                        'value': true,
                                         'disabled': false
                                       },
                                       {
                                         'label': '禁用',
-                                        'value': 0,
+                                        'value': false,
                                         'disabled': false
                                       }
                                     ],
@@ -584,12 +585,26 @@ export class SingleTableComponent implements OnInit {
                                     'inputType': 'text',
                                     'name': 'CaseName',
                                     'label': '名称',
-                                    'placeholder': '',
+                                    'isRequired': true,
+                                    'placeholder': '请输入Case名称',
+                                    'perfix': 'anticon anticon-edit',
+                                    'suffix': '',
                                     'disabled': false,
                                     'readonly': false,
                                     'size': 'default',
                                     'layout': 'column',
-                                    'span': '24'
+                                    'span': '24',
+                                    'validations': [
+                                      {
+                                        'validator': 'required',
+                                        'errorMessage': '请输入Case名称'
+                                      },
+                                      {
+                                        'validator': 'minLength',
+                                        'length': '3',
+                                        'errorMessage': '请输入最少三个字符'
+                                      }
+                                    ]
                                   },
                                 ]
                               },
@@ -602,12 +617,19 @@ export class SingleTableComponent implements OnInit {
                                     'inputType': 'text',
                                     'name': 'Level',
                                     'label': '级别',
+                                    'isRequired': true,
                                     'placeholder': '',
                                     'disabled': false,
                                     'readonly': false,
                                     'size': 'default',
                                     'layout': 'column',
-                                    'span': '24'
+                                    'span': '24',
+                                    'validations': [
+                                      {
+                                        'validator': 'required',
+                                        'errorMessage': '请输入级别'
+                                      }
+                                    ]
                                   },
                                 ]
                               },
@@ -620,12 +642,24 @@ export class SingleTableComponent implements OnInit {
                                     'inputType': 'text',
                                     'name': 'CaseCount',
                                     'label': '数量',
+                                    'isRequired': true,
                                     'placeholder': '',
                                     'disabled': false,
                                     'readonly': false,
                                     'size': 'default',
                                     'layout': 'column',
-                                    'span': '24'
+                                    'span': '24',
+                                    'validations': [
+                                      {
+                                        'validator': 'required',
+                                        'errorMessage': '请输入数量'
+                                      },
+                                      {
+                                        'validator': 'pattern',
+                                        'pattern': /^\d+$/,
+                                        'errorMessage': '请填写数字'
+                                      }
+                                    ]
                                   },
 
                                 ]
@@ -652,7 +686,7 @@ export class SingleTableComponent implements OnInit {
                           'buttons':
                             [
                               {
-                                'name': 'save', 'class': 'editable-add-btn', 'text': '保存',
+                                'name': 'save', 'text': '保存', 'type': 'primary',
                                 'ajaxConfig': {
                                   post: [{
                                     'url': 'SinoForce.AppData.ShowCase',
@@ -669,7 +703,26 @@ export class SingleTableComponent implements OnInit {
                                   }]
                                 }
                               },
-                              { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
+                              {
+                                'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
+                                'ajaxConfig': {
+                                  post: [{
+                                    'url': 'SinoForce.AppData.ShowCase',
+                                    'params': [
+                                      { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
+                                      { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                                      { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
+                                      { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                      { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                                      { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
+                                      { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
+                                      { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                    ]
+                                  }]
+                                }
+                              },
+                              { 'name': 'reset', 'text': '重置' },
+                              { 'name': 'close', 'text': '关闭' }
                             ],
 
                         }
@@ -715,12 +768,12 @@ export class SingleTableComponent implements OnInit {
                                     'options': [
                                       {
                                         'label': '启用',
-                                        'value': 1,
+                                        'value': true,
                                         'disabled': false
                                       },
                                       {
                                         'label': '禁用',
-                                        'value': 0,
+                                        'value': false,
                                         'disabled': false
                                       }
                                     ],
@@ -852,10 +905,8 @@ export class SingleTableComponent implements OnInit {
                             ],
                           'buttons':
                             [
-                              { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
-                              { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' },
                               {
-                                'name': 'save', 'class': 'editable-add-btn', 'text': '保存',
+                                'name': 'save', 'text': '保存',
                                 'type': 'primary',
                                 'ajaxConfig': {
                                   put: [{
@@ -867,14 +918,14 @@ export class SingleTableComponent implements OnInit {
                                       { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                                       { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                                       { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                                      { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
                                       { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                                       { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
                                     ]
                                   }]
                                 }
-                              }
-
+                              },
+                              { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
+                              { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
                             ],
                           'dataList': [],
                         }
@@ -887,7 +938,7 @@ export class SingleTableComponent implements OnInit {
                     'dataSet': [
                       {
                         'name': 'moduleDataSet',
-                        'ajaxConfig': 'AppUser',
+                        'ajaxConfig': 'SinoForce.User.AppUser',
                         'ajaxType': 'get',
                         'params': [],
                         'fields': [

@@ -39,7 +39,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
   // region: 组件生命周期事件
   ngOnInit() {
-    console.log(this.config);
     this.form = this.createGroup();
     if (this.config.relations) {
       this._relativeResolver = new RelativeResolver();
@@ -121,9 +120,24 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     return group;
   }
 
-  createControl(config) {
-    const { disabled, validation, value } = config;
-    return this.formBuilder.control({ disabled, value }, validation);
+  createControl(control) {
+    const { disabled, value } = control;
+    const validations = this.getValidations(control.validations);
+    return this.formBuilder.control({ disabled, value }, validations);
+  }
+
+  getValidations(validations) {
+    const validation = [];
+    validations && validations.forEach(valid => {
+      if (valid.validator === 'required' || valid.validator === 'email') {
+        validation.push(Validators[valid.validator]);
+      } else if (valid.validator === 'minLength' || valid.validator === 'maxLength') {
+        validation.push(Validators[valid.validator](valid.length));
+      } else if (valid.validator === 'pattern') {
+        validation.push(Validators[valid.validator](valid.pattern));
+      }
+    });
+    return validation;
   }
 
   getFormControl(name) {
@@ -261,8 +275,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   }
 
   async saveForm() {
-    console.log('执行保存方法', this.value);
-
     if (this.config.toolbar) {
       const index = this.config.toolbar.findIndex(item => item.name === 'saveForm');
       if (this.config.toolbar[index].ajaxConfig) {
@@ -328,23 +340,32 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
 
   async buttonAction(btn) {
-    console.log(btn);
     let result = false;
     if (this[btn.name] && btn.ajaxConfig) {
-      result =  await this[btn.name](btn.ajaxConfig);
+      result = await this[btn.name](btn.ajaxConfig);
     } else if (this[btn.name]) {
       this[btn.name]();
+    } else if (btn.name === 'saveAndKeep') { // 特殊处理：执行保存并继续
+      result = await this.save(btn.ajaxConfig);
     }
     return result;
   }
 
   async save(ajaxConfig) {
-    if (ajaxConfig.post) {
-      return this.post(ajaxConfig.post);
+    if (this.form.invalid) {
+      for (const i in this.form.controls) {
+        this.form.controls[i].markAsDirty();
+        this.form.controls[i].updateValueAndValidity();
+      }
+    } else {
+      if (ajaxConfig.post) {
+        return this.post(ajaxConfig.post);
+      }
+      if (ajaxConfig.put) {
+        return this.put(ajaxConfig.put);
+      }
     }
-    if (ajaxConfig.put) {
-      return this.put(ajaxConfig.put);
-    }
+
   }
 
   private async post(postConfig) {

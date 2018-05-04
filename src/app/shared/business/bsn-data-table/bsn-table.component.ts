@@ -576,6 +576,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                 this.load();
                             }
                         })();
+                    } else if (btn['name'] === 'saveAndKeep') {
+                        (async () => {
+                            const result = await componentInstance.buttonAction(btn);
+                            if (result) {
+                                // todo: 操作完成当前数据后需要定位
+                                this.load();
+                            }
+                        })();
                     } else if (btn['name'] === 'close') {
                         modal.close();
                     } else if (btn['name'] === 'reset') {

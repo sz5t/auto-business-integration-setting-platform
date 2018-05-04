@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
@@ -24,12 +25,13 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class CnFormInputComponent implements OnInit {
     @Input() config;
-    @Input() formGroup;
+    @Input() formGroup: FormGroup;
     _model;
     constructor(
     ) { }
 
     ngOnInit() {
+      
     }
 
 }

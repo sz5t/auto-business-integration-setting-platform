@@ -33,6 +33,7 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
+    console.log(this.config);
     if (this.config) {
       this.createBsnComponent();
     }
@@ -46,14 +47,12 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
   }
 
   createBsnComponent() {
-    console.log(this.config);
     if (!component[this.config.config.component]) {
       const supportedTypes = Object.keys(component).join(', ');
       throw new Error(
         `Trying to use an unsupported types (${this.config.config.component}).Supported types: ${supportedTypes}`
       );
     }
-    this.container.clear();
     const comp = this.resolver.resolveComponentFactory<any>(component[this.config.config.component]);
     this.componentRef = this.container.createComponent(comp);
     this.componentRef.instance.config = this.config.config;

@@ -19,7 +19,7 @@ export class TreeAndTableComponent implements OnInit {
           cols: [
             {
               id: 'area1',
-              title: '左树',
+              title: '结构树',
               span: 6,
               size: {
                 nzXs: 6,
@@ -51,7 +51,7 @@ export class TreeAndTableComponent implements OnInit {
                       { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: 'null' }
                     ],
                     'ajaxConfig': {
-                      'url': 'ShowCase',
+                      'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
                       'params': [
                        // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
@@ -102,7 +102,7 @@ export class TreeAndTableComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'ShowCase',
+                      'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         {
@@ -309,71 +309,31 @@ export class TreeAndTableComponent implements OnInit {
                     ],
                     'toolbar': [
                       {
-                        'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': true
-                        }
+                        'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
                       },
                       {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': false,
-                          'deleteRow': false,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': false
-                        }
+                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
                       },
                       {
-                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改',
-                        'enables': {
-                          'addRow': false,
-                          'updateRow': true,
-                          'deleteRow': false,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': false
-                        }
+                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改'
                       },
                       {
                         'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': true,
-                          'cancelRow': true,
-                          'showDialog': true
-                        },
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'delete'
                           }]
                         }
                       },
                       {
-                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'disabled': true,
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': false,
-                          'cancelRow': false,
-                          'showDialog': true
-                        },
+                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存',
                         'type': 'method/action',
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'post',
                             'params': [
                               { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
@@ -394,7 +354,7 @@ export class TreeAndTableComponent implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'ShowCase',
+                            'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
@@ -411,53 +371,8 @@ export class TreeAndTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'disabled': true,
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': false,
-                          'cancelRow': false,
-                          'showDialog': true
-                        }
-                      },
-                      {
-                        'name': 'injectRow', 'class': 'editable-add-btn', 'text': '测试方法注入',
-                        'enables': {
-                          'addRow': true,
-                          'updateRow': true,
-                          'deleteRow': true,
-                          'saveRow': false,
-                          'cancelRow': false,
-                          'showDialog': true
-                        },
-                        'type': 'method/action',
-                        'ajaxConfig': {
-                          add: {
-                            'url': 'AppConfigPack_test',
-                            'ajaxType': 'post',
-                            'params': [
-                              { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
-                              { name: 'Name', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
-                              { name: 'TagA', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
-                              { name: 'TagB', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
-                              { name: 'Metadata', type: 'tempValue', valueName: 'dataList', value: 'liutest11' }
-
-                            ]
-                          },
-                          update: {
-                            'url': 'AppConfigPack_test',
-                            'ajaxType': 'put',
-                            'params': [
-                              { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                              { name: 'Metadata', type: 'tempValue', valueName: 'dataList', value: '' }
-                            ]
-                          }
-                        },
-                      },
-                      {
-                        'name': 'showDialog', 'class': 'editable-add-btn', 'text': '弹出框'
-                      },
+                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消'
+                      }
                     ]
                   },
                   dataList: []

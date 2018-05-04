@@ -51,7 +51,7 @@ export class TreeAndFormComponent implements OnInit {
                                             { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: 'null' }
                                         ],
                                         'ajaxConfig': {
-                                            'url': 'ShowCase',
+                                            'url': 'SinoForce.AppData.ShowCase',
                                             'ajaxType': 'get',
                                             'params': [
                                                 // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
@@ -98,7 +98,7 @@ export class TreeAndFormComponent implements OnInit {
                                         'component': 'form_view',
                                         'keyId': 'Id',
                                         ajaxConfig: {
-                                            'url': 'ShowCase',
+                                            'url': 'SinoForce.AppData.ShowCase',
                                             'ajaxType': 'get',
                                             'params': [
                                                 { name: 'Id', type: 'tempValue', valueName: '_id', value: '' }
@@ -112,122 +112,159 @@ export class TreeAndFormComponent implements OnInit {
                                         'forms':
                                             [
                                                 {
-                                                    'type': 'input',
-                                                    'labelSize': '6',
-                                                    'controlSize': '10',
-                                                    'inputType': 'text',
-                                                    'name': 'CaseName',
-                                                    'label': '名称',
-                                                    'placeholder': '',
-                                                    'disabled': false,
-                                                    'readonly': false,
-                                                    'size': 'default'
+                                                    controls: [
+                                                        {
+                                                            'type': 'select',
+                                                            'labelSize': '6',
+                                                            'controlSize': '16',
+                                                            'inputType': 'submit',
+                                                            'name': 'Enable',
+                                                            'label': '状态',
+                                                            'notFoundContent': '',
+                                                            'selectModel': false,
+                                                            'showSearch': true,
+                                                            'placeholder': '--请选择--',
+                                                            'disabled': false,
+                                                            'size': 'default',
+                                                            'options': [
+                                                                {
+                                                                    'label': '启用',
+                                                                    'value': 1,
+                                                                    'disabled': false
+                                                                },
+                                                                {
+                                                                    'label': '禁用',
+                                                                    'value': 0,
+                                                                    'disabled': false
+                                                                }
+                                                            ],
+                                                            'layout': 'column',
+                                                            'span': '24'
+                                                        },
+                                                    ]
                                                 },
                                                 {
-                                                    'type': 'select',
-                                                    'labelSize': '6',
-                                                    'controlSize': '10',
-                                                    'inputType': 'submit',
-                                                    'name': 'Type',
-                                                    'label': '类别Id',
-                                                    'notFoundContent': '',
-                                                    'selectModel': false,
-                                                    'showSearch': true,
-                                                    'placeholder': '--请选择--',
-                                                    'disabled': false,
-                                                    'size': 'default',
-                                                    'options': [
+                                                    controls: [
                                                         {
-                                                            'label': '表',
-                                                            'value': '1',
-                                                            'disabled': false
-                                                        },
-                                                        {
-                                                            'label': '树',
-                                                            'value': '2',
-                                                            'disabled': false
-                                                        },
-                                                        {
-                                                            'label': '树表',
-                                                            'value': '3',
-                                                            'disabled': false
-                                                        },
-                                                        {
-                                                            'label': '表单',
-                                                            'value': '4',
-                                                            'disabled': false
-                                                        },
-                                                        {
-                                                            'label': '标签页',
-                                                            'value': '5',
-                                                            'disabled': false
+                                                            'type': 'select',
+                                                            'labelSize': '6',
+                                                            'controlSize': '16',
+                                                            'inputType': 'submit',
+                                                            'name': 'Type',
+                                                            'label': '类别Id',
+                                                            'notFoundContent': '',
+                                                            'selectModel': false,
+                                                            'showSearch': true,
+                                                            'placeholder': '--请选择--',
+                                                            'disabled': false,
+                                                            'size': 'default',
+                                                            'options': [
+                                                                {
+                                                                    'label': '表',
+                                                                    'value': '1',
+                                                                    'disabled': false
+                                                                },
+                                                                {
+                                                                    'label': '树',
+                                                                    'value': '2',
+                                                                    'disabled': false
+                                                                },
+                                                                {
+                                                                    'label': '树表',
+                                                                    'value': '3',
+                                                                    'disabled': false
+                                                                },
+                                                                {
+                                                                    'label': '表单',
+                                                                    'value': '4',
+                                                                    'disabled': false
+                                                                },
+                                                                {
+                                                                    'label': '标签页',
+                                                                    'value': '5',
+                                                                    'disabled': false
+                                                                }
+                                                            ],
+                                                            'layout': 'column',
+                                                            'span': '24'
                                                         }
                                                     ]
                                                 },
                                                 {
-                                                    'type': 'input',
-                                                    'labelSize': '6',
-                                                    'controlSize': '10',
-                                                    'inputType': 'text',
-                                                    'name': 'CaseCount',
-                                                    'label': '数量',
-                                                    'placeholder': '',
-                                                    'disabled': false,
-                                                    'readonly': false,
-                                                    'size': 'default'
-                                                },
-                                                {
-                                                    'type': 'input',
-                                                    'labelSize': '6',
-                                                    'controlSize': '10',
-                                                    'inputType': 'text',
-                                                    'name': 'Level',
-                                                    'label': '级别',
-                                                    'placeholder': '',
-                                                    'disabled': false,
-                                                    'readonly': false,
-                                                    'size': 'default'
-                                                },
-                                                {
-                                                    'type': 'input',
-                                                    'labelSize': '6',
-                                                    'controlSize': '10',
-                                                    'inputType': 'text',
-                                                    'name': 'Remark',
-                                                    'label': '备注',
-                                                    'placeholder': '',
-                                                    'disabled': false,
-                                                    'readonly': false,
-                                                    'size': 'default'
-                                                },
-                                                {
-                                                    'type': 'select',
-                                                    'labelSize': '6',
-                                                    'controlSize': '10',
-                                                    'inputType': 'submit',
-                                                    'name': 'Enable',
-                                                    'label': '状态',
-                                                    'notFoundContent': '',
-                                                    'selectModel': false,
-                                                    'showSearch': true,
-                                                    'placeholder': '--请选择--',
-                                                    'disabled': false,
-                                                    'size': 'default',
-                                                    'options': [
+                                                    controls: [
                                                         {
-                                                            'label': '启用',
-                                                            'value': 1,
-                                                            'disabled': false
+                                                            'type': 'input',
+                                                            'labelSize': '6',
+                                                            'controlSize': '16',
+                                                            'inputType': 'text',
+                                                            'name': 'CaseName',
+                                                            'label': '名称',
+                                                            'placeholder': '',
+                                                            'disabled': false,
+                                                            'readonly': false,
+                                                            'size': 'default',
+                                                            'layout': 'column',
+                                                            'span': '24'
                                                         },
-                                                        {
-                                                            'label': '禁用',
-                                                            'value': 0,
-                                                            'disabled': false
-                                                        }
                                                     ]
                                                 },
+                                                {
+                                                    controls: [
+                                                        {
+                                                            'type': 'input',
+                                                            'labelSize': '6',
+                                                            'controlSize': '16',
+                                                            'inputType': 'text',
+                                                            'name': 'Level',
+                                                            'label': '级别',
+                                                            'placeholder': '',
+                                                            'disabled': false,
+                                                            'readonly': false,
+                                                            'size': 'default',
+                                                            'layout': 'column',
+                                                            'span': '24'
+                                                        },
+                                                    ]
+                                                },
+                                                {
+                                                    controls: [
+                                                        {
+                                                            'type': 'input',
+                                                            'labelSize': '6',
+                                                            'controlSize': '16',
+                                                            'inputType': 'text',
+                                                            'name': 'CaseCount',
+                                                            'label': '数量',
+                                                            'placeholder': '',
+                                                            'disabled': false,
+                                                            'readonly': false,
+                                                            'size': 'default',
+                                                            'layout': 'column',
+                                                            'span': '24'
+                                                        },
 
+                                                    ]
+                                                },
+                                                {
+                                                    controls: [
+                                                        {
+                                                            'type': 'input',
+                                                            'labelSize': '6',
+                                                            'controlSize': '16',
+                                                            'inputType': 'text',
+                                                            'name': 'Remark',
+                                                            'label': '备注',
+                                                            'placeholder': '',
+                                                            'disabled': false,
+                                                            'readonly': false,
+                                                            'size': 'default',
+                                                            'layout': 'column',
+                                                            'span': '24'
+                                                        }
+                                                    ]
+                                                }
                                             ],
+
                                         'toolbar':
                                             [
                                                 {
