@@ -92,49 +92,6 @@
                         "i18n": ""
                       }
                   ]
-                },
-                {
-                  "text": "模版示例",
-                  "i18n": "",
-                  "link": "/template",
-                  "icon": "anticon anticon-aliwangwang",
-                  "children": [
-                    {
-                      "text": "单表",
-                      "link": "/template/singleTable",
-                      "i18n": ""
-                    },
-                    {
-                      "text": "主子表",
-                      "link": "/template/mulitTable",
-                      "i18n": ""
-                    },
-                    {
-                      "text": "树表",
-                      "link": "/template/treeTable",
-                      "i18n": ""
-                    },
-                    {
-                      "text": "树+表",
-                      "link": "/template/treeAndTable",
-                      "i18n": ""
-                    },
-                    {
-                      "text": "树+表单",
-                      "link": "/template/treeAndForm",
-                      "i18n": ""
-                    },
-                    {
-                      "text": "树+主子表",
-                      "link": "/template/treeAndMulitTable",
-                      "i18n": ""
-                    },
-                    {
-                      "text": "树+多页签",
-                      "link": "/template/treeAndTabs",
-                      "i18n": ""
-                    }
-                  ]
                 }
             ]
         }

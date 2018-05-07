@@ -191,7 +191,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                         this.router.navigate(['/']);
                                     }else{
                                         const appper = appPermission.Data;
-                                        // this.cacheService.set('AppPermission', appper);
+                                        this.cacheService.set('AppPermission', appper);
                                         this.appPerMerge(appper);
 
                                     }
@@ -227,23 +227,27 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     seachModule(menus, data) {
         menus.forEach(item => {
                 const strPer = JSON.stringify(this.searchAppper(item.id, data));
-                const Perer = JSON.parse(strPer.substring(strPer.indexOf('[{'), strPer.lastIndexOf('}]') + 2));
-                switch(Perer[0].Permission){
-                    case 'Invisible':
-                        // console.log(111, item.hide);
-                        item.hide = true;
-                        // console.log(222, item.hide);
-                        break;
-                    case 'Permitted':
-                        // console.log(333, item.hide);
-                        item.hide = false;
-                        // console.log(444, item.hide);
-                        break;
-                    default:
+
+                const subStr = strPer.substring(strPer.indexOf('[{'), strPer.lastIndexOf('}]') + 2);
+            if(subStr.length>5){
+                    const Perer = JSON.parse(subStr);
+                    switch (Perer[0].Permission) {
+                        case 'Invisible':
+                            // console.log(111, item.hide);
+                            item.hide = true;
+                            // console.log(222, item.hide);
+                            break;
+                        case 'Permitted':
+                            // console.log(333, item.hide);
+                            item.hide = false;
+                            // console.log(444, item.hide);
+                            break;
+                        default:
                         // console.log(555, item.hide);
-                }
-                if(item.children) {
-                    this.seachModule(item.children, data);
+                    }
+                    if (item.children) {
+                        this.seachModule(item.children, data);
+                    }
                 }
             }
         )

@@ -25,7 +25,7 @@
     </nz-form-item>
     <nz-form-item style="vertical-align: center">
         <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >配置内容</nz-form-label>
-        <nz-form-control nz-col [nzSm]="10" [nzXs]="18" >
+        <nz-form-control nz-col [nzSm]="7" [nzXs]="12" >
             <div style="padding-left: 7px;border:1px solid #000; margin-right:10px;">资源列表<br>
             <nz-tree
                 formControlName = "AppPermission"
@@ -40,9 +40,30 @@
             </nz-tree>
             </div>
         </nz-form-control>
-        <nz-form-control nz-col [nzSm]="4" [nzXs]="6" >
-            <div style="border:1px solid #000;padding-left: 7px;">操作列表<br>
-                <nz-checkbox-group  formControlName="Operations" [(ngModel)]="checkOptionsOne"></nz-checkbox-group>
+        <nz-form-control nz-col [nzSm]="7" [nzXs]="12" >
+            <!--<div style="border:1px solid #000;padding-left: 7px;" *ngFor="let item of checkOptionsOne">{{item.key}}<br>-->
+                <!--<nz-checkbox-group  formControlName="{{'Operations'+item.key}}" [ngModel]="item.Oper" (ngModelChange)="modelChange($event)" ></nz-checkbox-group>-->
+                <!--<nz-checkbox-wrapper style="width: 100%;"   (nzOnChange)="onChange($event)" >-->
+                    <!--<div nz-row>-->
+                        <!--<div *ngFor="let item of checkOptionsOne" nz-col nzSpan="24" >-->
+                            <!--<label nz-checkbox nzValue='{{item.value}}' [ngModel]='item.checked' formControlName="Operations">{{item.label}}</label>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</nz-checkbox-wrapper>-->
+            <!--</div>-->
+            <div style="padding-left: 7px;border:1px solid #000; margin-right:10px;">操作列表<br>
+                <nz-tree
+                    formControlName = "Operations"
+                    [nzShowLine]="true"
+                    [(ngModel)]="checkOptionsOne"
+                    [nzCheckable]="true"
+                    [nzMultiple]="false"
+                    [nzDefaultCheckedKeys]="checkedoperKeys"
+                    [nzDefaultExpandAll]="true"
+                    (nzClick)="mouseAction1('click',$event)"
+                    (nzCheckBoxChange) = "mouseAction1('click',$event)"
+                    (nzExpandChange) = "expand1($event)">
+                </nz-tree>
             </div>
         </nz-form-control>
     </nz-form-item>

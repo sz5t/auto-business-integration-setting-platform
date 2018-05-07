@@ -1,20 +1,23 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ChangeDetectorRef, AfterViewChecked} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzFormatEmitEvent, NzModalRef, NzTreeNode} from 'ng-zorro-antd';
 import {CacheService} from '@delon/cache';
 import {AppPermission, FuncResPermission, OpPermission, PermissionValue} from '../../../model/APIModel/AppPermission';
+import {ApiService} from '@core/utility/api-service';
+import {APIResource} from '@core/utility/api-resource';
 
 @Component({
   selector: 'app-role-operation',
   templateUrl: './role-operation.component.html',
 })
-export class RoleOperationComponent implements OnInit {
-
+export class RoleOperationComponent implements OnInit, AfterViewChecked {
     constructor(
         private cacheService: CacheService,
         private fb: FormBuilder,
-        private modal: NzModalRef
-    ) { }
+        private modal: NzModalRef,
+        private http: ApiService,
+        public cdRef: ChangeDetectorRef
+    ) {    }
 
     roleOperForm: FormGroup;
     _data : any;
@@ -23,6 +26,9 @@ export class RoleOperationComponent implements OnInit {
     moduleObj: any[];
     nodes: NzTreeNode[] ;
 
+    ngAfterViewChecked() {
+        // this.cdRef.detectChanges();
+    }
     @Input()
     set data(value: any) {
         this._data = value;
@@ -34,16 +40,15 @@ export class RoleOperationComponent implements OnInit {
             AppPermission : [null],
             Remark     : [null],
             ShareScope     : [ 'Project'],
-            Operations: [null],
+            Operations : [null]
         });
+
         if(this._data) {
             this.roleOperForm.controls['Name'].setValue(this._data.Name);
             const appper = this._data.AppPermission;
             this.SettingPermission(appper.FuncResPermission.SubFuncResPermissions[0].SubFuncResPermissions);//(JSON.parse(appper))['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions
             this.roleOperForm.controls['Remark'].setValue(this._data.Remark);
             this.roleOperForm.controls['ShareScope'].setValue(this._data.ShareScope);
-
-
         }
         let modulestr = JSON.stringify(this.cacheService.getNone('Menus'));
         const id = /id/g;
@@ -58,6 +63,7 @@ export class RoleOperationComponent implements OnInit {
             // treeNode.isDisableCheckbox = true;
             this.nodes.push( treeNode);
         });
+        // console.log(this.nodes);
     }
 
     emitDataOutside() {
@@ -68,6 +74,7 @@ export class RoleOperationComponent implements OnInit {
         this._data['AppPermission'] =  this.testApp();
         this._data['Remark'] =  this.roleOperForm.controls['Remark'].value;
         this._data['ShareScope'] = this.roleOperForm.controls['ShareScope'].value;
+        // console.log('endcon',this._data);
         this.modal.destroy(this._data);
     }
 
@@ -76,6 +83,7 @@ export class RoleOperationComponent implements OnInit {
         const funcResPermissionroot: FuncResPermission = new FuncResPermission();
         const funcResPermissionwqd: FuncResPermission = new FuncResPermission('SinoForceWeb前端', 'SinoForceWeb前端');
 
+        // console.log('模块列表',this.nodes);
         this.AddPermission(funcResPermissionwqd,this.nodes);
 
         funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd)
@@ -85,10 +93,22 @@ export class RoleOperationComponent implements OnInit {
     }
 
     AddPermission(funcResPermissionwqd: FuncResPermission, moduleTree: any) {
+
         moduleTree.forEach(item => {
             const funcResPermissionsub = new FuncResPermission(item.key, item.title);
-            funcResPermissionsub.OpPermissions.push(new OpPermission('Open', item.isChecked || item.isHalfChecked ? PermissionValue.Permitted : PermissionValue.Invisible));
-            // this.AddOperation(funcResPermissionsub);
+            const OpPerm = new OpPermission('Open', item.isChecked || item.isHalfChecked ? PermissionValue.Permitted : PermissionValue.Invisible);
+            if((item.title === '角色管理' || item.title === '组织机构' || item.title === '用户管理') && item.origin.OpOperaion) {
+                const funcResPermissionsub1 = new FuncResPermission('主表', '主表');
+                const opPera = JSON.stringify(item.origin.OpOperaion);
+                const AllOperation: OpPermission[] = JSON.parse(opPera);
+                AllOperation.forEach(item1 => {
+                    const ite = new OpPermission(item1.Name, item1.Permission);
+                    funcResPermissionsub1.OpPermissions.push(ite);
+                });
+                funcResPermissionsub.SubFuncResPermissions.push(funcResPermissionsub1);
+            }
+            this.AddOperation(funcResPermissionsub, OpPerm);
+
             funcResPermissionwqd.SubFuncResPermissions.push(funcResPermissionsub);
             if (!item.isLeaf) {
                 this.AddPermission(funcResPermissionsub, item.children);
@@ -98,6 +118,15 @@ export class RoleOperationComponent implements OnInit {
 
     SettingPermission(funcResPermissionwqd: any) {//FuncResPermission
         funcResPermissionwqd.forEach(item => {
+            item.SubFuncResPermissions.forEach(items => {
+                if(items.Name === '主表' && item.OpPermissions){
+                    item.OpPermissions.forEach(ite => {
+                        if(ite.Name === 'Open' && ite.Permission === 'Permitted'){
+                            this.checkedKeys.push(item.Id);
+                        }
+                    })
+                }
+            })
             if(item.OpPermissions){
                 item.OpPermissions.forEach(ite => {
                     if(ite.Name === 'Open' && ite.Permission === 'Permitted' && (item.SubFuncResPermissions.length == 0)){
@@ -111,11 +140,8 @@ export class RoleOperationComponent implements OnInit {
         });
     }
 
-    AddOperation(funcResPermissionsub: FuncResPermission) {
-        const operations: string[] =['新增' , '修改' , '删除'];
-        operations.forEach(item => {
-            funcResPermissionsub.OpPermissions.push(new OpPermission(item, PermissionValue.Permitted));
-        });
+    AddOperation(funcResPermissionsub: FuncResPermission, operations: any) {
+        funcResPermissionsub.OpPermissions.push(operations);
     }
 
     handleCancel(e) {
@@ -134,43 +160,327 @@ export class RoleOperationComponent implements OnInit {
 
     // ----------------------------------------------------
     checkedKeys = [];
-    // selectedKeys = [ '10001', '100011' ];
-    expandDefault = true;
+    expandDefault = false;
+
+    checkOptionsOne: NzTreeNode[] = null;
+
+    // roleOptions = [{key: '主表', Oper:[
+    //     { label: '新增R',  value: 'Add', checked: false},
+    //     { label: '修改R',  value: 'Updata', checked: false},
+    //     { label: '删除R',  value: 'Delete', checked: false}
+    //     ]}];
+
+    roleOptions =[ new NzTreeNode({
+        title: '主表',
+        key:'主表',
+        children:[
+            {
+            title: '新增R',
+            key: '新增R',
+            children :[]
+            },
+            {
+                title: '修改R',
+                key: '修改R',
+                children :[]
+            },
+            {
+                title: '删除R',
+                key: '删除R',
+                children :[]
+            },
+        ]
+    })]
+    //
+    // orgOptions = [{key: '主表', Oper:[
+    //     { label: '新增O',  value: 'Add', checked: false},
+    //     { label: '修改O',  value: 'Update', checked: false},
+    //     { label: '删除O',  value: 'Delete', checked: false}
+    //     ]}];
+
+    orgOptions =[ new NzTreeNode({
+        title: '主表',
+        key:'主表',
+        children:[
+            {
+                title: '新增O',
+                key: '新增O',
+                children :[]
+            },
+            {
+                title: '修改O',
+                key: '修改O',
+                children :[]
+            },
+            {
+                title: '删除O',
+                key: '删除O',
+                children :[]
+            },
+        ]
+    })]
+
+    // userOptions = [
+    //     {key: '主表', Oper:[
+    //     { label: '新增',  value: 'Add' , checked: false},
+    //     { label: '修改',  value: 'Updata', checked: false},
+    //     { label: '删除',  value: 'Delete', checked: false},
+    //     { label: '角色设置',  value: 'RoleSetting', checked: false}
+    //     ]},
+    //     {key: '子表', Oper:[
+    //             { label: '新增1',  value: 'Add1' , checked: false},
+    //             { label: '修改1',  value: 'Updata1', checked: false},
+    //             { label: '删除1',  value: 'Delete1', checked: false},
+    //             { label: '角色设置1',  value: 'RoleSetting1', checked: false}
+    //         ]}
+    //      ];
+
+    userOptions =[ new NzTreeNode({
+        title: '主表',
+        key:'主表',
+        children:[
+            {
+                title: '新增',
+                key: '新增',
+                children :[]
+            },
+            {
+                title: '修改',
+                key: '修改',
+                children :[]
+            },
+            {
+                title: '删除',
+                key: '删除',
+                children :[]
+            },
+            {
+                title: '角色设置',
+                key: '角色设置',
+                children :[]
+            },
+        ]
+    }),
+     new NzTreeNode({
+        title: '子表',
+        key:'子表',
+        children:[
+            {
+                title: '新增1',
+                key: '新增1',
+                children :[]
+            },
+            {
+                title: '修改1',
+                key: '修改1',
+                children :[]
+            },
+            {
+                title: '删除1',
+                key: '删除1',
+                children :[]
+            },
+        ]
+    })]
 
 
-    checkOptionsOne = [
-        // { label: '新增',  value: 'Add',     checked: true },
-        // { label: '修改',  value: 'Update' , checked: true },
-        // { label: '删除',  value: 'Delete' , checked: true },
-        // { label: '上传',  value: 'Upload' , checked: true },
-        // { label: '点击',  value: 'Click' , checked: true },
-    ];
+    module=null;
+    checkNode = [];
     mouseAction(name: string, event: NzFormatEmitEvent): void {
-        // console.log(444, event.node.origin.icon);
-        // event.node.isChecked = true;
-        switch(event.node.key) {
-            case '1001':
-                this.checkOptionsOne = [
-                    { label: '新增',  value: 'Add', checked: true },
-                    { label: '上传',  value: 'Upload' , checked: true },
-                    { label: '点击',  value: 'Click' , checked: true },
-                ];
+        this.checkNode = [];
+        if(event.node.isLeaf) {
+            this.checkOptionsOne = [];
+            this.module = event.node.origin;
+            this.获取数据源(event.node);
+            var funcResper: FuncResPermission[] =[];
+            if(this._data) {
+                this.searchAppper(funcResper, this.module.key, this._data.AppPermission['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions)
+                this.mergeOper(this.checkOptionsOne, funcResper[0]);
+            }
+            //1.先获取受限资源
+            //2.获取角色下模块对应的操作权限，并做匹配
+            //3.组织数据结构
+
+            // this.http.get(APIResource.AppPermission + '/Func.'+this.parPath + '.' + event.node.title,{'_withAncestor':false}).subscribe(
+            //     response => {
+            //         if(response.Data.SubFuncResPermissions.length >0) {
+            //             var getOpOperation=[];
+            //             console.log(456, response.Data.SubFuncResPermissions[0]);
+            //             response.Data.SubFuncResPermissions[0].OpPermissions.forEach( item => {
+            //                 getOpOperation.push({label: item.Name,  value: item.Name, checked: (item.Permission === 'Invisible') ? false: true})
+            //             })
+            //             this.checkOptionsOne = getOpOperation;
+            //         }
+            //         else {
+            //             console.log(111, event)
+            //             this.获取数据源(event.node);
+            //         }
+            //         console.log(222,this.checkOptionsOne);
+            //     }
+            // );
+        }
+    }
+
+    mouseAction1(name: string, event: NzFormatEmitEvent): void {
+
+        this.checkNode.push(event.node.key);
+        console.log(111,this.module,event.node,this.checkNode)
+
+        if(this.module.length>0) {
+            var OpOperations: OpPermission[] = [];
+            // event.forEach(item => {
+            //     if (item.checked) {
+            //         OpOperations.push(new OpPermission(item.label, PermissionValue.Permitted));
+            //     } else {
+            //         OpOperations.push(new OpPermission(item.label, PermissionValue.Invisible));
+            //     }
+            // })
+            // console.log('操作列表', OpOperations, this.module);
+            // this.module['OpOperaion'] = OpOperations;
+            // console.log('模块', this.module);
+            // console.log('模块列表', this.nodes);
+        }
+    }
+    checkedoperKeys =[];
+    mergeOper(oper,apper){
+        // oper.forEach(item => {
+        //     const opera = [];
+        //     this.getApper(item.key,apper,opera);
+        //     if(opera[0])
+        //     item.Oper.forEach( item1 => {
+        //         opera[0].filter(item2 => {
+        //             if(item2.Name === item1.label)
+        //             {item1.checked = item2.Permission === 'Permitted' ? true : false }
+        //         } )
+        //     })
+        // })
+        // console.log(222,oper);
+
+        apper.forEach( item => {
+            item.OpPermissions.forEach(ite => {
+                if(ite.Permission === 'Permitted')
+                    this.checkedoperKeys.push(ite.Name)
+            })
+        })
+    }
+
+    getApper(key,apper,oper){
+        apper.forEach( ite => {
+            if(key === ite.Id){
+                oper.push(ite.OpPermissions);
+            }
+        })
+    }
+
+    searchAppper(array, moduleId, data)  {
+        if (data && data.length > 0) {
+            data.forEach( item => {
+                if (item.Id === moduleId) {
+                    array.push(item.SubFuncResPermissions);
+                } else {
+                    this.searchAppper(array, moduleId, item.SubFuncResPermissions);
+            }})
+        }
+    }
+
+    获取数据源(node) {
+        switch(node.key) {
+            case '2cc0a2cf7fc4704282f3523de9fe6890'://用户管理
+                if(!this.module.OpOperaion) {
+                    console.log('USER');
+                    this.checkOptionsOne = this.userOptions;
+                }
+                else {
+                    console.log('userOptions');
+                    this.userOptions = [];
+                    // this.getOpration(this.module);
+                }
                 break;
-            case '1002':
-                this.checkOptionsOne = [
-                    { label: '修改',  value: 'Update' , checked: true },
-                    { label: '删除',  value: 'Delete' , checked: true },
-                ];
+            case 'b5daad20393e284fa9ab37c5d653dcd4': //角色管理
+                if(!this.module.OpOperaion) {
+                    console.log('ROLE');
+                    this.checkOptionsOne = this.roleOptions;
+                }
+                else {
+                    console.log('roleOptions');
+                    this.roleOptions = [];
+                    // this.getOpration(this.module);
+                }
                 break;
-            case '1003':
-                this.checkOptionsOne = [
-                    { label: '审批',  value: 'Apply' , checked: true },
-                    { label: '撤回',  value: 'cancel' , checked: true },
-                ];
+            case 'e48c4d69f0484bd39cc9855da9df25ee': //组织机构
+                if(!this.module.OpOperaion) {
+                    console.log('ORG');
+                    this.checkOptionsOne = this.orgOptions;
+                }
+                else {
+                    console.log('orgOptions');
+                    this.orgOptions = [];
+                    // this.getOpration(this.module);
+                }
                 break;
             default:
                 this.checkOptionsOne = [];
         }
     }
+
+    // onChange(event){
+    //     var OpOperation: OpPermission[] = [];
+    //     console.log(event);
+    //     // new OpPermission('Open', item.isChecked || item.isHalfChecked ? PermissionValue.Permitted : PermissionValue.Invisible);
+    //     this.checkOptionsOne.forEach(item => {
+    //         if(event.indexOf(item.value) >-1 ){
+    //             console.log('可用',item.value);
+    //             OpOperation.push(new OpPermission(item.label, PermissionValue.Permitted));}
+    //         else {
+    //             console.log('不可用',item.value);
+    //             OpOperation.push(new OpPermission(item.label, PermissionValue.Invisible));}
+    //     })
+    //     console.log('操作列表',OpOperation,this.module);
+    //
+    //     this.module['OpOperaion'] = OpOperation;
+    //     console.log('模块',this.module);
+    //     console.log('模块列表',this.nodes);
+    // }
+
+    modelChange(event){
+        if(this.module.length>0) {
+            var OpOperations: OpPermission[] = [];
+            event.forEach(item => {
+                if (item.checked) {
+                    OpOperations.push(new OpPermission(item.label, PermissionValue.Permitted));
+                } else {
+                    OpOperations.push(new OpPermission(item.label, PermissionValue.Invisible));
+                }
+            })
+            // console.log('操作列表', OpOperations, this.module);
+            this.module['OpOperaion'] = OpOperations;
+            // console.log('模块', this.module);
+            // console.log('模块列表', this.nodes);
+        }
+    }
+
+
+    parPath:string = '';
+    expand(event){
+        console.log(event);
+       var ExpandNodeList: string = 'SinoForceWeb前端.';
+        const paths:string[]=[];
+        this.joinParent(paths,event.node);
+        this.parPath = ExpandNodeList+paths.join('.');
+    }
+
+    expand1(event){
+
+    }
+
+    joinParent(path:string[], node?){
+        if(path.indexOf(node.title)=== -1){
+        path.unshift(node.title)
+        console.log(path);
+        }
+         if(node.level>0)
+            this.joinParent(path,node.parentNode)
+    }
 }
+
 

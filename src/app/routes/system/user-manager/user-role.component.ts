@@ -51,10 +51,6 @@ export class UserRoleComponent implements OnInit {
         }
         else {
             const roles = this.roleList.pop();
-            // console.log("用户信息", this.radioValue);
-            // console.log("选中角色信息", roles);
-            console.log(this.userList)
-
             this.http.delete(`${APIResource.PrivRoleLink}`, {'LeftId': this.userList.pop()}).subscribe(
                 response =>{
                     console.log(response.Message);
@@ -63,10 +59,7 @@ export class UserRoleComponent implements OnInit {
                         roles.forEach(item => {
                             body.push({'LeftId': this.radioValue, 'RightId': item,'ProjId': APIResource.AppProjId});
                         })
-
-                        var bod = {'LeftId': this.radioValue, 'RightId': roles[0],'ProjId': APIResource.AppProjId}
-                        console.log(JSON.stringify(body));
-                       this.http.post(`${APIResource.PrivRoleLink}`, bod).subscribe( response => {
+                       this.http.post(`${APIResource.PrivRoleLink}`, body).subscribe( response => {
                            this.msg.success('角色添加成功！')
                        })
                     }

@@ -58,7 +58,7 @@ export class ModuleOperationComponent implements OnInit {
                 link: this.validateForm.controls['Link'].value,
                 icon: this.validateForm.controls['Icon'].value,
                 isDisableCheckbox: this.validateForm.controls['isDisableCheckbox'].value ? this.validateForm.controls['isDisableCheckbox'].value : false,
-                hide: true
+                hide: this.validateForm.controls['isDisableCheckbox'].value ? this.validateForm.controls['isDisableCheckbox'].value : false
             }),
             Name:   this.validateForm.controls['Name'].value,
             Order:  this.validateForm.controls['Order'].value,
