@@ -41,7 +41,7 @@ export class StartupService {
 
             zip(
                 this.httpClient.get(`assets/i18n/${this.i18n.defaultLang}.json`),
-                this.httpClient.get(APIResource.localUrl)
+                this.httpClient.get(APIResource.localUrl + '/app-data.json')
                 //this.httpClient.get('assets/app-data.json')
             ).pipe(
                 // 接收其他拦截器后产生的异常消息

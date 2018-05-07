@@ -92,7 +92,7 @@ export class ApiService {
         body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
       }
     }
-    
+
     return this.httpClient.post(
       resource,
       body,
@@ -107,7 +107,7 @@ export class ApiService {
     if (environment.COMMONCODE !== APIResource.LoginCommonCode) {
       params = this.setParamsObjProj(params);
     }
-   
+
     return this.httpClient.get(
       resource,
       params,
@@ -267,7 +267,7 @@ export class ApiService {
 
   // region: read inner config data
   getLocalData(name) {
-    const url = `http://localhost:4200/assets/data/${name}.json`;
+    const url = APIResource.localUrl + `/data/${name}.json`;
     return this.http.get(url);
   }
   // endregion
