@@ -225,6 +225,7 @@ export class SingleTableComponent implements OnInit {
                     'title': '数据网格',
                     'viewId': 'singleTable',
                     'component': 'bsnTable',
+                    'info': true,
                     'keyId': 'Id',
                     'nzIsPagination': true, // 是否分页
                     'nzShowTotal': true, // 是否显示总数据量
@@ -364,7 +365,7 @@ export class SingleTableComponent implements OnInit {
                             'type': 'input',
                             'labelSize': '6',
                             'controlSize': '18',
-                            'inputType': 'text',
+                            'inputType': 'date',
                           }
                         }
                       },
@@ -383,6 +384,10 @@ export class SingleTableComponent implements OnInit {
                       },
                       {
                         title: '状态', field: 'EnableText', width: 80, hidden: false,
+                        formatter: [
+                          { 'value': '启用', 'bgcolor': '', 'fontcolor': 'text-green', 'valueas': '启用' },
+                          { 'value': '禁用', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '禁用' }
+                        ],
                         editor: {
                           type: 'select',
                           field: 'Enable',
@@ -447,7 +452,7 @@ export class SingleTableComponent implements OnInit {
                             'params': [
                               { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
                               { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
-                              { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
+                              // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                               { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                               { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
                               { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
@@ -469,7 +474,7 @@ export class SingleTableComponent implements OnInit {
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
                               { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
                               { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
-                              { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
+                              // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                               { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                               { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
                               { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
@@ -662,6 +667,24 @@ export class SingleTableComponent implements OnInit {
                                     ]
                                   },
 
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
+                                    'type': 'input',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'inputType': 'date',
+                                    'name': 'CreateTime',
+                                    'label': '创建时间',
+                                    'placeholder': '',
+                                    'disabled': false,
+                                    'readonly': false,
+                                    'size': 'default',
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
                                 ]
                               },
                               {
@@ -1190,6 +1213,7 @@ export class SingleTableComponent implements OnInit {
 
   constructor(private http: _HttpClient) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+  }
 
 }

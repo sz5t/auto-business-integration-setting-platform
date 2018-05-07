@@ -71,6 +71,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     editCache = {};
     rowContent = {};
     dataSet = {};
+    checkedCount = 0;
     // endregion
 
     constructor(
@@ -290,9 +291,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     refChecked() {
-        const checkedCount = this.dataList.filter(w => w.checked).length;
-        this.allChecked = checkedCount === this.dataList.length;
-        this.indeterminate = this.allChecked ? false : checkedCount > 0;
+        this.checkedCount = this.dataList.filter(w => w.checked).length;
+        this.allChecked = this.checkedCount === this.dataList.length;
+        this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
     }
 
     async saveRow() {
@@ -642,6 +643,21 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     private async get(url, params) {
         return this._http.getProj(url, params).toPromise();
+    }
+    // endregion
+
+    // region: 格式化单元格
+    setCellFont(value, format) {
+        let fontColor = '';
+        if (format) {
+            format.map(color => {
+                if (color.value === value) {
+                    fontColor = color.fontcolor;
+                }
+            });
+        }
+        
+        return fontColor;
     }
     // endregion
 }

@@ -265,4 +265,11 @@ export class ApiService {
   }
   // endregion
 
+  // region: read inner config data
+  getLocalData(name) {
+    const url = `http://localhost:4200/assets/data/${name}.json`;
+    return this.http.get(url);
+  }
+  // endregion
+
 }
