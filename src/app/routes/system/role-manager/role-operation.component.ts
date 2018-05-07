@@ -164,7 +164,13 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
 
     checkOptionsOne: NzTreeNode[] = null;
 
-    roleOptions = [ new NzTreeNode({
+    // roleOptions = [{key: '主表', Oper:[
+    //     { label: '新增R',  value: 'Add', checked: false},
+    //     { label: '修改R',  value: 'Updata', checked: false},
+    //     { label: '删除R',  value: 'Delete', checked: false}
+    //     ]}];
+
+    roleOptions =[ new NzTreeNode({
         title: '主表',
         key:'主表',
         children:[
@@ -185,7 +191,14 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
             },
         ]
     })]
-    orgOptions = [ new NzTreeNode({
+    //
+    // orgOptions = [{key: '主表', Oper:[
+    //     { label: '新增O',  value: 'Add', checked: false},
+    //     { label: '修改O',  value: 'Update', checked: false},
+    //     { label: '删除O',  value: 'Delete', checked: false}
+    //     ]}];
+
+    orgOptions =[ new NzTreeNode({
         title: '主表',
         key:'主表',
         children:[
@@ -206,7 +219,23 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
             },
         ]
     })]
-    userOptions = [ new NzTreeNode({
+
+    // userOptions = [
+    //     {key: '主表', Oper:[
+    //     { label: '新增',  value: 'Add' , checked: false},
+    //     { label: '修改',  value: 'Updata', checked: false},
+    //     { label: '删除',  value: 'Delete', checked: false},
+    //     { label: '角色设置',  value: 'RoleSetting', checked: false}
+    //     ]},
+    //     {key: '子表', Oper:[
+    //             { label: '新增1',  value: 'Add1' , checked: false},
+    //             { label: '修改1',  value: 'Updata1', checked: false},
+    //             { label: '删除1',  value: 'Delete1', checked: false},
+    //             { label: '角色设置1',  value: 'RoleSetting1', checked: false}
+    //         ]}
+    //      ];
+
+    userOptions =[ new NzTreeNode({
         title: '主表',
         key:'主表',
         children:[
@@ -232,7 +261,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
             },
         ]
     }),
-    new NzTreeNode({
+     new NzTreeNode({
         title: '子表',
         key:'子表',
         children:[
@@ -295,7 +324,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     mouseAction1(name: string, event: NzFormatEmitEvent): void {
 
         this.checkNode.push(event.node.key);
-        console.log(111222,this.module,event.node,this.checkNode)
+        console.log(111,this.module,event.node,this.checkNode)
 
         if(this.module.length>0) {
             var OpOperations: OpPermission[] = [];

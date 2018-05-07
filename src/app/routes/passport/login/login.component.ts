@@ -170,6 +170,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                 }).toPromise();
                             })
                             .then((menuList) => {
+
                                 if (environment.COMMONCODE === APIResource.LoginCommonCode) {
                                     //运行平台菜单
                                     let Menu  = this.arrayToTree(menuList.Data, '');
@@ -177,7 +178,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                     // this.menuService.add(Menu);
                                 } else {
                                     //需要调整部分  配置平台菜单
-                                    this.httpClient.get<any>(APIResource.localUrl+ '/app-data.json').toPromise().then(apprem => {
+                                    this.httpClient.get<any>(APIResource.localUrl).toPromise().then(apprem => {
                                         this.cacheService.set('Menus', apprem.menu);
                                         this.menuService.add(apprem.menu);
                                     })
@@ -212,8 +213,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         const menus: any[] = this.cacheService.getNone('Menus');
         if(data['FuncResPermission']){
             const permis = data['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions;
-            this.seachModule(menus, permis);
+            // this.seachModule(menus, permis);
             this.cacheService.set('Menus', menus);
+
+
             this.menuService.add(menus);
             this.router.navigate(['/dashboard/analysis']);
         }else {
@@ -224,10 +227,9 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     seachModule(menus, data) {
         menus.forEach(item => {
                 const strPer = JSON.stringify(this.searchAppper(item.id, data));
-                const subStr = strPer.substring(strPer.indexOf('[{'), strPer.lastIndexOf('}]') + 2);
 
+                const subStr = strPer.substring(strPer.indexOf('[{'), strPer.lastIndexOf('}]') + 2);
             if(subStr.length>5){
-                // console.log(11,subStr,item.text)
                     const Perer = JSON.parse(subStr);
                     switch (Perer[0].Permission) {
                         case 'Invisible':
@@ -247,11 +249,6 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                         this.seachModule(item.children, data);
                     }
                 }
-                else
-            {
-                // console.log(22,subStr,item.text)
-                item.hide = true;
-            }
             }
         )
     }

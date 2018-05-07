@@ -668,7 +668,6 @@ export class MulitTableComponent implements OnInit {
   constructor(private http: _HttpClient) { }
 
   ngOnInit() { 
-    console.log(JSON.stringify(this.config));
   }
 
 }
