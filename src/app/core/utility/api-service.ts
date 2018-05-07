@@ -93,7 +93,7 @@ export class ApiService {
         body['PlatCustomerId'] = 'f2771e4c90db29439e3c986d9859dc74';
       }
     }
-    
+
     return this.httpClient.post(
       resource,
       body,
@@ -108,7 +108,7 @@ export class ApiService {
     if (environment.COMMONCODE !== APIResource.LoginCommonCode) {
       params = this.setParamsObjProj(params);
     }
-   
+
     return this.httpClient.get(
       resource,
       params,
