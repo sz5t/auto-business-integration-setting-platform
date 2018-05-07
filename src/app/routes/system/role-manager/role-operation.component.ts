@@ -7,8 +7,8 @@ import {ApiService} from '@core/utility/api-service';
 import {APIResource} from '@core/utility/api-resource';
 
 @Component({
-  selector: 'app-role-operation',
-  templateUrl: './role-operation.component.html',
+    selector: 'app-role-operation',
+    templateUrl: './role-operation.component.html',
 })
 export class RoleOperationComponent implements OnInit, AfterViewChecked {
     constructor(
@@ -74,8 +74,8 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
         this._data['AppPermission'] =  this.testApp();
         this._data['Remark'] =  this.roleOperForm.controls['Remark'].value;
         this._data['ShareScope'] = this.roleOperForm.controls['ShareScope'].value;
-        // console.log('endcon',this._data);
-        this.modal.destroy(this._data);
+        console.log('endcon',this._data);
+        // this.modal.destroy(this._data);
     }
 
     testApp() {
@@ -164,20 +164,14 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
 
     checkOptionsOne: NzTreeNode[] = null;
 
-    // roleOptions = [{key: '主表', Oper:[
-    //     { label: '新增R',  value: 'Add', checked: false},
-    //     { label: '修改R',  value: 'Updata', checked: false},
-    //     { label: '删除R',  value: 'Delete', checked: false}
-    //     ]}];
-
-    roleOptions =[ new NzTreeNode({
+    roleOptions = [ new NzTreeNode({
         title: '主表',
         key:'主表',
         children:[
             {
-            title: '新增R',
-            key: '新增R',
-            children :[]
+                title: '新增R',
+                key: '新增R',
+                children :[]
             },
             {
                 title: '修改R',
@@ -191,14 +185,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
             },
         ]
     })]
-    //
-    // orgOptions = [{key: '主表', Oper:[
-    //     { label: '新增O',  value: 'Add', checked: false},
-    //     { label: '修改O',  value: 'Update', checked: false},
-    //     { label: '删除O',  value: 'Delete', checked: false}
-    //     ]}];
-
-    orgOptions =[ new NzTreeNode({
+    orgOptions = [ new NzTreeNode({
         title: '主表',
         key:'主表',
         children:[
@@ -219,23 +206,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
             },
         ]
     })]
-
-    // userOptions = [
-    //     {key: '主表', Oper:[
-    //     { label: '新增',  value: 'Add' , checked: false},
-    //     { label: '修改',  value: 'Updata', checked: false},
-    //     { label: '删除',  value: 'Delete', checked: false},
-    //     { label: '角色设置',  value: 'RoleSetting', checked: false}
-    //     ]},
-    //     {key: '子表', Oper:[
-    //             { label: '新增1',  value: 'Add1' , checked: false},
-    //             { label: '修改1',  value: 'Updata1', checked: false},
-    //             { label: '删除1',  value: 'Delete1', checked: false},
-    //             { label: '角色设置1',  value: 'RoleSetting1', checked: false}
-    //         ]}
-    //      ];
-
-    userOptions =[ new NzTreeNode({
+    userOptions = [ new NzTreeNode({
         title: '主表',
         key:'主表',
         children:[
@@ -261,27 +232,27 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
             },
         ]
     }),
-     new NzTreeNode({
-        title: '子表',
-        key:'子表',
-        children:[
-            {
-                title: '新增1',
-                key: '新增1',
-                children :[]
-            },
-            {
-                title: '修改1',
-                key: '修改1',
-                children :[]
-            },
-            {
-                title: '删除1',
-                key: '删除1',
-                children :[]
-            },
-        ]
-    })]
+        new NzTreeNode({
+            title: '子表',
+            key:'子表',
+            children:[
+                {
+                    title: '新增1',
+                    key: '新增1',
+                    children :[]
+                },
+                {
+                    title: '修改1',
+                    key: '修改1',
+                    children :[]
+                },
+                {
+                    title: '删除1',
+                    key: '删除1',
+                    children :[]
+                },
+            ]
+        })]
 
 
     module=null;
@@ -324,7 +295,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     mouseAction1(name: string, event: NzFormatEmitEvent): void {
 
         this.checkNode.push(event.node.key);
-        console.log(111,this.module,event.node,this.checkNode)
+        console.log(111222,this.module,event.node,this.checkNode)
 
         if(this.module.length>0) {
             var OpOperations: OpPermission[] = [];
@@ -379,7 +350,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
                     array.push(item.SubFuncResPermissions);
                 } else {
                     this.searchAppper(array, moduleId, item.SubFuncResPermissions);
-            }})
+                }})
         }
     }
 
@@ -463,7 +434,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     parPath:string = '';
     expand(event){
         console.log(event);
-       var ExpandNodeList: string = 'SinoForceWeb前端.';
+        var ExpandNodeList: string = 'SinoForceWeb前端.';
         const paths:string[]=[];
         this.joinParent(paths,event.node);
         this.parPath = ExpandNodeList+paths.join('.');
@@ -475,10 +446,10 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
 
     joinParent(path:string[], node?){
         if(path.indexOf(node.title)=== -1){
-        path.unshift(node.title)
-        console.log(path);
+            path.unshift(node.title)
+            console.log(path);
         }
-         if(node.level>0)
+        if(node.level>0)
             this.joinParent(path,node.parentNode)
     }
 }
