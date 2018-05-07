@@ -3,6 +3,13 @@
         <button nz-button (click)="toolbarAction(btn)" [attr.disabled]="btn.disabled" class="editable-add-btn">{{btn.text}}</button>
     </ng-container>
 </div>
+<div *ngIf="config.info" class="my-md">
+        <nz-alert [nzType]="'info'" [nzShowIcon]="true" [nzMessage]="message">
+            <ng-template #message>
+                已选择 <strong class="text-primary">{{checkedCount}}</strong> 项&nbsp;&nbsp;
+            </ng-template>
+        </nz-alert>
+</div>
 <!-- [nzDataSource]="dataList"nzAjaxData -->
 <nz-table #nzTable [nzData]="dataList" [nzSize]="'small'" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
     [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totalTemplate" [nzPageSizeOptions]="this.config.pageSizeOptions"
@@ -33,7 +40,7 @@
                     <td *ngIf="!col.hidden">
                         <ng-container *ngIf="col.editor">
                             <div *ngIf="!editCache[data.key].edit">
-                                {{data[col.field]}}
+                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{data[col.field]}}</span>
                             </div>
                             <ng-container [bsnData]="tempParameters" [rowData]="data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                 CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options" [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field]}"
@@ -41,7 +48,7 @@
                             </ng-container>
                         </ng-container>
                         <ng-container *ngIf="!col.editor">
-                            {{data[col.field]}}
+                            <span>{{data[col.field]}}</span>
                         </ng-container>
 
                     </td>

@@ -213,7 +213,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         const menus: any[] = this.cacheService.getNone('Menus');
         if(data['FuncResPermission']){
             const permis = data['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions;
-            this.seachModule(menus, permis);
+            // this.seachModule(menus, permis);
             this.cacheService.set('Menus', menus);
 
 
