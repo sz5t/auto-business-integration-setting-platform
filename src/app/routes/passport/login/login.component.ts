@@ -170,7 +170,6 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                 }).toPromise();
                             })
                             .then((menuList) => {
-
                                 if (environment.COMMONCODE === APIResource.LoginCommonCode) {
                                     //运行平台菜单
                                     let Menu  = this.arrayToTree(menuList.Data, '');
@@ -178,7 +177,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                     // this.menuService.add(Menu);
                                 } else {
                                     //需要调整部分  配置平台菜单
-                                    this.httpClient.get<any>(APIResource.localUrl).toPromise().then(apprem => {
+                                    this.httpClient.get<any>(APIResource.localUrl+ '/app-data.json').toPromise().then(apprem => {
                                         this.cacheService.set('Menus', apprem.menu);
                                         this.menuService.add(apprem.menu);
                                     })
