@@ -268,7 +268,7 @@ export class ApiService {
 
   // region: read inner config data
   getLocalData(name) {
-    const urls = APIResource.localUrl + '/data/' + name + '.json?rtc=' + CommonUtility.uuID(10)
+    const urls = APIResource.localUrl + '/data/' + name + '.json?rtc=' + CommonUtility.uuID(10);
     return this.http.get(urls);
   }
   // endregion
