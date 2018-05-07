@@ -219,7 +219,7 @@ export class APIResource {
    * 本地URL
    * @type {string}
    */
-  public static localUrl =  'http://localhost:4200/assets/app-data.json';
+  public static localUrl =  'http://localhost:4200/assets';
 
 
     /**
