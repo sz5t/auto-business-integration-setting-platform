@@ -178,7 +178,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                                     // this.menuService.add(Menu);
                                 } else {
                                     //需要调整部分  配置平台菜单
-                                    this.httpClient.get<any>(APIResource.localUrl).toPromise().then(apprem => {
+                                    this.httpClient.get<any>(APIResource.localUrl + '/app-data.json').toPromise().then(apprem => {
                                         this.cacheService.set('Menus', apprem.menu);
                                         this.menuService.add(apprem.menu);
                                     })
@@ -249,6 +249,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                         this.seachModule(item.children, data);
                     }
                 }
+                else
+            {
+                item.hide = true;
+            }
             }
         )
     }
