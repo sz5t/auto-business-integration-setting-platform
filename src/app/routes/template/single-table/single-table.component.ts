@@ -365,7 +365,7 @@ export class SingleTableComponent implements OnInit {
                             'type': 'input',
                             'labelSize': '6',
                             'controlSize': '18',
-                            'inputType': 'date',
+                            'inputType': 'datetime',
                           }
                         }
                       },
@@ -693,7 +693,7 @@ export class SingleTableComponent implements OnInit {
                                     'type': 'input',
                                     'labelSize': '6',
                                     'controlSize': '16',
-                                    'inputType': 'text',
+                                    'inputType': 'time',
                                     'name': 'Remark',
                                     'label': '备注',
                                     'placeholder': '',

@@ -1,3 +1,4 @@
+import { CommonUtility } from '@core/utility/Common-utility';
 import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -267,8 +268,8 @@ export class ApiService {
 
   // region: read inner config data
   getLocalData(name) {
-    const url = `http://localhost:4200/assets/data/${name}.json`;
-    return this.http.get(url);
+    const urls = APIResource.localUrl + '/data/' + name + '.json?rtc=' + CommonUtility.uuID(10)
+    return this.http.get(urls);
   }
   // endregion
 
