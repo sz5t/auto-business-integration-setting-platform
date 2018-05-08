@@ -18,12 +18,12 @@ export class OrgService {
 
     deleteorg(idlist?) {
         const ids = idlist.join(',');
-        if( ids.length > 0 ) {
+        if ( ids.length > 0 ) {
             return this.http.delete(this.OrgNodeUrl, { _ids: ids});
         }
     }
 
-    updateOrg(data){
+    updateOrg(data) {
         return this.http.put(`${this.OrgNodeUrl}`, data);
     }
 
@@ -76,7 +76,7 @@ export class OrgManagerComponent implements OnInit {
         public msgSrv: NzMessageService,
         private orgService: OrgService,
         private modalService: NzModalService
-    ) { this.dataItems = new Map();}
+    ) { this.dataItems = new Map(); }
 
     ngOnInit() {
         this.refreshOrg();
@@ -88,19 +88,19 @@ export class OrgManagerComponent implements OnInit {
 
     add() {
        this.orgService.addOrg().subscribe( response => {
-           if(response.Status === 200){
+           if (response.Status === 200) {
                this.msgSrv.success(response.Message ? response.Message : '添加成功！');
                this.refreshOrg();
-           }else {
+           } else {
                this.msgSrv.error(response.Message);
            }
        });
     }
 
     delete() {
-        if(this.dataItems.size >= 1) {
+        if (this.dataItems.size >= 1) {
             const ids = [];
-            this.dataItems.forEach((item, ikey) => {ids.push(ikey) });
+            this.dataItems.forEach((item, ikey) => {ids.push(ikey); });
             this.orgService.deleteorg(ids).subscribe(response => {
                 if (response.Status === 200) {
                     this.msgSrv.success(response.Message);
@@ -109,7 +109,7 @@ export class OrgManagerComponent implements OnInit {
                     this.msgSrv.error(response.Message);
                 }
             });
-        }else {
+        } else {
             this.msgSrv.success('请选中要删除的数据！');
         }
     }
@@ -153,16 +153,16 @@ export class OrgManagerComponent implements OnInit {
     }
 
     refChecked(value, item) {
-        if(value) {
+        if (value) {
             this.dataItems.set(item.Id, item);
-        }else {
+        } else {
             this.dataItems.delete(item.Id);
         }
     }
 
-    refreshOrg(reset = false){
+    refreshOrg(reset = false) {
         this.dataItems.clear();
-        if( reset ){
+        if ( reset ) {
             this._current = 1;
         }
         this._cacheMapData = new Map();
@@ -183,11 +183,10 @@ export class OrgManagerComponent implements OnInit {
     drarrayToTree(data, parentid) {
         const result = [];
         let temp;
-        if(data)
+        if (data)
             for (let i = 0; i < data.length; i++) {
-                if (data[i].ParentId == parentid || !data[i].ParentId) {
-                    const obj =
-                        { label: data[i].Name,
+                if (data[i].ParentId === parentid || !data[i].ParentId) {
+                    const obj = { label: data[i].Name,
                             value: data[i].Id
                         };
                     temp = this.drarrayToTree(data[i].Children, data[i].Id);
@@ -206,14 +205,13 @@ export class OrgManagerComponent implements OnInit {
     arrayToTree(data, parentid) {
         const result = [];
         let temp;
-        if(data)
+        if (data)
             for (let i = 0; i < data.length; i++) {
-                if(data[i].ParentId === APIResource.AppPlatCustomerId)
+                if (data[i].ParentId === APIResource.AppPlatCustomerId)
                     this.idss = [];
                 if (data[i].ParentId === parentid || !data[i].ParentId) {
-                    if(!(this.idss.indexOf(data[i].ParentId) >= 0) )this.idss.push(data[i].ParentId);
-                    const obj =
-                        {
+                    if (!(this.idss.indexOf(data[i].ParentId) >= 0) )this.idss.push(data[i].ParentId);
+                    const obj = {
                             Name: data[i].Name,
                             Id: data[i].Id,
                             ShortName: data[i].ShortName,
@@ -232,7 +230,7 @@ export class OrgManagerComponent implements OnInit {
                         obj['Ids'] =  this.idss.slice(0);
                         obj['isLeaf'] = true;
                         obj['checked'] = false;
-                        if(data[i].ParentId === APIResource.AppPlatCustomerId)
+                        if (data[i].ParentId === APIResource.AppPlatCustomerId)
                             this.idss = [];
                         else
                             this.idss.pop();
@@ -249,10 +247,10 @@ export class OrgManagerComponent implements OnInit {
 
         switch (flag) {
             case 'Add':
-                this.confirmAddOrg()
+                this.confirmAddOrg();
                 break;
             case 'Edit':
-                this.confirmEditOrg( )
+                this.confirmEditOrg( );
                 break;
         }
     }
@@ -268,12 +266,12 @@ export class OrgManagerComponent implements OnInit {
             }
         });
         subscription.afterClose.subscribe((result) => {
-            if(typeof result === 'object')
+            if (typeof result === 'object')
                 this.orgService.addOrg(result).subscribe( response => {
-                    if(response.Status === 200){
+                    if (response.Status === 200) {
                         this.msgSrv.success(response.Message ? response.Message : '添加成功！');
                         this.refreshOrg();
-                    }else {
+                    } else {
                         this.msgSrv.error(response.Message);
                     }
                 });
@@ -282,9 +280,9 @@ export class OrgManagerComponent implements OnInit {
     }
 
     confirmEditOrg() {
-        if( this.dataItems.size === 1) {
-            let data: any ={};
-            this.dataItems.forEach(item =>{ data = item });
+        if ( this.dataItems.size === 1) {
+            let data: any = {};
+            this.dataItems.forEach(item => { data = item; });
 
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',
@@ -296,19 +294,19 @@ export class OrgManagerComponent implements OnInit {
                 }
             });
             subscription.afterClose.subscribe(result => {
-                if(typeof result === 'object'){
+                if (typeof result === 'object') {
                     result['Id'] = data.Id;
                     this.orgService.updateOrg(result).subscribe( response => {
-                        if(response.Status === 200){
+                        if (response.Status === 200) {
                             this.msgSrv.success(response.Message ? response.Message : '修改成功！');
                             this.refreshOrg();
-                        }else {
+                        } else {
                             this.msgSrv.error(response.Message);
                         }
-                    });}
+                    }); }
             });
             this.refreshOrg();
-        }else if (this.dataItems.size > 1 ){
+        } else if (this.dataItems.size > 1 ) {
             this.msgSrv.warning('不能修改多条记录！');
         } else {
             this.msgSrv.warning('请选中要修改的记录！');

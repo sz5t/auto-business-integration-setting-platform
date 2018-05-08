@@ -27,7 +27,7 @@ export class RandomBaseService {
 
     deleteModule(name?) {
        const ids = name.join(',');
-       if( ids.length > 0 ) {
+       if ( ids.length > 0 ) {
          return this.http.deleteProj(this.randomBaseUrl, { _ids: ids});
        }
     }
@@ -119,7 +119,7 @@ export class BaseManagerComponent implements OnInit {
         this.cacheMapData.set(item.Id, {checked: false, dataItem: item});
       });
     }).then( () => {
-      this._randomBase.getModuleTree(this._current, this._pageSize, this._sortField, this._sortValue).subscribe( (data:any) => {
+      this._randomBase.getModuleTree(this._current, this._pageSize, this._sortField, this._sortValue).subscribe( (data: any) => {
         this._dataTree = this.arrayToTree(data.Data.Rows, '');
         // this.cacheService.set('ModuleTree',this._dataTree);
       });
@@ -134,9 +134,8 @@ export class BaseManagerComponent implements OnInit {
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId == parentid || !data[i].ParentId) {
-        const obj =
-          { label: data[i].Name,
+      if (data[i].ParentId === parentid || !data[i].ParentId) {
+        const obj = { label: data[i].Name,
             value: data[i].Id
           };
         temp = this.arrayToTree(data[i].Children, data[i].Id);
@@ -163,14 +162,14 @@ export class BaseManagerComponent implements OnInit {
    */
   _checkAll() {
     this._dataSet.forEach(item => item.checked = this._allChecked);
-    this.cacheMapData.forEach( mpa =>{mpa.checked = this._allChecked});
+    this.cacheMapData.forEach( mpa => {mpa.checked = this._allChecked; });
   }
 
   /**
    * 当行选中操作
    * @param data
    */
-    selectRow(data?){
+    selectRow(data?) {
       this._dataSet.forEach( item => {
         item.selected = false;
       });
@@ -191,23 +190,23 @@ export class BaseManagerComponent implements OnInit {
    * @param event
    */
   add(event?) {
-      let data={
-        "ParentId": "0854a1ddc42d493e8e8aa41117924d08",
-        "Order": 0,
-        "CategoryId": "测试模块",
-        "ApplyId": "3935eb43532d435398d5189d5ece0f5d",
-        "ConfigData": "{\n  \"group\": false,\n  \"link\": \"/system\",\n  \"icon\": \"icon-speedometer\"\n}",
-        "Name": "新测试模块"+ (Math.random() * 1000 | 2.2),
-        "ShareScope": "Project",
-        "Remark": "测试数据，可以任意处置！",
-        "ProjId": "002905c7bf57c54c9e5e65ec0e5fafe8",
-        "PlatCustomerId": "f2771e4c90db29439e3c986d9859dc74"
+      const data = {
+        'ParentId': '0854a1ddc42d493e8e8aa41117924d08',
+        'Order': 0,
+        'CategoryId': '测试模块',
+        'ApplyId': '3935eb43532d435398d5189d5ece0f5d',
+        'ConfigData': '{\n  "group": false,\n  "link": "/system",\n  "icon": "icon-speedometer"\n}',
+        'Name': '新测试模块' + (Math.random() * 1000 | 2.2),
+        'ShareScope': 'Project',
+        'Remark': '测试数据，可以任意处置！',
+        'ProjId': '002905c7bf57c54c9e5e65ec0e5fafe8',
+        'PlatCustomerId': 'f2771e4c90db29439e3c986d9859dc74'
       };
       this._randomBase.addModule(data).subscribe( response => {
-        if(response.Status === 200){
+        if (response.Status === 200) {
           this.msgSrv.success(response.Message ? response.Message : '添加成功！');
           this.refreshData();
-        }else {
+        } else {
           this.msgSrv.error(response.Message);
         }
       });
@@ -219,7 +218,7 @@ export class BaseManagerComponent implements OnInit {
    */
   add1(event?) {
     this._randomBase.addModule().subscribe(response => {
-        console.log(1111)
+        console.log(1111);
       response.Data.ConfigData = JSON.stringify({group: false, link: 'system', icon: 'icon-speedometer'});
       this._dataSet = [ ...this._dataSet, response.Data];
       this.cacheMapData.set(response.Data.Id, {checked: false, dataItem: response.Data});
@@ -233,22 +232,22 @@ export class BaseManagerComponent implements OnInit {
    * @param event
    */
   add2(event?) {
-    let data = {
-      ApplyId : "3935eb43532d435398d5189d5ece0f5d",
-      CategoryId: "测试模块",
+    const data = {
+      ApplyId : '3935eb43532d435398d5189d5ece0f5d',
+      CategoryId: '测试模块',
       Children: null,
       ConfigData :  JSON.stringify({group: false,  link: '/system',  icon: 'icon-speedometer'}),
-      Id:    "9e695d7422aa43498654",
-      Name:   "行内新测试模块643",
+      Id:    '9e695d7422aa43498654',
+      Name:   '行内新测试模块643',
       Order:  0,
-      ParentId:  "0854a1ddc42d493e8e8aa41117924d08",
-      PlatCustomerId:  "f2771e4c90db29439e3c986d9859dc74",
-      ProjId: "002905c7bf57c54c9e5e65ec0e5fafe8",
-      Remark: "行内测试数据，可以任意处置！",
-      ShareScope: "Project",
-      selected:false,
-      checked:false
-    }
+      ParentId:  '0854a1ddc42d493e8e8aa41117924d08',
+      PlatCustomerId:  'f2771e4c90db29439e3c986d9859dc74',
+      ProjId: '002905c7bf57c54c9e5e65ec0e5fafe8',
+      Remark: '行内测试数据，可以任意处置！',
+      ShareScope: 'Project',
+      selected: false,
+      checked: false
+    };
 
     this._dataSet = [ ...this._dataSet, data];
     this.cacheMapData.set(data.Id, {checked: false, dataItem: data});
@@ -262,16 +261,16 @@ export class BaseManagerComponent implements OnInit {
    */
     update(event?) {
       const data = this.getSelectItem();
-      if(data.length === 1) {
+      if (data.length === 1) {
         this._randomBase.updateModule(data).subscribe();
         this.refreshData();
-      }else if (data.length > 1 ){
+      } else if (data.length > 1 ) {
           this.msgSrv.warning('不能修改多条记录！');
           //处理缓存选中的数据
       this.cacheMapData.forEach( item => {
         item.dataItem.checked = false;
         item.checked = false;
-      });} else {
+      }); } else {
         this.msgSrv.warning('请选中要修改的记录！');
       }
     }
@@ -282,21 +281,21 @@ export class BaseManagerComponent implements OnInit {
    */
   delete(event?) {
       const name = this.getSelectId();
-      if(name.length >= 1) {
+      if (name.length >= 1) {
         this._randomBase.deleteModule(name).subscribe(response => {
           if (response.Status === 200) {
             this.msgSrv.success(response.Message);
 
             //移除缓存中的数据
-            name.forEach( na =>{
+            name.forEach( na => {
               this.cacheMapData.delete(na);
-            })
+            });
             this.refreshData();
           } else {
             this.msgSrv.error(response.Message);
           }
         });
-      }else {
+      } else {
         this.msgSrv.success('请选中要删除的数据！');
       }
   }
@@ -305,7 +304,7 @@ export class BaseManagerComponent implements OnInit {
    * 编辑按钮操作
    * @param data
    */
-  edit(data?){
+  edit(data?) {
       this.tempEditObject[ data.Id ] = { ...data };
       this.editRow = data.Id;
     }
@@ -314,11 +313,11 @@ export class BaseManagerComponent implements OnInit {
    * 编辑状态取消操作
    * @param data
    */
-  cancel(data?){
-      if(this.rowLine === 'INSERT'){
-        this._dataSet.pop(); //移除最后一条记录
-        this._randomBase.deleteModule([data.Id]).subscribe( () =>{ this.rowLine = null}); //删除数据库新增的数据
-      }else if(this.rowLine === 'CACHE'){
+  cancel(data?) {
+      if (this.rowLine === 'INSERT') {
+        this._dataSet.pop(); // 移除最后一条记录
+        this._randomBase.deleteModule([data.Id]).subscribe( () => { this.rowLine = null; }); // 删除数据库新增的数据
+      } else if (this.rowLine === 'CACHE') {
         this._dataSet.pop();
       }
 
@@ -331,14 +330,14 @@ export class BaseManagerComponent implements OnInit {
    * 保存数据
    * @param data
    */
-  save(data?){
-    if(data.Id && this.rowLine !== 'CACHE') {
+  save(data?) {
+    if (data.Id && this.rowLine !== 'CACHE') {
       this._randomBase.updateModule(this.tempEditObject[data.Id]).subscribe(response => {
         this.msgSrv.success(response.Message ? response.Message : '操作成功');
         this.editRow = null;
         this.refreshData();
       });
-    }else {
+    } else {
         delete this.tempEditObject[data.Id].Id;
         this._randomBase.addModule(this.tempEditObject[data.Id]).subscribe( response => {
         this.msgSrv.success(response.Message ? response.Message :  '操作成功');
@@ -357,7 +356,7 @@ export class BaseManagerComponent implements OnInit {
       this._randomBase.deleteModule([data.Id]).subscribe( response => {
         this.msgSrv.success(response.Message);
         this.refreshData();
-      })
+      });
     }
   /**
    *获取选中记录的主键集合
@@ -365,11 +364,11 @@ export class BaseManagerComponent implements OnInit {
    */
     getSelectId() {
       const name = [] ;
-      this.cacheMapData.forEach(item =>{
-        if(item.checked){
+      this.cacheMapData.forEach(item => {
+        if (item.checked) {
           name.push(item.dataItem.Id);
         }
-      })
+      });
       return name;
     }
 
@@ -380,10 +379,10 @@ export class BaseManagerComponent implements OnInit {
     getSelectItem() {
       const data = [];
       this.cacheMapData.forEach(item => {
-        if(item.checked){
+        if (item.checked) {
           data.push(item.dataItem);
         }
-      })
+      });
       return data;
     }
 
@@ -391,16 +390,15 @@ export class BaseManagerComponent implements OnInit {
 
       switch (flag) {
         case 'Add':
-          this.confirmAddData()
+          this.confirmAddData();
           break;
         case 'Edit':
-          this.confirmEditData( )
+          this.confirmEditData( );
           break;
       }
     }
 
-    confirmAddData()
-    {
+    confirmAddData() {
       const subscription = this.modalService.create({
         nzTitle          : '新增数据',
         nzContent        : ModalBaseComponent,
@@ -411,22 +409,21 @@ export class BaseManagerComponent implements OnInit {
         }
       });
       subscription.afterClose.subscribe((result) => {
-        if(typeof result === 'object')
+        if (typeof result === 'object')
             this._randomBase.addModule(result).subscribe( response => {
-              if(response.Status === 200){
+              if (response.Status === 200) {
                 this.msgSrv.success(response.Message ? response.Message : '添加成功！');
                 this.refreshData();
-              }else {
+              } else {
                 this.msgSrv.error(response.Message);
           }
         });
       });
     }
 
-    confirmEditData()
-    {
-      let data = this.getSelectItem();
-      if( data.length === 1) {
+    confirmEditData() {
+      const data = this.getSelectItem();
+      if ( data.length === 1) {
         // this._randomBase.updateModule(data);
         this.refreshData();
         const subscription = this.modalService.create({
@@ -439,24 +436,24 @@ export class BaseManagerComponent implements OnInit {
           }
         });
         subscription.afterClose.subscribe(result => {
-          if(typeof result === 'object'){
+          if (typeof result === 'object') {
             result['Id'] = data[0].Id;
             this._randomBase.updateModule(result).subscribe( response => {
-              if(response.Status === 200){
+              if (response.Status === 200) {
                 this.msgSrv.success(response.Message ? response.Message : '修改成功！');
                 this.refreshData();
-              }else {
+              } else {
                 this.msgSrv.error(response.Message);
               }
-            });}
+            }); }
         });
-      }else if (data.length > 1 ){
+      } else if (data.length > 1 ) {
         this.msgSrv.warning('不能修改多条记录！');
         //处理缓存选中的数据
         this.cacheMapData.forEach( item => {
           item.dataItem.checked = false;
           item.checked = false;
-        });} else {
+        }); } else {
         this.msgSrv.warning('请选中要修改的记录！');
       }
     }
@@ -467,9 +464,9 @@ export class BaseManagerComponent implements OnInit {
         const funcResPermissionroot: FuncResPermission = new FuncResPermission();
         const funcResPermissionwqd: FuncResPermission = new FuncResPermission('SinoForce.Web前端', 'SinoForce.Web前端');
 
-        this.AddPermission(funcResPermissionwqd,this._dataTree);
+        this.AddPermission(funcResPermissionwqd, this._dataTree);
 
-        funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd)
+        funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd);
         appPermission.FuncResPermission = funcResPermissionroot;
         console.log(JSON.stringify(appPermission));
         return appPermission;
@@ -488,7 +485,7 @@ export class BaseManagerComponent implements OnInit {
     }
 
     AddOperation(funcResPermissionsub: FuncResPermission) {
-        const operations: string[] =['新增' , '修改' , '删除'];
+        const operations: string[] = ['新增' , '修改' , '删除'];
         operations.forEach(item => {
             funcResPermissionsub.OpPermissions.push(new OpPermission(item, PermissionValue.Permitted));
         });
@@ -496,21 +493,21 @@ export class BaseManagerComponent implements OnInit {
     //endregion
 
 
-    appPerMerge(){
+    appPerMerge() {
         const menus = this.cacheService.getNone('Menus');
-        const data = this.cacheService.getNone('AppPermission')
+        const data = this.cacheService.getNone('AppPermission');
         const permis = data['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions;
 
         this.eachModule(menus, permis);
     }
 
-    eachModule(menus, data){
+    eachModule(menus, data) {
         menus.forEach(item => {
-            var strPer = JSON.stringify(this.searchModule(item.id, data));
-            var Perer = JSON.parse(strPer.substring(strPer.indexOf('[{'),strPer.lastIndexOf('}]')+2));
+            const strPer = JSON.stringify(this.searchModule(item.id, data));
+            const Perer = JSON.parse(strPer.substring(strPer.indexOf('[{'), strPer.lastIndexOf('}]') + 2));
             // console.log(Perer[0].Permission)
             // if(Perer.OpPermissions[0].Permission == PermissionValue.Invisible)
-            switch(Perer[0].Permission){
+            switch (Perer[0].Permission) {
                 case 'Invisible':
                     // console.log(111, item.hide);
                     item.hide = true;
@@ -524,24 +521,24 @@ export class BaseManagerComponent implements OnInit {
                 default:
                     // console.log(555, item.hide);
             }
-                if(item.children) {
+                if (item.children) {
                     this.eachModule(item.children, data);
                 }
             }
-        )
+        );
         // console.log(444,menus);
     }
 
     searchModule(moduleId, data): string  {
-        var aaa:any=[];
-        if(data && data.length > 0) {
+        const aaa: any = [];
+        if (data && data.length > 0) {
             data.forEach( item => {
                 if (item.Id === moduleId) {
                     aaa.push(item.OpPermissions);
-                }else {
-                    if(this.searchModule(moduleId, item.SubFuncResPermissions) && item.Name.length>0)
-                    aaa.push(this.searchModule(moduleId, item.SubFuncResPermissions))
-                };
+                } else {
+                    if (this.searchModule(moduleId, item.SubFuncResPermissions) && item.Name.length > 0)
+                    aaa.push(this.searchModule(moduleId, item.SubFuncResPermissions));
+                }
             });
         } return aaa;
     }

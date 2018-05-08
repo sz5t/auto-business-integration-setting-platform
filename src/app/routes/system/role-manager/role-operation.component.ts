@@ -20,7 +20,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     ) {    }
 
     roleOperForm: FormGroup;
-    _data : any;
+    _data: any;
     _parentId: string;
     values: any[] ;
     moduleObj: any[];
@@ -34,7 +34,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
         this._data = value;
     }
     ngOnInit() {
-        this.nodes=[];
+        this.nodes = [];
         this.roleOperForm = this.fb.group({
             Name     : [ null, [ Validators.required ] ],
             AppPermission : [null],
@@ -43,10 +43,10 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
             Operations : [null]
         });
 
-        if(this._data) {
+        if (this._data) {
             this.roleOperForm.controls['Name'].setValue(this._data.Name);
             const appper = this._data.AppPermission;
-            this.SettingPermission(appper.FuncResPermission.SubFuncResPermissions[0].SubFuncResPermissions);//(JSON.parse(appper))['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions
+            this.SettingPermission(appper.FuncResPermission.SubFuncResPermissions[0].SubFuncResPermissions); // (JSON.parse(appper))['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions
             this.roleOperForm.controls['Remark'].setValue(this._data.Remark);
             this.roleOperForm.controls['ShareScope'].setValue(this._data.ShareScope);
         }
@@ -58,8 +58,8 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
         this.moduleObj = JSON.parse(modulestr);
 
         this.moduleObj.forEach(item => {
-            let treeNode = new NzTreeNode(item);
-            //todo:后期考虑对禁用的模块进行展示处理
+            const treeNode = new NzTreeNode(item);
+            // todo:后期考虑对禁用的模块进行展示处理
             // treeNode.isDisableCheckbox = true;
             this.nodes.push( treeNode);
         });
@@ -67,36 +67,46 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     }
 
     emitDataOutside() {
-        if(!this.roleOperForm.valid)
+        if (!this.roleOperForm.valid)
             return;
-        if(!this._data) this._data = {};
+        if (!this._data) this._data = {};
         this._data['Name'] =   this.roleOperForm.controls['Name'].value;
         this._data['AppPermission'] =  this.testApp();
         this._data['Remark'] =  this.roleOperForm.controls['Remark'].value;
         this._data['ShareScope'] = this.roleOperForm.controls['ShareScope'].value;
-        console.log('endcon',this._data,this._data['AppPermission'] );
+        // console.log('endcon',this._data,this._data['AppPermission'] );
         this.modal.destroy(this._data);
     }
 
     testApp() {
-        const appPermission: AppPermission = new AppPermission();
-        const funcResPermissionroot: FuncResPermission = new FuncResPermission();
-        const funcResPermissionwqd: FuncResPermission = new FuncResPermission('SinoForceWeb前端', 'SinoForceWeb前端');
-        this.AddPermission(funcResPermissionwqd,this.nodes);
+        // if(!this._data) {
+            const appPermission: AppPermission = new AppPermission();
+            const funcResPermissionroot: FuncResPermission = new FuncResPermission();
+            const funcResPermissionwqd: FuncResPermission = new FuncResPermission('SinoForceWeb前端', 'SinoForceWeb前端');
+            this.AddPermission(funcResPermissionwqd, this.nodes);
 
-        funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd)
-        appPermission.FuncResPermission = funcResPermissionroot;
-        return appPermission;
+            funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd);
+            appPermission.FuncResPermission = funcResPermissionroot;
+            return appPermission;
+        // }else {
+        //
+        //     console.log('UPDATE',this._data['AppPermission']);
+        // }
     }
 
     AddPermission(funcResPermissionwqd: FuncResPermission, moduleTree: any) {
+
         moduleTree.forEach(item => {
             const funcResPermissionsub = new FuncResPermission(item.key, item.title);
             const OpPerm = new OpPermission('Open', item.isChecked || item.isHalfChecked ? PermissionValue.Permitted : PermissionValue.Invisible);
-            if((item.title === '角色管理' || item.title === '组织机构' || item.title === '用户管理') && item.origin.OpOperaion) {
+            console.log(3, item.title, item);
+            if ((item.title === '角色管理' || item.title === '组织机构' || item.title === '用户管理') && item.origin.OpOperaion) {
+
                 const opPera = JSON.stringify(item.origin.OpOperaion);
-                const AllOperation: FuncResPermission[] = JSON.parse(opPera) as FuncResPermission[];
-                funcResPermissionsub.SubFuncResPermissions = AllOperation;
+                if (opPera.length > 10) {
+                    const AllOperation: FuncResPermission[] = JSON.parse(opPera) as FuncResPermission[];
+                    funcResPermissionsub.SubFuncResPermissions = AllOperation;
+                }
             }
             this.AddOperation(funcResPermissionsub, OpPerm);
             funcResPermissionwqd.SubFuncResPermissions.push(funcResPermissionsub);
@@ -106,25 +116,25 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
         });
     }
 
-    SettingPermission(funcResPermissionwqd: any) {//FuncResPermission
+    SettingPermission(funcResPermissionwqd: any) {// FuncResPermission
         funcResPermissionwqd.forEach(item => {
             item.SubFuncResPermissions.forEach(items => {
-                if(items.Name === '主表' && item.OpPermissions){
+                if (items.Name === '主表' && item.OpPermissions) {
                     item.OpPermissions.forEach(ite => {
-                        if(ite.Name === 'Open' && ite.Permission === 'Permitted'){
+                        if (ite.Name === 'Open' && ite.Permission === 'Permitted') {
                             this.checkedKeys.push(item.Id);
                         }
-                    })
+                    });
                 }
-            })
-            if(item.OpPermissions){
+            });
+            if (item.OpPermissions) {
                 item.OpPermissions.forEach(ite => {
-                    if(ite.Name === 'Open' && ite.Permission === 'Permitted' && (item.SubFuncResPermissions.length == 0)){
+                    if (ite.Name === 'Open' && ite.Permission === 'Permitted' && (item.SubFuncResPermissions.length == 0)) {
                         this.checkedKeys.push(item.Id);
                     }
-                })
+                });
             }
-            if (item.SubFuncResPermissions.length>0) {
+            if (item.SubFuncResPermissions.length > 0) {
                 this.SettingPermission(item.SubFuncResPermissions);
             }
         });
@@ -156,114 +166,114 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
 
     roleOptions = [ new NzTreeNode({
         title: '主表',
-        key:'主表',
-        children:[
+        key: '主表',
+        children: [
             {
                 title: '新增R',
                 key: '新增R',
-                children :[]
+                children : []
             },
             {
                 title: '修改R',
                 key: '修改R',
-                children :[]
+                children : []
             },
             {
                 title: '删除R',
                 key: '删除R',
-                children :[]
+                children : []
             },
         ]
-    })]
+    })];
     orgOptions = [ new NzTreeNode({
         title: '主表',
-        key:'主表',
-        children:[
+        key: '主表',
+        children: [
             {
                 title: '新增O',
                 key: '新增O',
-                children :[]
+                children : []
             },
             {
                 title: '修改O',
                 key: '修改O',
-                children :[]
+                children : []
             },
             {
                 title: '删除O',
                 key: '删除O',
-                children :[]
+                children : []
             },
         ]
-    })]
+    })];
     userOptions = [ new NzTreeNode({
         title: '主表',
-        key:'主表',
-        children:[
+        key: '主表',
+        children: [
             {
                 title: '新增',
                 key: '新增',
-                children :[]
+                children : []
             },
             {
                 title: '修改',
                 key: '修改',
-                children :[]
+                children : []
             },
             {
                 title: '删除',
                 key: '删除',
-                children :[]
+                children : []
             },
             {
                 title: '角色设置',
                 key: '角色设置',
-                children :[]
+                children : []
             },
         ]
     }),
         new NzTreeNode({
             title: '子表',
-            key:'子表',
-            children:[
+            key: '子表',
+            children: [
                 {
                     title: '新增1',
                     key: '新增1',
-                    children :[]
+                    children : []
                 },
                 {
                     title: '修改1',
                     key: '修改1',
-                    children :[]
+                    children : []
                 },
                 {
                     title: '删除1',
                     key: '删除1',
-                    children :[]
+                    children : []
                 },
             ]
-        })]
+        })];
 
 
-    module=null;
+    module = null;
     // checkNode = [];
     mouseAction(name: string, event: NzFormatEmitEvent): void {
         // this.checkNode = [];
         this.checkedoperKeys = [];
-        if(event.node.isLeaf) {
+        if (event.node.isLeaf) {
             this.checkOptionsOne = [];
             this.module = event.node.origin;
-            console.log(this.module)
+            // console.log(this.module)
             this.获取数据源(event.node);
-            var funcResper: FuncResPermission[] =[];
-            if(this._data) {
-                this.searchAppper(funcResper, this.module.key, this._data.AppPermission['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions)
-                console.log(111,funcResper[0])
+            const funcResper: FuncResPermission[] = [];
+            if (this._data) {
+                this.searchAppper(funcResper, this.module.key, this._data.AppPermission['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions);
+                // console.log(111,funcResper[0])
                 this.mergeOper(this.checkOptionsOne, funcResper[0]);
             }
-            //1.先获取受限资源
-            //2.获取角色下模块对应的操作权限，并做匹配
-            //3.组织数据结构
+            // 1.先获取受限资源
+            // 2.获取角色下模块对应的操作权限，并做匹配
+            // 3.组织数据结构
 
             // this.http.get(APIResource.AppPermission + '/Func.'+this.parPath + '.' + event.node.title,{'_withAncestor':false}).subscribe(
             //     response => {
@@ -286,36 +296,43 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     }
 
     mouseAction1(name: string, event: NzFormatEmitEvent): void {
-        const funcResPermissionsub1: FuncResPermission[] = []
+        const funcResPermissionsub1: FuncResPermission[] = [];
         this.checkOptionsOne.forEach( item => {
-            const itemFRP = new FuncResPermission(item.key, item.key);
-            var OpOperations: OpPermission[] = [];
-            item.children.forEach(ite => {
-                if(ite.isChecked){
-                    OpOperations.push(new OpPermission(ite.key, PermissionValue.Permitted));
+            let OpOperations: OpPermission[];
+            item.children.filter( fil => {
+                if ( fil.isChecked) {
+                    OpOperations = [];
                 }
-            })
-            itemFRP.OpPermissions = OpOperations;
-            funcResPermissionsub1.push(itemFRP);
-        })
+                });
+            if (OpOperations) {
+                const itemFRP = new FuncResPermission(item.key, item.key);
+                item.children.forEach(ite => {
+                    if (ite.isChecked) {
+                        OpOperations.push(new OpPermission(ite.key, PermissionValue.Permitted));
+                    }
+                });
+                itemFRP.OpPermissions = OpOperations;
+                funcResPermissionsub1.push(itemFRP);
+            }
+        });
         this.module['OpOperaion'] = funcResPermissionsub1;
     }
-    checkedoperKeys =[];
-    mergeOper(oper,apper){
+    checkedoperKeys = [];
+    mergeOper(oper, apper) {
         apper.forEach( item => {
             item.OpPermissions.forEach(ite => {
-                if(ite.Permission === 'Permitted')
-                    this.checkedoperKeys.push(ite.Name)
-            })
-        })
+                if (ite.Permission === 'Permitted')
+                    this.checkedoperKeys.push(ite.Name);
+            });
+        });
     }
 
-    getApper(key,apper,oper){
+    getApper(key, apper, oper) {
         apper.forEach( ite => {
-            if(key === ite.Id){
+            if (key === ite.Id) {
                 oper.push(ite.OpPermissions);
             }
-        })
+        });
     }
 
     searchAppper(array, moduleId, data)  {
@@ -325,41 +342,38 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
                     array.push(item.SubFuncResPermissions);
                 } else {
                     this.searchAppper(array, moduleId, item.SubFuncResPermissions);
-                }})
+                }});
         }
     }
 
     获取数据源(node) {
-        switch(node.key) {
-            case '2cc0a2cf7fc4704282f3523de9fe6890'://用户管理
-                if(!this.module.OpOperaion) {
-                    console.log('USER');
+        switch (node.key) {
+            case '2cc0a2cf7fc4704282f3523de9fe6890': // 用户管理
+                if (!this.module.OpOperaion) {
+                    // console.log('USER');
                     this.checkOptionsOne = this.userOptions;
-                }
-                else {
-                    console.log('userOptions');
+                } else {
+                    // console.log('userOptions');
                     this.userOptions = [];
                     // this.getOpration(this.module);
                 }
                 break;
-            case 'b5daad20393e284fa9ab37c5d653dcd4': //角色管理
-                if(!this.module.OpOperaion) {
-                    console.log('ROLE');
+            case 'b5daad20393e284fa9ab37c5d653dcd4': // 角色管理
+                if (!this.module.OpOperaion) {
+                    // console.log('ROLE');
                     this.checkOptionsOne = this.roleOptions;
-                }
-                else {
-                    console.log('roleOptions');
+                } else {
+                    // console.log('roleOptions');
                     this.roleOptions = [];
                     // this.getOpration(this.module);
                 }
                 break;
-            case 'e48c4d69f0484bd39cc9855da9df25ee': //组织机构
-                if(!this.module.OpOperaion) {
-                    console.log('ORG');
+            case 'e48c4d69f0484bd39cc9855da9df25ee': // 组织机构
+                if (!this.module.OpOperaion) {
+                    // console.log('ORG');
                     this.checkOptionsOne = this.orgOptions;
-                }
-                else {
-                    console.log('orgOptions');
+                } else {
+                    // console.log('orgOptions');
                     this.orgOptions = [];
                     // this.getOpration(this.module);
                 }
@@ -388,16 +402,16 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     //     console.log('模块列表',this.nodes);
     // }
 
-    modelChange(event){
-        if(this.module.length>0) {
-            var OpOperations: OpPermission[] = [];
+    modelChange(event) {
+        if (this.module.length > 0) {
+            const OpOperations: OpPermission[] = [];
             event.forEach(item => {
                 if (item.checked) {
                     OpOperations.push(new OpPermission(item.label, PermissionValue.Permitted));
                 } else {
                     OpOperations.push(new OpPermission(item.label, PermissionValue.Invisible));
                 }
-            })
+            });
             // console.log('操作列表', OpOperations, this.module);
             this.module['OpOperaion'] = OpOperations;
             // console.log('模块', this.module);
@@ -406,26 +420,26 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     }
 
 
-    parPath:string = '';
-    expand(event){
+    parPath = '';
+    expand(event) {
         console.log(event);
-        var ExpandNodeList: string = 'SinoForceWeb前端.';
-        const paths:string[]=[];
-        this.joinParent(paths,event.node);
-        this.parPath = ExpandNodeList+paths.join('.');
+        const ExpandNodeList = 'SinoForceWeb前端.';
+        const paths: string[] = [];
+        this.joinParent(paths, event.node);
+        this.parPath = ExpandNodeList + paths.join('.');
     }
 
-    expand1(event){
+    expand1(event) {
 
     }
 
-    joinParent(path:string[], node?){
-        if(path.indexOf(node.title)=== -1){
-            path.unshift(node.title)
+    joinParent(path: string[], node?) {
+        if (path.indexOf(node.title) === -1) {
+            path.unshift(node.title);
             console.log(path);
         }
-        if(node.level>0)
-            this.joinParent(path,node.parentNode)
+        if (node.level > 0)
+            this.joinParent(path, node.parentNode);
     }
 }
 

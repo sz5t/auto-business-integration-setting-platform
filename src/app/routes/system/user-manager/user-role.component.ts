@@ -16,9 +16,9 @@ import {ApiService} from '@core/utility/api-service';
 })
 export class UserRoleComponent implements OnInit {
 
-    _dataSet : any;
-    _roleDataset : any[];
-    _roleInit:any[];
+    _dataSet: any;
+    _roleDataset: any[];
+    _roleInit: any[];
     radioValue = '';
 
 
@@ -46,25 +46,24 @@ export class UserRoleComponent implements OnInit {
     }
 
     emitDataOutside() {
-        if(this.roleList.length ==0){
+        if (this.roleList.length === 0) {
             console.log('对当前用户的角色没有做任何更改，请修改后继续');
-        }
-        else {
+        } else {
             const roles = this.roleList.pop();
             this.http.delete(`${APIResource.PrivRoleLink}`, {'LeftId': this.userList.pop()}).subscribe(
-                response =>{
+                response => {
                     console.log(response.Message);
-                    if(response.Status === 200){
-                        var body = [];
+                    if (response.Status === 200) {
+                        const body = [];
                         roles.forEach(item => {
-                            body.push({'LeftId': this.radioValue, 'RightId': item,'ProjId': APIResource.AppProjId});
-                        })
-                       this.http.post(`${APIResource.PrivRoleLink}`, body).subscribe( response => {
-                           this.msg.success('角色添加成功！')
-                       })
+                            body.push({'LeftId': this.radioValue, 'RightId': item, 'ProjId': APIResource.AppProjId});
+                        });
+                       this.http.post(`${APIResource.PrivRoleLink}`, body).subscribe( () => {
+                           this.msg.success('角色添加成功！');
+                       });
                     }
                 }
-            )
+            );
         }
     }
 
@@ -88,11 +87,11 @@ export class UserRoleComponent implements OnInit {
             const roleList = response.Data;
             this._roleDataset.forEach(item => {
                 item.checked = false;
-                roleList.forEach(ite =>{
-                    if(ite.Id == item.value){
+                roleList.forEach(ite => {
+                    if (ite.Id === item.value) {
                         item.checked = true;
                     }
-                    })
+                    });
             });
         });
 }

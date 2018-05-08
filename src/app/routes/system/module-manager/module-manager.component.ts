@@ -18,7 +18,7 @@ export class ModuleService {
 
   deleteModule(ids) {
       const _ids = ids.join(',');
-      if( _ids.length > 0 ) {
+      if ( _ids.length > 0 ) {
           return this.http.deleteProj(`${this.moduleUrl}`, { _ids: _ids});
       }
   }
@@ -124,8 +124,7 @@ export class ModuleManagerComponent implements OnInit {
       this.loadData();
   }
 
-  loadData(reset = false, event?)
-  {
+  loadData(reset = false, event?) {
       this.dataItems.clear();
       if (reset) {
         this._current = 1;
@@ -145,16 +144,16 @@ export class ModuleManagerComponent implements OnInit {
       });
     }
 
-  refresh(event?){
+  refresh(event?) {
     this._current = 1;
     this._pageSize = 10;
       this.loadData();
     }
 
   delete(event?) {
-      if(this.dataItems.size >= 1) {
+      if (this.dataItems.size >= 1) {
           const ids = [];
-          this.dataItems.forEach((item, ikey) => {ids.push(ikey) });
+          this.dataItems.forEach((item, ikey) => {ids.push(ikey); });
           this._moduleService.deleteModule(ids).subscribe(response => {
               if (response.Status === 200) {
                   this.msgSrv.success(response.Message);
@@ -163,7 +162,7 @@ export class ModuleManagerComponent implements OnInit {
                   this.msgSrv.error(response.Message);
               }
           });
-      }else {
+      } else {
           this.msgSrv.success('请选中要删除的数据！');
       }
     }
@@ -171,11 +170,10 @@ export class ModuleManagerComponent implements OnInit {
   drarrayToTree(data, parentid) {
         const result = [];
         let temp;
-        if(data)
+        if (data)
         for (let i = 0; i < data.length; i++) {
             if (data[i].ParentId == parentid || !data[i].ParentId) {
-                const obj =
-                    { label: data[i].Name,
+                const obj = { label: data[i].Name,
                         value: data[i].Id
                     };
                 temp = this.drarrayToTree(data[i].Children, data[i].Id);
@@ -194,14 +192,13 @@ export class ModuleManagerComponent implements OnInit {
   arrayToTree(data, parentid) {
     const result = [];
     let temp;
-      if(data)
+      if (data)
     for (let i = 0; i < data.length; i++) {
-        if(data[i].ParentId === '' || data[i].ParentId == null)
+        if (data[i].ParentId === '' || data[i].ParentId == null)
             this.idss = [];
       if (data[i].ParentId == parentid || !data[i].ParentId) {
-          if(!(this.idss.indexOf(data[i].ParentId) >= 0) )this.idss.push(data[i].ParentId);
-        const obj =
-          { text: data[i].Name,
+          if (!(this.idss.indexOf(data[i].ParentId) >= 0) )this.idss.push(data[i].ParentId);
+        const obj = { text: data[i].Name,
             id: data[i].Id,
             group: JSON.parse(data[i].ConfigData).group,
             link: JSON.parse(data[i].ConfigData).link,
@@ -222,7 +219,7 @@ export class ModuleManagerComponent implements OnInit {
             obj['Ids'] =  this.idss.slice(0);
             obj['isLeaf'] = true;
             obj['checked'] = false;
-            if(data[i].ParentId === '' || data[i].ParentId == null)
+            if (data[i].ParentId === '' || data[i].ParentId == null)
                 this.idss = [];
             else
             this.idss.pop();
@@ -235,9 +232,9 @@ export class ModuleManagerComponent implements OnInit {
   }
 
   refChecked(value, item) {
-      if(value) {
+      if (value) {
           this.dataItems.set(item.id, item);
-      }else {
+      } else {
           this.dataItems.delete(item.id);
       }
   }
@@ -246,10 +243,10 @@ export class ModuleManagerComponent implements OnInit {
 
         switch (flag) {
             case 'Add':
-                this.confirmAddData()
+                this.confirmAddData();
                 break;
             case 'Edit':
-                this.confirmEditData( )
+                this.confirmEditData( );
                 break;
         }
     }
@@ -265,12 +262,12 @@ export class ModuleManagerComponent implements OnInit {
             }
         });
         subscription.afterClose.subscribe((result) => {
-            if(typeof result === 'object')
+            if (typeof result === 'object')
                 this._moduleService.addModule(result).subscribe( response => {
-                    if(response.Status === 200){
+                    if (response.Status === 200) {
                         this.msgSrv.success(response.Message ? response.Message : '添加成功！');
                         this.loadData();
-                    }else {
+                    } else {
                         this.msgSrv.error(response.Message);
                     }
                 });
@@ -279,9 +276,9 @@ export class ModuleManagerComponent implements OnInit {
     }
 
     confirmEditData() {
-        if( this.dataItems.size === 1) {
-            let data: any ={};
-            this.dataItems.forEach(item =>{ data = item });
+        if ( this.dataItems.size === 1) {
+            let data: any = {};
+            this.dataItems.forEach(item => { data = item; });
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',
                 nzContent        : ModuleOperationComponent,
@@ -292,27 +289,26 @@ export class ModuleManagerComponent implements OnInit {
                 }
             });
             subscription.afterClose.subscribe(result => {
-                if(typeof result === 'object'){
+                if (typeof result === 'object') {
                     result['Id'] = data.id;
                     this._moduleService.updateModule(result).subscribe( response => {
-                        if(response.Status === 200){
+                        if (response.Status === 200) {
                             this.msgSrv.success(response.Message ? response.Message : '修改成功！');
                             this.loadData();
-                        }else {
+                        } else {
                             this.msgSrv.error(response.Message);
                         }
-                    });}
+                    }); }
             });
             this.loadData();
-        }else if (this.dataItems.size > 1 ){
+        } else if (this.dataItems.size > 1 ) {
             this.msgSrv.warning('不能修改多条记录！');
         } else {
             this.msgSrv.warning('请选中要修改的记录！');
         }
     }
 
-    getText(flag)
-    {
+    getText(flag) {
         return !flag ? '启用' : '禁用';
     }
 }
