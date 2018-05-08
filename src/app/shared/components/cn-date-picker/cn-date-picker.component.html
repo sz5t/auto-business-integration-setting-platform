@@ -1,19 +1,27 @@
-<div nz-form-item nz-row>
-  <div nz-form-label nz-col [nzSm]="config.labelSize" [nzXs]="24">
-    <label [attr.for]="config.name" nz-form-item-required>{{config.label}}</label>
-  </div>
-  <div [formGroup]="formGroup" nz-form-control nz-col [nzSm]="config.controlSize" [nzXs]="24">
-    <nz-datepicker
-      formControlName="{{config.name}}"
-      [nzSize]="config.size"
-      [nzMode]="config.dateModel"
-      [nzFormat]="config.format"
-      [nzPlaceHolder]="config.placeholder"
-      [nzDisabled]="config.disabled"
-      [nzAllowClear]=true
-      [(ngModel)]="date"
-    >
-    </nz-datepicker>
-  </div>
-</div>
-
+<nz-form-label [nzSpan]="config.labelSize" [nzRequired]="config.isRequired">
+  {{config.label}}
+</nz-form-label>
+  <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+    <nz-input-group 
+      [nzCompact]="false" 
+      [nzSize]="'default'" 
+      nzAddOnBefore="{{config.addonBefore}}" 
+      nzAddOnAfter="{{config.addonAfter}}"
+      [nzSuffix]="suffixTemplate" 
+      nzPrefixIcon="{{config.perfix}}">
+      <input nz-input 
+        type="date" 
+        formControlName="{{config.name}}" 
+        [nzSize]="config.size" 
+        placeholder="{{config.placeholder}}"
+        [(ngModel)]="model" />
+    </nz-input-group>
+    <nz-form-explain *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
+        <ng-container *ngFor="let valid of config.validations">
+              <span style="margin-top:3px" *ngIf="formGroup.get(config.name).hasError(valid.validator.toLowerCase())">{{valid.errorMessage}}</span>
+          </ng-container>
+      </nz-form-explain>
+  </nz-form-control>
+  <ng-template #suffixTemplate>
+    <i class="anticon anticon-close-circle" (click)="model=null" *ngIf="model"></i>
+  </ng-template>

@@ -227,8 +227,8 @@ export class SingleTableComponent implements OnInit {
                     'component': 'bsnTable',
                     'info': true,
                     'keyId': 'Id',
-                    'nzIsPagination': true, // 是否分页
-                    'nzShowTotal': true, // 是否显示总数据量
+                    'pagination': true, // 是否分页
+                    'showTotal': true, // 是否显示总数据量
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
@@ -672,10 +672,10 @@ export class SingleTableComponent implements OnInit {
                               {
                                 controls: [
                                   {
-                                    'type': 'input',
+                                    'type': 'datePicker',
                                     'labelSize': '6',
                                     'controlSize': '16',
-                                    'inputType': 'date',
+                                    'inputType': 'text',
                                     'name': 'CreateTime',
                                     'label': '创建时间',
                                     'placeholder': '',

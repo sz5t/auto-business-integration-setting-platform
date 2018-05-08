@@ -6,7 +6,7 @@ import { _HttpClient } from '@delon/theme';
   templateUrl: './cn-form-radio-group.component.html',
 })
 export class CnFormRadioGroupComponent implements OnInit {
-    _radioValue
+    _radioValue;
     constructor(
         private http: _HttpClient
     ) { }

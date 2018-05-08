@@ -45,6 +45,7 @@ import { SettingComponentEditorComponent } from '@shared/resolver/setting-resolv
 import { BsnTreeTableComponent } from './business/bsn-tree-table/bsn-tree-table.component';
 import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-resolver.component';
 import { CnFormSearchComponent } from './components/cn-form-search/cn-form-search.component';
+import { CnDatePickerComponent } from '@shared/components/cn-date-picker/cn-date-picker.component';
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -65,7 +66,7 @@ const COMPONENTS = [
     CnFormInputComponent,
     CnFormSubmitComponent,
     CnFormSelectComponent,
-    // CnDatePickerComponent,
+    CnDatePickerComponent,
     // CnTimePickerComponent,
     // CnFormRangePickerComponent,
     CnFormCheckboxComponent,
