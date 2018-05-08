@@ -74,41 +74,31 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
         this._data['AppPermission'] =  this.testApp();
         this._data['Remark'] =  this.roleOperForm.controls['Remark'].value;
         this._data['ShareScope'] = this.roleOperForm.controls['ShareScope'].value;
-        console.log('endcon',this._data);
-        // this.modal.destroy(this._data);
+        console.log('endcon',this._data,this._data['AppPermission'] );
+        this.modal.destroy(this._data);
     }
 
     testApp() {
         const appPermission: AppPermission = new AppPermission();
         const funcResPermissionroot: FuncResPermission = new FuncResPermission();
         const funcResPermissionwqd: FuncResPermission = new FuncResPermission('SinoForceWeb前端', 'SinoForceWeb前端');
-
-        // console.log('模块列表',this.nodes);
         this.AddPermission(funcResPermissionwqd,this.nodes);
 
         funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd)
         appPermission.FuncResPermission = funcResPermissionroot;
-        // console.log(JSON.stringify(appPermission));
         return appPermission;
     }
 
     AddPermission(funcResPermissionwqd: FuncResPermission, moduleTree: any) {
-
         moduleTree.forEach(item => {
             const funcResPermissionsub = new FuncResPermission(item.key, item.title);
             const OpPerm = new OpPermission('Open', item.isChecked || item.isHalfChecked ? PermissionValue.Permitted : PermissionValue.Invisible);
             if((item.title === '角色管理' || item.title === '组织机构' || item.title === '用户管理') && item.origin.OpOperaion) {
-                const funcResPermissionsub1 = new FuncResPermission('主表', '主表');
                 const opPera = JSON.stringify(item.origin.OpOperaion);
-                const AllOperation: OpPermission[] = JSON.parse(opPera);
-                AllOperation.forEach(item1 => {
-                    const ite = new OpPermission(item1.Name, item1.Permission);
-                    funcResPermissionsub1.OpPermissions.push(ite);
-                });
-                funcResPermissionsub.SubFuncResPermissions.push(funcResPermissionsub1);
+                const AllOperation: FuncResPermission[] = JSON.parse(opPera) as FuncResPermission[];
+                funcResPermissionsub.SubFuncResPermissions = AllOperation;
             }
             this.AddOperation(funcResPermissionsub, OpPerm);
-
             funcResPermissionwqd.SubFuncResPermissions.push(funcResPermissionsub);
             if (!item.isLeaf) {
                 this.AddPermission(funcResPermissionsub, item.children);
@@ -256,16 +246,19 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
 
 
     module=null;
-    checkNode = [];
+    // checkNode = [];
     mouseAction(name: string, event: NzFormatEmitEvent): void {
-        this.checkNode = [];
+        // this.checkNode = [];
+        this.checkedoperKeys = [];
         if(event.node.isLeaf) {
             this.checkOptionsOne = [];
             this.module = event.node.origin;
+            console.log(this.module)
             this.获取数据源(event.node);
             var funcResper: FuncResPermission[] =[];
             if(this._data) {
                 this.searchAppper(funcResper, this.module.key, this._data.AppPermission['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions)
+                console.log(111,funcResper[0])
                 this.mergeOper(this.checkOptionsOne, funcResper[0]);
             }
             //1.先获取受限资源
@@ -293,40 +286,22 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     }
 
     mouseAction1(name: string, event: NzFormatEmitEvent): void {
-
-        this.checkNode.push(event.node.key);
-        console.log(111222,this.module,event.node,this.checkNode)
-
-        if(this.module.length>0) {
+        const funcResPermissionsub1: FuncResPermission[] = []
+        this.checkOptionsOne.forEach( item => {
+            const itemFRP = new FuncResPermission(item.key, item.key);
             var OpOperations: OpPermission[] = [];
-            // event.forEach(item => {
-            //     if (item.checked) {
-            //         OpOperations.push(new OpPermission(item.label, PermissionValue.Permitted));
-            //     } else {
-            //         OpOperations.push(new OpPermission(item.label, PermissionValue.Invisible));
-            //     }
-            // })
-            // console.log('操作列表', OpOperations, this.module);
-            // this.module['OpOperaion'] = OpOperations;
-            // console.log('模块', this.module);
-            // console.log('模块列表', this.nodes);
-        }
+            item.children.forEach(ite => {
+                if(ite.isChecked){
+                    OpOperations.push(new OpPermission(ite.key, PermissionValue.Permitted));
+                }
+            })
+            itemFRP.OpPermissions = OpOperations;
+            funcResPermissionsub1.push(itemFRP);
+        })
+        this.module['OpOperaion'] = funcResPermissionsub1;
     }
     checkedoperKeys =[];
     mergeOper(oper,apper){
-        // oper.forEach(item => {
-        //     const opera = [];
-        //     this.getApper(item.key,apper,opera);
-        //     if(opera[0])
-        //     item.Oper.forEach( item1 => {
-        //         opera[0].filter(item2 => {
-        //             if(item2.Name === item1.label)
-        //             {item1.checked = item2.Permission === 'Permitted' ? true : false }
-        //         } )
-        //     })
-        // })
-        // console.log(222,oper);
-
         apper.forEach( item => {
             item.OpPermissions.forEach(ite => {
                 if(ite.Permission === 'Permitted')
