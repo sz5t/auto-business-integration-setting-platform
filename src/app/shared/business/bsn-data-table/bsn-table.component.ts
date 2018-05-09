@@ -267,7 +267,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const filterParams = {};
         if (this._columnFilterList && this._columnFilterList.length > 0) {
             this._columnFilterList.map(filter => {
-                filterParams[filter.field] = `in(\'${filter.value}\')`;
+                const valueStr = [];
+                filter.value.map(value => {
+                    valueStr.push(`'${value}'`);
+                });
+                filterParams[filter.field] = `in(${valueStr.join(',')})`;
             });
         }
         return filterParams;
@@ -314,7 +318,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const filter = {};
         if (values.length > 0 && field) {
             filter['field'] = field;
-            filter['value'] = values.join(',');
+            filter['value'] = values;
             this._columnFilterList.push(filter);
         } else {
             this._columnFilterList = [];
