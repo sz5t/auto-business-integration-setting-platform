@@ -4,7 +4,19 @@ import {NzFormatEmitEvent, NzModalRef, NzTreeNode} from 'ng-zorro-antd';
 import {CacheService} from '@delon/cache';
 import {AppPermission, FuncResPermission, OpPermission, PermissionValue} from '../../../model/APIModel/AppPermission';
 import {ApiService} from '@core/utility/api-service';
-import {APIResource} from '@core/utility/api-resource';
+// import {APIResource} from '@core/utility/api-resource';
+import {Observable} from 'rxjs/Observable';
+import {of} from 'rxjs/observable/of';
+
+export class Data {
+    Name: string;
+    Remark: string;
+    ShareScope: string;
+    AppPermission: AppPermission;
+    constructor(){
+        this.AppPermission = new AppPermission();
+    }
+}
 
 @Component({
     selector: 'app-role-operation',
@@ -20,7 +32,7 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     ) {    }
 
     roleOperForm: FormGroup;
-    _data: any;
+    _data: Data;
     _parentId: string;
     values: any[] ;
     moduleObj: any[];
@@ -69,39 +81,33 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
     emitDataOutside() {
         if (!this.roleOperForm.valid)
             return;
-        if (!this._data) this._data = {};
-        this._data['Name'] =   this.roleOperForm.controls['Name'].value;
-        this._data['AppPermission'] =  this.testApp();
-        this._data['Remark'] =  this.roleOperForm.controls['Remark'].value;
-        this._data['ShareScope'] = this.roleOperForm.controls['ShareScope'].value;
-        // console.log('endcon',this._data,this._data['AppPermission'] );
+        if (!this._data)
+            this._data = new Data();
+        this._data.Name =   this.roleOperForm.controls['Name'].value;
+        this._data.AppPermission = this.testApp();
+        this._data.Remark =  this.roleOperForm.controls['Remark'].value;
+        this._data.ShareScope = this.roleOperForm.controls['ShareScope'].value;
         this.modal.destroy(this._data);
     }
-
-    testApp() {
-        // if(!this._data) {
-            const appPermission: AppPermission = new AppPermission();
-            const funcResPermissionroot: FuncResPermission = new FuncResPermission();
-            const funcResPermissionwqd: FuncResPermission = new FuncResPermission('SinoForceWeb前端', 'SinoForceWeb前端');
-            this.AddPermission(funcResPermissionwqd, this.nodes);
-
-            funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd);
-            appPermission.FuncResPermission = funcResPermissionroot;
-            return appPermission;
-        // }else {
-        //
-        //     console.log('UPDATE',this._data['AppPermission']);
-        // }
+    //
+    // testAppObse(): Observable<any> {
+    //     return of(this.testApp());
+    // }
+     testApp() {
+        const appPermission: AppPermission = new AppPermission();
+        const funcResPermissionroot: FuncResPermission = new FuncResPermission();
+        const funcResPermissionwqd: FuncResPermission = new FuncResPermission('SinoForceWeb前端', 'SinoForceWeb前端');
+        this.AddPermission(funcResPermissionwqd, this.nodes);
+        funcResPermissionroot.SubFuncResPermissions.push(funcResPermissionwqd);
+        appPermission.FuncResPermission = funcResPermissionroot;
+        return appPermission;
     }
 
     AddPermission(funcResPermissionwqd: FuncResPermission, moduleTree: any) {
-
         moduleTree.forEach(item => {
             const funcResPermissionsub = new FuncResPermission(item.key, item.title);
             const OpPerm = new OpPermission('Open', item.isChecked || item.isHalfChecked ? PermissionValue.Permitted : PermissionValue.Invisible);
-            console.log(3, item.title, item);
             if ((item.title === '角色管理' || item.title === '组织机构' || item.title === '用户管理') && item.origin.OpOperaion) {
-
                 const opPera = JSON.stringify(item.origin.OpOperaion);
                 if (opPera.length > 10) {
                     const AllOperation: FuncResPermission[] = JSON.parse(opPera) as FuncResPermission[];
@@ -418,7 +424,6 @@ export class RoleOperationComponent implements OnInit, AfterViewChecked {
             // console.log('模块列表', this.nodes);
         }
     }
-
 
     parPath = '';
     expand(event) {

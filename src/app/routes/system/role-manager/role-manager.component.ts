@@ -4,6 +4,7 @@ import {APIResource} from '@core/utility/api-resource';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {RoleOperationComponent} from './role-operation.component';
 import {AppPermission, FuncResPermission} from '../../../model/APIModel/AppPermission';
+import {CacheService} from '@delon/cache';
 
 @Injectable()
 export class RoleService {
@@ -26,7 +27,7 @@ export class RoleService {
       data['OwnerId'] = APIResource.AppPlatCustomerId;
       data['ProjId'] = APIResource.AppProjId;
       // data['AppPermission'] = JSON.parse('{"$type":"SinoForce.User.AppPermission, SinoForce.Data","DataResPermission":{"$type":"SinoForce.User.DataResPermission, SinoForce.Data","ResourceTypePermissions":[{"$type":"SinoForce.User.ResourceTypePermission, SinoForce.Data","PropPermissions":[],"QueryFilter":"ApplyId=754EEF73A2781F4D81A9C37ED83B43B9","UpdateFilter":"","DeleteFilter":"","RowPermissions":[],"Id":"282daf2270ff45aba76e221fb8605923","Name":"UnstructData","OpPermissions":[{"$type":"SinoForce.User.OpPermission, SinoForce.Data","Name":"GET","Permission":"Permitted","PermissionExpText":""}]}],"Id":"b48d78bf8883e944939bad7e123f0248","Name":"任意类型","OpPermissions":[]},"FuncResPermission":null}');
-      data['AppPermission'] = JSON.parse('{"DataResPermission": null,"FuncResPermission": null}');
+      // data['AppPermission'] = JSON.parse('{"DataResPermission": null,"FuncResPermission": null}');
         return this.http.post(`${this.roleServiceUrl}`, data);
     }
 
@@ -100,6 +101,7 @@ export class RoleManagerComponent implements OnInit {
   }
 
   constructor(
+      private cacheService: CacheService,
       private _randomRole: RoleService,
       private modalService: NzModalService,
       public msgSrv: NzMessageService) {
@@ -184,15 +186,16 @@ export class RoleManagerComponent implements OnInit {
         });
 
         subscription.afterClose.subscribe((result) => {
-            if (typeof result === 'object')
-                this._randomRole.addRole(result).subscribe( response => {
+            if (typeof result === 'object') {
+                this._randomRole.addRole(result).subscribe(response => {
                     if (response.Status === 200) {
                         this.msgSrv.success(response.Message ? response.Message : '添加成功！');
                         this.refreshData();
                     } else {
                         this.msgSrv.error(response.Message);
                     }
-                });
+                })
+            }
         });
     }
 
