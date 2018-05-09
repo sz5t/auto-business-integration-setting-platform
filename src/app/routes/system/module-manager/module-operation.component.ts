@@ -36,8 +36,7 @@ export class ModuleOperationComponent implements OnInit {
         this.isVisible = false;
     }
 
-    copy(group?:any, item?: any)
-    {
+    copy(group?: any, item?: any) {
         this.iconFlag = group.prefix + item.k;
     }
 
@@ -49,7 +48,7 @@ export class ModuleOperationComponent implements OnInit {
 
     }
     emitDataOutside() {
-        if(!this.validateForm.valid)
+        if (!this.validateForm.valid)
             return;
         const data = {
             Children: null,
@@ -66,7 +65,7 @@ export class ModuleOperationComponent implements OnInit {
             Remark: this.validateForm.controls['Remark'].value,
             ShareScope: 'Project'
         };
-        if(!this._parentId)
+        if (!this._parentId)
             data['ParentId'] = '';
 
         this.modal.destroy(data);
@@ -95,7 +94,7 @@ export class ModuleOperationComponent implements OnInit {
             Order    : [null, [ Validators.min(0)]],
         });
         this._tree = this.cacheService.getNone('ModuleTree');
-        if(this._name !== '') {
+        if (this._name !== '') {
             this.validateForm.controls['Name'].setValue(this._name.text);
             this.validateForm.controls['Group'].setValue(this._name.group);
             this.validateForm.controls['Link'].setValue(this._name.link);

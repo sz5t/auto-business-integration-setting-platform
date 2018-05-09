@@ -15,7 +15,7 @@ export class UserOperationComponent implements OnInit {
     ) { }
 
     userOperForm: FormGroup;
-    _data : any;
+    _data: any;
     _parentId: string;
     values: any[] ;
 
@@ -41,7 +41,7 @@ export class UserOperationComponent implements OnInit {
             // PersonId: [ null ],
 
         });
-        if(this._data) {
+        if (this._data) {
             this.userOperForm.controls['Name'].setValue(this._data.Name);
             this.userOperForm.controls['Gender'].setValue(this._data.Gender);
             this.userOperForm.controls['IdCardNumber'].setValue(this._data.IdCardNumber);
@@ -58,9 +58,9 @@ export class UserOperationComponent implements OnInit {
     }
 
     emitDataOutside() {
-        if(!this.userOperForm.valid)
+        if (!this.userOperForm.valid)
             return;
-        if(!this._data) this._data = {};
+        if (!this._data) this._data = {};
         this._data['Name'] =   this.userOperForm.controls['Name'].value;
         this._data['Gender'] =  this.userOperForm.controls['Gender'].value;
         this._data['IdCardNumber'] =  this.userOperForm.controls['IdCardNumber'].value;

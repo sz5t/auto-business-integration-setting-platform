@@ -42,7 +42,7 @@ export class StartupService {
             zip(
                 this.httpClient.get(`assets/i18n/${this.i18n.defaultLang}.json`),
                 this.httpClient.get(APIResource.localUrl + '/app-data.json')
-                //this.httpClient.get('assets/app-data.json')
+                // this.httpClient.get('assets/app-data.json')
             ).pipe(
                 // 接收其他拦截器后产生的异常消息
                 catchError(([langData, appData]) => {
@@ -54,7 +54,7 @@ export class StartupService {
                     // setting language data
                     this.translate.setTranslation(this.i18n.defaultLang, langData);
                     this.translate.setDefaultLang(this.i18n.defaultLang);
-                    //语言信息
+                    // 语言信息
                     this.settingService.setLayout('lang','zh-CN');
                     // application data
                     const res: any = appData;

@@ -11,13 +11,13 @@ export class RoleService {
 
   getPrivRole(pageIndex = 1, pageSize = 2, sortField, sortOrder, genders) {
     return this.http.get(`${this.roleServiceUrl}`, {
-      _page: pageIndex, _rows: pageSize//, _orderBy: `${sortField} ${sortOrder}`
+      _page: pageIndex, _rows: pageSize // , _orderBy: `${sortField} ${sortOrder}`
     });
   }
 
     deleteRole(idlist) {
         const ids = idlist.join(',');
-        if( ids.length > 0 ) {
+        if ( ids.length > 0 ) {
             return this.http.delete(`${this.roleServiceUrl}`, {_ids: ids});
         }
     }
@@ -75,10 +75,10 @@ export class RoleManagerComponent implements OnInit {
 
     _checkAll() {
         this._dataSet.forEach(item => item.checked = this._allChecked);
-        this._cacheMapData.forEach( mpa =>{mpa.checked = this._allChecked});
+        this._cacheMapData.forEach( mpa => {mpa.checked = this._allChecked; });
     }
 
-    selectRow(data?){
+    selectRow(data?) {
         this._dataSet.forEach( item => {
             item.selected = false;
         });
@@ -112,7 +112,7 @@ export class RoleManagerComponent implements OnInit {
       this._cacheMapData = new Map();
       this._allChecked = false;
     this._loading = true;
-    this._randomRole.getPrivRole(this._current, this._pageSize, this._sortField, this._sortValue,'').subscribe((data: any) => {
+    this._randomRole.getPrivRole(this._current, this._pageSize, this._sortField, this._sortValue, '').subscribe((data: any) => {
       this._loading = false;
       this._total = data.Data.Total;
       this._dataSet = data.Data.Rows;
@@ -120,9 +120,9 @@ export class RoleManagerComponent implements OnInit {
             this._cacheMapData.set(item.Id, {checked: false, dataItem: item});
         });
     });
-  };
+  }
 
-    refresh(data?){
+    refresh(data?) {
         this.refreshData();
     }
 
@@ -132,29 +132,29 @@ export class RoleManagerComponent implements OnInit {
 
     delete() {
         const idlist = this.getSelectId();
-        if(idlist.length >= 1) {
+        if (idlist.length >= 1) {
             this._randomRole.deleteRole(idlist).subscribe(response => {
                 if (response.Status === 200) {
                     this.msgSrv.success(response.Message);
-                    idlist.forEach( na =>{
+                    idlist.forEach( na => {
                         this._cacheMapData.delete(na);
-                    })
+                    });
                     this.refreshData();
                 } else {
                     this.msgSrv.error(response.Message);
                 }
             });
-        }else {
+        } else {
             this.msgSrv.success('请选中要删除的数据！');
         }
     }
     getSelectId() {
         const name = [] ;
-        this._cacheMapData.forEach(item =>{
-            if(item.checked){
+        this._cacheMapData.forEach(item => {
+            if (item.checked) {
                 name.push(item.dataItem.Id);
             }
-        })
+        });
         return name;
     }
   ngOnInit() {
@@ -184,12 +184,12 @@ export class RoleManagerComponent implements OnInit {
         });
 
         subscription.afterClose.subscribe((result) => {
-            if(typeof result === 'object')
+            if (typeof result === 'object')
                 this._randomRole.addRole(result).subscribe( response => {
-                    if(response.Status === 200){
+                    if (response.Status === 200) {
                         this.msgSrv.success(response.Message ? response.Message : '添加成功！');
                         this.refreshData();
-                    }else {
+                    } else {
                         this.msgSrv.error(response.Message);
                     }
                 });
@@ -198,13 +198,13 @@ export class RoleManagerComponent implements OnInit {
 
     confirmEditRole() {
         const items = this.getSelectId();
-        if( items.length === 1) {
-            let itemId = items.pop();
+        if ( items.length === 1) {
+            const itemId = items.pop();
             let ITEM = {};
-            this._dataSet.forEach( (item) =>{
-                if(item.Id === itemId)
+            this._dataSet.forEach( (item) => {
+                if (item.Id === itemId)
                     ITEM = item;
-            } )
+            } );
 
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',
@@ -216,18 +216,18 @@ export class RoleManagerComponent implements OnInit {
                 }
             });
             subscription.afterClose.subscribe(result => {
-                if(typeof result === 'object') {
+                if (typeof result === 'object') {
                     result['Id'] = itemId;
                     this._randomRole.updateRole(result).subscribe( response => {
-                        if(response.Status === 200){
+                        if (response.Status === 200) {
                             this.msgSrv.success(response.Message ? response.Message : '修改成功！');
                             this.refreshData();
-                        }else {
+                        } else {
                             this.msgSrv.error(response.Message);
                         }
-                    });}
+                    }); }
             });
-        }else if (items.length > 1 ){
+        } else if (items.length > 1 ) {
             this.msgSrv.warning('不能修改多条记录！');
         } else {
             this.msgSrv.warning('请选中要修改的记录！');

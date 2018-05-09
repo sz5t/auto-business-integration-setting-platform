@@ -23,12 +23,12 @@ export class RandomUserService {
   }
   deleteUser(idlist) {
       const ids = idlist.join(',');
-      if( ids.length > 0 ) {
+      if ( ids.length > 0 ) {
           return this.http.delete(`${this.randomUserUrl}`, {_ids: ids});
       }
   }
 
-  addUser(data?){
+  addUser(data?) {
       data['Password'] = '1';
       data['PlatCustomerId'] = APIResource.AppPlatCustomerId;
       data['LoginLimitKind'] = 'None';
@@ -80,14 +80,14 @@ export class UserManagerComponent implements OnInit {
   _filterGender = [];
     isVisible = false;
 
-  Gender= {Unknown: '未知', Male: '男', Female: '女'};
+  Gender = {Unknown: '未知', Male: '男', Female: '女'};
 
     _checkAll() {
         this._dataSet.forEach(item => item.checked = this._allChecked);
-        this._cacheMapData.forEach( mpa =>{mpa.checked = this._allChecked});
+        this._cacheMapData.forEach( mpa => {mpa.checked = this._allChecked; });
     }
 
-    selectRow(data?){
+    selectRow(data?) {
         this._dataSet.forEach( item => {
             item.selected = false;
         });
@@ -101,25 +101,25 @@ export class UserManagerComponent implements OnInit {
 
     delete() {
         const idlist = this.getSelectId();
-        if(idlist.length >= 1) {
+        if (idlist.length >= 1) {
             this._randomUser.deleteUser(idlist).subscribe(response => {
                 if (response.Status === 200) {
                     this.msgSrv.success(response.Message);
-                    idlist.forEach( na =>{
+                    idlist.forEach( na => {
                         this._cacheMapData.delete(na);
-                    })
+                    });
                     this.refreshData();
                 } else {
                     this.msgSrv.error(response.Message);
                 }
             });
-        }else {
+        } else {
             this.msgSrv.success('请选中要删除的数据！');
         }
     }
 
   sort(sort) {
-    this._sortValue = (sort.value == 'descend') ? 'DESC' : 'ASC';
+    this._sortValue = (sort.value === 'descend') ? 'DESC' : 'ASC';
     this._sortField = sort.key;
     this.refreshData();
   }
@@ -143,7 +143,7 @@ export class UserManagerComponent implements OnInit {
     this._cacheMapData = new Map();
     this._allChecked = false;
     this._loading = true;
-    this._randomUser.getUsers(this._current, this._pageSize, this._sortField, this._sortValue,'').subscribe((data: any) => {
+    this._randomUser.getUsers(this._current, this._pageSize, this._sortField, this._sortValue, '').subscribe((data: any) => {
       this._loading = false;
       this._total = data.Data.Total;
       this._dataSet = data.Data.Rows;
@@ -155,11 +155,11 @@ export class UserManagerComponent implements OnInit {
 
     getSelectId() {
         const name = [] ;
-        this._cacheMapData.forEach(item =>{
-            if(item.checked){
+        this._cacheMapData.forEach(item => {
+            if (item.checked) {
                 name.push(item.dataItem.Id);
             }
-        })
+        });
         return name;
     }
   ngOnInit() {
@@ -171,7 +171,7 @@ export class UserManagerComponent implements OnInit {
         this._randomUser.getRole().subscribe(  (data) => {
             this._roleDataset = data.Data;
             this._roleInit = data.Data;
-        })
+        });
     }
 
     showUserForComponent(flag?) {
@@ -195,13 +195,13 @@ export class UserManagerComponent implements OnInit {
             }
         });
         subscription.afterClose.subscribe((result) => {
-            if(typeof result === 'object')
+            if (typeof result === 'object')
 
                 this._randomUser.addUser(result).subscribe( response => {
-                    if(response.Status === 200){
+                    if (response.Status === 200) {
                         this.msgSrv.success(response.Message ? response.Message : '添加成功！');
                         this.refreshData();
-                    }else {
+                    } else {
                         this.msgSrv.error(response.Message);
                     }
                 });
@@ -210,13 +210,13 @@ export class UserManagerComponent implements OnInit {
 
     confirmEditUser() {
         const items = this.getSelectId();
-        if( items.length === 1) {
-            let itemId = items.pop();
+        if ( items.length === 1) {
+            const itemId = items.pop();
             let ITEM = {};
-            this._dataSet.forEach( (item) =>{
-                if(item.Id == itemId)
+            this._dataSet.forEach( (item) => {
+                if (item.Id === itemId)
                     ITEM = item;
-            } )
+            } );
 
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',
@@ -227,19 +227,19 @@ export class UserManagerComponent implements OnInit {
                 }
             });
             subscription.afterClose.subscribe(result => {
-                if(typeof result === 'object'){
+                if (typeof result === 'object') {
                     result['Id'] = itemId;
-                    delete result['Password']
+                    delete result['Password'];
                     this._randomUser.updateUser(result).subscribe( response => {
-                        if(response.Status === 200){
+                        if (response.Status === 200) {
                             this.msgSrv.success(response.Message ? response.Message : '修改成功！');
                             this.refreshData();
-                        }else {
+                        } else {
                             this.msgSrv.error(response.Message);
                         }
-                    });}
+                    }); }
             });
-        }else if (items.length > 1 ){
+        } else if (items.length > 1 ) {
             this.msgSrv.warning('不能修改多条记录！');
         } else {
             this.msgSrv.warning('请选中要修改的记录！');

@@ -61,7 +61,7 @@ export class EntityOperationComponent implements OnInit {
             IsKey    : [ null],
             MaxLength     : [50],
             MinLength : [0],
-            Nullable:  [true],
+            Nullable :  [true],
             Precision     : [0],
             SortCode     : [null, [ Validators.required ] ],
             Remark   : [ null],

@@ -36,7 +36,7 @@ export class OrgOperationComponent implements OnInit {
             ParentId : [ null],
         });
         this._tree = this.cacheService.getNone('OrgTree');
-        if(this._data) {
+        if (this._data) {
             this.orgOperForm.controls['Name'].setValue(this._data.Name);
             this.orgOperForm.controls['Code'].setValue(this._data.Code);
             this.orgOperForm.controls['ShortName'].setValue(this._data.ShortName);
@@ -48,16 +48,16 @@ export class OrgOperationComponent implements OnInit {
     }
 
     emitDataOutside() {
-        if(!this.orgOperForm.valid)
+        if (!this.orgOperForm.valid)
             return;
-        if(!this._data) this._data = {};
+        if (!this._data) this._data = {};
         this._data['Name'] =   this.orgOperForm.controls['Name'].value;
         this._data['Code'] =  this.orgOperForm.controls['Code'].value;
         this._data['Comment'] =  this.orgOperForm.controls['Comment'].value;
         this._data['ShortName'] = this.orgOperForm.controls['ShortName'].value;
         this._data['Order'] = this.orgOperForm.controls['Order'].value;
         this._data['ParentId'] = this._parentId;
-        if(!this._parentId)
+        if (!this._parentId)
             this._data['ParentId'] = APIResource.AppPlatCustomerId;
         this.modal.destroy(this._data);
     }

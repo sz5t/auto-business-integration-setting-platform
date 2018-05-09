@@ -19,7 +19,7 @@ export class ResourceTypeService {
 
     deleteType(name?) {
         const ids = name.join(',');
-        if( ids.length > 0 ) {
+        if ( ids.length > 0 ) {
             return this.http.deleteProj(this.ResourceTypeUrl, { _ids: ids});
         }
     }
@@ -54,8 +54,8 @@ export class EntityProDefService {
 
     deleteEntity(name?) {
         const ids = name.join(',');
-        if( ids.length >0 ) {
-            return this.http.deleteProj(this.EntityProDefUrl,{_ids:ids});
+        if ( ids.length > 0 ) {
+            return this.http.deleteProj(this.EntityProDefUrl, {_ids: ids});
         }
     }
 
@@ -92,7 +92,7 @@ export class EntityProDefService {
     ]
 })
 export class DataManagerComponent implements OnInit {
-    //region
+    // region
     _tallChecked = false;
     _tindeterminate = false;
     _tcurrent = 1;
@@ -104,9 +104,9 @@ export class DataManagerComponent implements OnInit {
     _tsortField = 'CreateTime';
     _tcacheMapData;
     _tparentid = 'XXX';
-//endregion
+// endregion
 
-    //region
+    // region
     _eallChecked = false;
     _eindeterminate = false;
     _ecurrent = 1;
@@ -120,15 +120,15 @@ export class DataManagerComponent implements OnInit {
     _eeditCache = {};
 
     shared;
-    //endregion
+    // endregion
 
-//region  基本操作
+// region  基本操作
     _tcheckAll() {
         this._tdataSet.forEach(item => item.checked = this._tallChecked);
-        this._tcacheMapData.forEach( mpa => { mpa.checked = this._tallChecked});
+        this._tcacheMapData.forEach( mpa => { mpa.checked = this._tallChecked; });
     }
 
-    tselectRow(data?){
+    tselectRow(data?) {
         this._tdataSet.forEach( item => {
             item.selected = false;
         });
@@ -140,10 +140,10 @@ export class DataManagerComponent implements OnInit {
 
     _echeckAll() {
         this._edataSet.forEach(item => item.checked = this._eallChecked);
-        this._ecacheMapData.forEach( mpa =>{mpa.checked = this._eallChecked});
+        this._ecacheMapData.forEach( mpa => {mpa.checked = this._eallChecked; });
     }
 
-    eselectRow(data?){
+    eselectRow(data?) {
         this._edataSet.forEach( item => {
             item.selected = false;
         });
@@ -179,8 +179,8 @@ export class DataManagerComponent implements OnInit {
         this.refreshEntityProDef();
     }
 
-    refreshResourceType(reset = false){
-        if( reset ){
+    refreshResourceType(reset = false) {
+        if ( reset ) {
             this._tcurrent = 1;
         }
         this._tcacheMapData = new Map();
@@ -196,8 +196,8 @@ export class DataManagerComponent implements OnInit {
         } );
     }
 
-    refreshEntityProDef(parentId?: string, reset = false){
-        if( reset ){
+    refreshEntityProDef(parentId?: string, reset = false) {
+        if ( reset ) {
             this._ecurrent = 1;
         }
         this._ecacheMapData = new Map();
@@ -225,80 +225,79 @@ export class DataManagerComponent implements OnInit {
 
     tdelete(event?) {
         const name = this.gettSelectId();
-        if(name.length >= 1) {
+        if (name.length >= 1) {
             this.resourceType.deleteType(name).subscribe(response => {
                 if (response.Status === 200) {
                     this.msgSrv.success(response.Message);
-                    name.forEach( na =>{
+                    name.forEach( na => {
                         this._tcacheMapData.delete(na);
-                    })
+                    });
                     this.refreshResourceType();
                 } else {
                     this.msgSrv.error(response.Message);
                 }
             });
-        }else {
+        } else {
             this.msgSrv.success('请选中要删除的数据！');
         }
     }
 
-    getText(flag)
-    {
-        return flag?'是':'否';
+    getText(flag) {
+        return flag ? '是' : '否';
     }
 
-    edelete(){
+    edelete() {
         const name = this.geteSelectId();
-        if(name.length >= 1) {
+        if (name.length >= 1) {
             this.entityProDef.deleteEntity(name).subscribe(response => {
                 if (response.Status === 200) {
                     this.msgSrv.success(response.Message);
-                    name.forEach( na =>{
+                    name.forEach( na => {
                         this._tcacheMapData.delete(na);
-                    })
+                    });
                     this.erefresh();
                 } else {
                     this.msgSrv.error(response.Message);
                 }
             });
-        }else {
+        } else {
             this.msgSrv.success('请选中要删除的数据！');
         }
     }
 
     gettSelectId() {
         const name = [] ;
-        this._tcacheMapData.forEach(item =>{
-            if(item.checked){
+        this._tcacheMapData.forEach(item => {
+            if (item.checked) {
                 name.push(item.dataItem.Id);
             }
-        })
+        });
         return name;
     }
 
     geteSelectId() {
         const name = [] ;
-        this._ecacheMapData.forEach(item =>{
-            if(item.checked){
+        this._ecacheMapData.forEach(item => {
+            if (item.checked) {
                 name.push(item.dataItem.Id);
             }
-        })
+        });
         return name;
     }
 
     getShared(data?) {
         return this.shared.get(data);
     }
-    //endregion
+    // endregion
 
-//region 类型操作
+// region 类型操作
     showTypeForComponent(flag?) {
         switch (flag) {
             case 'Add':
-                this.confirmAddType()
+                this.confirmAddType();
                 break;
             case 'Edit':
-                this.confirmEditType()
+                this.confirmEditType();
                 break;
         }
     }
@@ -313,13 +312,13 @@ export class DataManagerComponent implements OnInit {
             }
         });
         subscription.afterClose.subscribe((result) => {
-            if(typeof result === 'object')
+            if (typeof result === 'object')
 
                 this.resourceType.addType(result).subscribe( response => {
-                    if(response.Status === 200){
+                    if (response.Status === 200) {
                         this.msgSrv.success(response.Message ? response.Message : '添加成功！');
                         this.trefresh();
-                    }else {
+                    } else {
                         this.msgSrv.error(response.Message);
                     }
                 });
@@ -328,10 +327,10 @@ export class DataManagerComponent implements OnInit {
 
     confirmEditType() {
         const items = this.gettSelectId();
-        if( items.length === 1) {
-            let itemId = items.pop();
+        if ( items.length === 1) {
+            const itemId = items.pop();
             let ITEM = {};
-            this._tdataSet.forEach( (item) =>{if(item.Id == itemId) ITEM = item;} )
+            this._tdataSet.forEach( (item) => {if (item.Id == itemId) ITEM = item; } );
 
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',
@@ -342,35 +341,35 @@ export class DataManagerComponent implements OnInit {
                 }
             });
             subscription.afterClose.subscribe(result => {
-                if(typeof result === 'object'){
+                if (typeof result === 'object') {
                     result['Id'] = itemId;
                     this.resourceType.updateType(result).subscribe( response => {
-                        if(response.Status === 200){
+                        if (response.Status === 200) {
                             this.msgSrv.success(response.Message ? response.Message : '修改成功！');
                             this.trefresh();
-                        }else {
+                        } else {
                             this.msgSrv.error(response.Message);
                         }
-                    });}
+                    }); }
             });
-        }else if (items.length > 1 ){
+        } else if (items.length > 1 ) {
             this.msgSrv.warning('不能修改多条记录！');
         } else {
             this.msgSrv.warning('请选中要修改的记录！');
         }
     }
 
-//endregion
+// endregion
 
-//region 字段操作
+// region 字段操作
     showEntityForComponent(flag?) {
 
         switch (flag) {
             case 'Add':
-                this.confirmAddEntity()
+                this.confirmAddEntity();
                 break;
             case 'Edit':
-                this.confirmEditEntity()
+                this.confirmEditEntity();
                 break;
         }
     }
@@ -385,8 +384,8 @@ export class DataManagerComponent implements OnInit {
             }
         });
         subscription.afterClose.subscribe((result) => {
-            if(typeof result === 'object')
-                if(this._tparentid) {
+            if (typeof result === 'object')
+                if (this._tparentid) {
                     result['OwnerId'] = this._tparentid;
                     this.entityProDef.addEntity(result).subscribe(response => {
                         if (response.Status === 200) {
@@ -396,8 +395,7 @@ export class DataManagerComponent implements OnInit {
                             this.msgSrv.error(response.Message);
                         }
                     });
-                }
-                else{
+                } else {
                     this.msgSrv.error('没有选中字段所属的表名称！');
                 }
         });
@@ -405,10 +403,10 @@ export class DataManagerComponent implements OnInit {
 
     confirmEditEntity() {
         const items = this.geteSelectId();
-        if( items.length === 1) {
-            let itemId = items.pop();
-            let ITEM={};
-            this._edataSet.forEach( (item) => {if( item.Id == itemId ) ITEM = item;} )
+        if ( items.length === 1) {
+            const itemId = items.pop();
+            let ITEM = {};
+            this._edataSet.forEach( (item) => {if ( item.Id === itemId ) ITEM = item; } );
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',
                 nzContent        : EntityOperationComponent,
@@ -418,22 +416,22 @@ export class DataManagerComponent implements OnInit {
                 }
             });
             subscription.afterClose.subscribe(result => {
-                if(typeof result === 'object'){
+                if (typeof result === 'object') {
                     result['Id'] = itemId;
                     this.entityProDef.updateEntity(result).subscribe( response => {
-                        if(response.Status === 200){
+                        if (response.Status === 200) {
                             this.msgSrv.success(response.Message ? response.Message : '修改成功！');
                             this.erefresh();
-                        }else {
+                        } else {
                             this.msgSrv.error(response.Message);
                         }
-                    });}
+                    }); }
             });
-        }else if (items.length  > 1 ){
+        } else if (items.length  > 1 ) {
             this.msgSrv.warning('不能修改多条记录！');
         } else {
             this.msgSrv.warning('请选中要修改的记录！');
         }
     }
-//endregion
+// endregion
 }

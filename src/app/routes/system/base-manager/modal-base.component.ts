@@ -10,7 +10,7 @@ import {SysResource} from '@core/utility/sys-resource';
   selector: 'app-modal-base',
   templateUrl: './modal-base.component.html'
 })
-export class ModalBaseComponent implements OnInit{
+export class ModalBaseComponent implements OnInit {
 
     data = SysResource.data;
     isVisible = false;
@@ -40,8 +40,7 @@ export class ModalBaseComponent implements OnInit{
         this.isVisible = false;
     }
 
-    copy(group?:any, item?: any)
-    {
+    copy(group?: any, item?: any) {
         this.iconFlag = group.prefix + item.k;
         console.log(this.iconFlag);
 
@@ -56,7 +55,7 @@ export class ModalBaseComponent implements OnInit{
   }
   emitDataOutside() {
 
-    if(!this.validateForm.valid)
+    if (!this.validateForm.valid)
       return;
     const data = {
       Children: null,
@@ -98,12 +97,12 @@ export class ModalBaseComponent implements OnInit{
         Order    : [null, [ Validators.min(0)]],
       });
         this._tree = this.cacheService.getNone('ModuleTree');
-        if(this._name !== '') {
+        if (this._name !== '') {
           this.validateForm.controls['Name'].setValue(this._name.Name);
           this.validateForm.controls['Group'].setValue(JSON.parse(this._name.ConfigData).group);
           this.validateForm.controls['Link'].setValue(JSON.parse(this._name.ConfigData).link);
           // this.validateForm.controls['Icon'].setValue(JSON.parse(this._name.ConfigData).icon);
-            this.iconFlag = JSON.parse(this._name.ConfigData).icon
+            this.iconFlag = JSON.parse(this._name.ConfigData).icon;
           this.validateForm.controls['Order'].setValue(this._name.Order);
           this.validateForm.controls['Remark'].setValue(this._name.Remark);
           this.values = JSON.parse(this._name.ConfigData).ids;
@@ -116,19 +115,17 @@ export class ModalBaseComponent implements OnInit{
     return this.validateForm.controls[ name ];
   }
 
-  public onChanges(values: any)
-  {
+  public onChanges(values: any) {
     this._parentId = values.pop();
   }
 
-  public onSelectionChange(options: any)
-  {
+  public onSelectionChange(options: any) {
     this._ids = [];
     options.forEach( item => {
       this._ids.push({
         label: item.label,
         value: item.value
-      })
-    })
+      });
+    });
   }
 }
