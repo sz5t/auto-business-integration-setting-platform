@@ -267,6 +267,7 @@ export class SingleTableComponent implements OnInit {
                       },
                       {
                         title: '名称', field: 'CaseName', width: 80,
+                        showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
                           field: 'CaseName',
@@ -280,6 +281,7 @@ export class SingleTableComponent implements OnInit {
                       },
                       {
                         title: '类别', field: 'TypeName', width: 80, hidden: false,
+                        showFilter: true, showSort: true,
                         editor: {
                           type: 'select',
                           field: 'Type',
@@ -288,7 +290,7 @@ export class SingleTableComponent implements OnInit {
                             'labelSize': '6',
                             'controlSize': '18',
                             'inputType': 'submit',
-                            'name': 'sex',
+                            'name': 'Type',
                             'label': 'Type',
                             'notFoundContent': '',
                             'selectModel': false,
@@ -298,7 +300,7 @@ export class SingleTableComponent implements OnInit {
                             'size': 'default',
                             'clear': true,
                             'width': '130px',
-                            'dataSet': 'moduleDataSet',
+                            'dataSet': 'TypeName',
                             'options': [
                               {
                                 'label': '表',
@@ -344,6 +346,7 @@ export class SingleTableComponent implements OnInit {
                       },
                       {
                         title: '级别', field: 'Level', width: 80, hidden: false,
+                        showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
                           field: 'Level',
@@ -956,11 +959,25 @@ export class SingleTableComponent implements OnInit {
                       {
                         'name': 'showDialogPage', 'class': 'editable-add-btn', 'text': '弹出页面',
                         'type': 'showLayout'
-                      }
+                      },
+                      {
+                        'name': 'btnGroup', 'text': '分组操作', 'type': 'group',
+                        'group': [
+                          {
+                            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                          },
+                          {
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
+                          },
+                          {
+                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改'
+                          },
+                        ]
+                      },
                     ],
                     'dataSet': [
                       {
-                        'name': 'moduleDataSet',
+                        'name': 'TypeName',
                         'ajaxConfig': 'SinoForce.User.AppUser',
                         'ajaxType': 'get',
                         'params': [],
@@ -971,9 +988,14 @@ export class SingleTableComponent implements OnInit {
                             'name': 'value'
                           },
                           {
-                            'label': '模块',
+                            'label': '',
                             'field': 'Name',
                             'name': 'label'
+                          },
+                          {
+                            'label': '',
+                            'field': 'Name',
+                            'name': 'text'
                           }
                         ]
                       }

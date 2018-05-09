@@ -49,6 +49,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     // region: 表格操作
     allChecked = false;
     indeterminate = false;
+    _sortName;
+    _sortType = true;
+    _columnFilterList = [];
     // endregion
 
     // region: 业务对象
@@ -111,6 +114,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                     }
                                 });
                                 dataSetObjs.push(setObj);
+
                             });
                             this.dataSet[this.config.dataSet[i].name] = dataSetObjs;
                         } else {
@@ -141,11 +145,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this._selectRow = {};
         this.pageIndex = pageIndex;
         this.loading = true;
+        this.allChecked = false;
+        this.checkedCount = 0;
         const url = this._buildURL(this.config.ajaxConfig.url);
         const params = {
             ...this._buildParameters(this.config.ajaxConfig.params),
             ...this._buildPaging(),
-            ...this._buildFilter(this.config.ajaxConfig.filter)
+            ...this._buildFilter(this.config.ajaxConfig.filter),
+            ...this._buildSort(),
+            ...this._buildColumnFilter()
         };
         (async () => {
             const loadData = await this._load(url, params);
@@ -234,7 +242,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     private _buildPaging() {
         const params = {};
-        if (this.config['nzIsPagination']) {
+        if (this.config['pagination']) {
             params['_page'] = this.pageIndex;
             this.pageSize = this.pageSize ? this.pageSize : this.config.pageSize;
             params['_rows'] = this.pageSize;
@@ -244,6 +252,25 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     private _isUrlString(url) {
         return Object.prototype.toString.call(url) === '[object String]';
+    }
+
+    private _buildSort() {
+        const sortObj = {};
+        if (this._sortName && this._sortType) {
+            sortObj['_sort'] = this._sortName;
+            sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
+        }
+        return sortObj;
+    }
+
+    private _buildColumnFilter() {
+        const filterParams = {};
+        if (this._columnFilterList && this._columnFilterList.length > 0) {
+            this._columnFilterList.map(filter => {
+                filterParams[filter.field] = `in(\'${filter.value}\')`;
+            });
+        }
+        return filterParams;
     }
 
     private _updateEditCacheByLoad(dataList) {
@@ -275,6 +302,25 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this.pageIndex = 1;
         }
         this.load(this.pageIndex);
+    }
+
+    sort(sort: { key: string, value: string }) {
+        this._sortName = sort.key;
+        this._sortType = !this._sortType;
+        this.load();
+    }
+
+    columnFilter(field: string, values: string[] ) {
+        const filter = {};
+        if (values.length > 0 && field) {
+            filter['field'] = field;
+            filter['value'] = values.join(',');
+            this._columnFilterList.push(filter);
+        } else {
+            this._columnFilterList = [];
+        }
+        
+        this.load();
     }
 
     // endregion
@@ -658,6 +704,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
         
         return fontColor;
+    }
+
+    log($event) {
+
     }
     // endregion
 }
