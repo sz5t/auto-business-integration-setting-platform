@@ -38,7 +38,7 @@
             (nzCheckedChange)="checkAll($event)"
             >
             </th>
-            <ng-container *ngFor="let col of config.columns">
+            <ng-template ngFor let-col [ngForOf]="config.columns">
                 <th 
                     [nzShowSort]="col.showSort" 
                     [nzShowFilter]="col.showFilter" 
@@ -49,19 +49,19 @@
                 >
                     <span>{{col.title}}</span>
                 </th>
-            </ng-container>
+            </ng-template>
         </tr>
     </thead>
     <tbody>
-        <ng-container *ngFor="let data of nzTable.data">
+        <ng-template ngFor let-data [ngForOf]="nzTable.data">
             <tr (click)="selectRow(data, $event)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
                 <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
                 </td>
-                <ng-container *ngFor="let col of config.columns">
+                <ng-template ngFor let-col [ngForOf]="config.columns">
                     <td *ngIf="!col.hidden">
                         <ng-container *ngIf="col.editor">
                             <div *ngIf="!editCache[data.key].edit">
-                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{data[col.field]}}</span>
+                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                             </div>
                             <ng-container [bsnData]="tempParameters" [rowData]="data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                 CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options" [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field]}"
@@ -69,13 +69,13 @@
                             </ng-container>
                         </ng-container>
                         <ng-container *ngIf="!col.editor">
-                            <span>{{data[col.field]}}</span>
+                            <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{data[col.field]}}</span>
                         </ng-container>
 
                     </td>
-                </ng-container>
+                </ng-template>
             </tr>
-        </ng-container>
+        </ng-template>
 
     </tbody>
     <ng-template #footer>

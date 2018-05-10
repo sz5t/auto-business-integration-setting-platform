@@ -359,7 +359,7 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '创建时间', field: 'CreateTime', width: 80, hidden: false,
+                        title: '创建时间', field: 'CreateTime', width: 80, hidden: false, dataType: 'date',
                         editor: {
                           type: 'input',
                           pipe: 'datetime',
@@ -958,7 +958,15 @@ export class SingleTableComponent implements OnInit {
                       },
                       {
                         'name': 'showDialogPage', 'class': 'editable-add-btn', 'text': '弹出页面',
-                        'type': 'showLayout'
+                        'type': 'showLayout', 'dialogConfig': {
+                          'title': '',
+                          'layoutName': 'singleTable',
+                          'width': 800,
+                          'buttons': [
+                              { 'name': 'ok1', 'text': '确定', 'class': 'editable-add-btn', 'type': 'primary'},
+                              { 'name': 'close', 'text': '关闭' }
+                            ]
+                        }
                       },
                       {
                         'name': 'btnGroup', 'text': '分组操作', 'type': 'group',

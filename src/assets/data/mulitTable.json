@@ -20,8 +20,8 @@
                                     "viewId": "parentTable",
                                     "component": "bsnTable",
                                     "keyId": "Id",
-                                    "nzIsPagination": true,
-                                    "nzShowTotal": true,
+                                    "pagination": true,
+                                    "showTotal": true,
                                     "pageSize": 5,
                                     "pageSizeOptions": [
                                         5,
@@ -32,7 +32,7 @@
                                         50
                                     ],
                                     "ajaxConfig": {
-                                        "url": "SinoForce.AppData.ShowCase",
+                                        "url": "SinoForce.AppData.GetCase",
                                         "ajaxType": "get",
                                         "params": [
                                             {
@@ -531,8 +531,8 @@
                                     "viewId": "childTable",
                                     "component": "bsnTable",
                                     "keyId": "Id",
-                                    "nzIsPagination": true,
-                                    "nzShowTotal": true,
+                                    "pagination": true,
+                                    "showTotal": true,
                                     "pageSize": 5,
                                     "pageSizeOptions": [
                                         5,
@@ -543,7 +543,7 @@
                                         50
                                     ],
                                     "ajaxConfig": {
-                                        "url": "SinoForce.AppData.ShowCase",
+                                        "url": "SinoForce.AppData.GetCase",
                                         "ajaxType": "get",
                                         "params": [
                                             {

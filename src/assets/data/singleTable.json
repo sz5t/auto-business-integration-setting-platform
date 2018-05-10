@@ -225,8 +225,8 @@
                                     "component": "bsnTable",
                                     "info": true,
                                     "keyId": "Id",
-                                    "nzIsPagination": true,
-                                    "nzShowTotal": true,
+                                    "pagination": true,
+                                    "showTotal": true,
                                     "pageSize": 5,
                                     "pageSizeOptions": [
                                         5,
@@ -316,7 +316,6 @@
                                                     "size": "default",
                                                     "clear": true,
                                                     "width": "130px",
-                                                    "dataSet": "moduleDataSet",
                                                     "options": [
                                                         {
                                                             "label": "表",
@@ -465,162 +464,6 @@
                                         }
                                     ],
                                     "toolbar": [
-                                        {
-                                            "name": "refresh",
-                                            "class": "editable-add-btn",
-                                            "text": "刷新"
-                                        },
-                                        {
-                                            "name": "addRow",
-                                            "class": "editable-add-btn",
-                                            "text": "新增"
-                                        },
-                                        {
-                                            "name": "updateRow",
-                                            "class": "editable-add-btn",
-                                            "text": "修改"
-                                        },
-                                        {
-                                            "name": "deleteRow",
-                                            "class": "editable-add-btn",
-                                            "text": "删除",
-                                            "ajaxConfig": {
-                                                "delete": [
-                                                    {
-                                                        "actionName": "delete",
-                                                        "url": "SinoForce.AppData.ShowCase",
-                                                        "ajaxType": "delete"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        {
-                                            "name": "saveRow",
-                                            "class": "editable-add-btn",
-                                            "text": "保存",
-                                            "type": "method/action",
-                                            "ajaxConfig": {
-                                                "post": [
-                                                    {
-                                                        "actionName": "add",
-                                                        "url": "SinoForce.AppData.ShowCase",
-                                                        "ajaxType": "post",
-                                                        "params": [
-                                                            {
-                                                                "name": "CaseName",
-                                                                "type": "componentValue",
-                                                                "valueName": "CaseName",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "CaseCount",
-                                                                "type": "componentValue",
-                                                                "valueName": "CaseCount",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "Enable",
-                                                                "type": "componentValue",
-                                                                "valueName": "Enable",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "Level",
-                                                                "type": "componentValue",
-                                                                "valueName": "Level",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "ParentId",
-                                                                "type": "componentValue",
-                                                                "valueName": "ParentId",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "Remark",
-                                                                "type": "componentValue",
-                                                                "valueName": "Remark",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "Type",
-                                                                "type": "componentValue",
-                                                                "valueName": "Type",
-                                                                "value": ""
-                                                            }
-                                                        ],
-                                                        "output": [
-                                                            {
-                                                                "name": "_id",
-                                                                "type": "",
-                                                                "dataName": "Id"
-                                                            }
-                                                        ]
-                                                    }
-                                                ],
-                                                "put": [
-                                                    {
-                                                        "url": "SinoForce.AppData.ShowCase",
-                                                        "ajaxType": "put",
-                                                        "params": [
-                                                            {
-                                                                "name": "Id",
-                                                                "type": "componentValue",
-                                                                "valueName": "Id",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "CaseName",
-                                                                "type": "componentValue",
-                                                                "valueName": "CaseName",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "CaseCount",
-                                                                "type": "componentValue",
-                                                                "valueName": "CaseCount",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "Enable",
-                                                                "type": "componentValue",
-                                                                "valueName": "Enable",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "Level",
-                                                                "type": "componentValue",
-                                                                "valueName": "Level",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "ParentId",
-                                                                "type": "componentValue",
-                                                                "valueName": "ParentId",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "Remark",
-                                                                "type": "componentValue",
-                                                                "valueName": "Remark",
-                                                                "value": ""
-                                                            },
-                                                            {
-                                                                "name": "Type",
-                                                                "type": "componentValue",
-                                                                "valueName": "Type",
-                                                                "value": ""
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        {
-                                            "name": "cancelRow",
-                                            "class": "editable-add-btn",
-                                            "text": "取消"
-                                        },
                                         {
                                             "name": "addForm",
                                             "class": "editable-add-btn",
@@ -1238,26 +1081,6 @@
                                             "class": "editable-add-btn",
                                             "text": "弹出页面",
                                             "type": "showLayout"
-                                        }
-                                    ],
-                                    "dataSet": [
-                                        {
-                                            "name": "moduleDataSet",
-                                            "ajaxConfig": "SinoForce.User.AppUser",
-                                            "ajaxType": "get",
-                                            "params": [],
-                                            "fields": [
-                                                {
-                                                    "label": "ID",
-                                                    "field": "Id",
-                                                    "name": "value"
-                                                },
-                                                {
-                                                    "label": "模块",
-                                                    "field": "Name",
-                                                    "name": "label"
-                                                }
-                                            ]
                                         }
                                     ]
                                 },

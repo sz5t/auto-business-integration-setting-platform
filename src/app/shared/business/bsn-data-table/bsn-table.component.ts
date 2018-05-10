@@ -52,6 +52,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _sortName;
     _sortType = true;
     _columnFilterList = [];
+    _focusId;
     // endregion
 
     // region: 业务对象
@@ -142,7 +143,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     // region: 功能实现
     load(pageIndex = 1) {
-        this._selectRow = {};
+        // this._selectRow = {};
         this.pageIndex = pageIndex;
         this.loading = true;
         this.allChecked = false;
@@ -153,7 +154,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             ...this._buildPaging(),
             ...this._buildFilter(this.config.ajaxConfig.filter),
             ...this._buildSort(),
-            ...this._buildColumnFilter()
+            ...this._buildColumnFilter(),
+            ...this._buildFocusId()
         };
         (async () => {
             const loadData = await this._load(url, params);
@@ -244,7 +246,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const params = {};
         if (this.config['pagination']) {
             params['_page'] = this.pageIndex;
-            this.pageSize = this.pageSize ? this.pageSize : this.config.pageSize;
+            this.pageSize = this.config.pageSize ? this.config.pageSize : this.pageSize;
             params['_rows'] = this.pageSize;
         }
         return params;
@@ -261,6 +263,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
         }
         return sortObj;
+    }
+
+    private _buildFocusId() {
+        const focusParams = {};
+        // 服务器端待解决
+        // if (this._selectRow && this._selectRow['Id']) {
+        //     focusParams['_focusedId'] = this._selectRow['Id'];
+        // }
+        return focusParams;
     }
 
     private _buildColumnFilter() {
@@ -646,8 +657,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             });
 
         }
-
-
     }
 
     private _resetForm(comp: FormResolverComponent) {
@@ -656,21 +665,56 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
 
     private showLayout(dialog) {
-        const modal = this.modalService.create({
-            nzTitle: '',
-            nzContent: dialog.forms ? component['form'] : dialog.component['layout'],
-            nzComponentParams: {
-                config: dialog
-            },
-            nzFooter: [
-                {
-                    label: dialog.title ? dialog.title : '',
-                    onClick: (componentInstance) => {
-                        console.log('component click');
-                    }
-                }
-            ]
+        const footer = [];
+        this._http.getLocalData(dialog.layoutName).subscribe(data => {
+            const modal = this.modalService.create({
+                nzTitle: dialog.title,
+                nzWidth: dialog.width,
+                nzContent: component['layout'],
+                nzComponentParams: {
+                    config: data
+                },
+                nzFooter: footer
+            });
+            if (dialog.buttons) {
+                dialog.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['show'] = true;
+                    button['onClick'] = (componentInstance) => {
+                        if (btn['name'] === 'save') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(btn);
+                                if (result) {
+                                    modal.close();
+                                    // todo: 操作完成当前数据后需要定位
+                                    this.load();
+                                }
+                            })();
+                        } else if (btn['name'] === 'saveAndKeep') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(btn);
+                                if (result) {
+                                    // todo: 操作完成当前数据后需要定位
+                                    this.load();
+                                }
+                            })();
+                        } else if (btn['name'] === 'close') {
+                            modal.close();
+                        } else if (btn['name'] === 'reset') {
+                            this._resetForm(componentInstance);
+                        } else if (btn['name'] === 'ok') {
+                            // 
+                        }
+    
+                    };
+                    footer.push(button);
+                });
+    
+            }
         });
+        
     }
     // endregion
 
@@ -714,4 +758,5 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     }
     // endregion
+    
 }
