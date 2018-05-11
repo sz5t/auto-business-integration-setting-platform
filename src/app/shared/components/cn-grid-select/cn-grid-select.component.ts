@@ -23,7 +23,6 @@ export class CnGridSelectComponent implements OnInit {
   async ngOnInit() {
     if (this.dataSet) {
       // 加载数据集
-      console.log(this.dataSet);
       this._options = this.dataSet;
     } else if (this.config.ajaxConfig) {
       // 异步加载options
@@ -133,7 +132,6 @@ export class CnGridSelectComponent implements OnInit {
   }
 
   valueChange(name?) {
-    console.log(name);
     if (name) {
       this.value.data = name.value;
       this.updateValue.emit(this.value);

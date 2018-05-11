@@ -1,12 +1,15 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ElementRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
-
+declare let CodeMirror: any;
 @Component({
   selector: 'cn-single-table',
   templateUrl: './single-table.component.html',
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: ['./single-table.css']
 })
-export class SingleTableComponent implements OnInit {
+export class SingleTableComponent implements OnInit , AfterViewInit {
+  @ViewChild('CodeMirror') codeEditor: ElementRef;
   config = {
     rows: [
       {
@@ -241,16 +244,6 @@ export class SingleTableComponent implements OnInit {
                         }
                       ]
                     },
-                    'componentType': {
-                      'parent': true,
-                      'child': false,
-                      'own': true
-                    },
-                    'relations': [{
-                      'relationViewId': 'singleTable',
-                      'relationSendContent': [],
-                      'relationReceiveContent': []
-                    }],
                     'columns': [
                       {
                         title: 'Id', field: 'Id', width: 80, hidden: true,
@@ -273,8 +266,6 @@ export class SingleTableComponent implements OnInit {
                           field: 'CaseName',
                           options: {
                             'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -295,20 +286,20 @@ export class SingleTableComponent implements OnInit {
                             'notFoundContent': '',
                             'selectModel': false,
                             'showSearch': true,
-                            'placeholder': '-请选择-',
+                            'placeholder': '-请选择数据-',
                             'disabled': false,
                             'size': 'default',
                             'clear': true,
-                            'width': '130px',
+                            'width': '200px',
                             'dataSet': 'TypeName',
                             'options': [
                               {
-                                'label': '表',
+                                'label': '表格',
                                 'value': '1',
                                 'disabled': false
                               },
                               {
-                                'label': '树',
+                                'label': '树组件',
                                 'value': '2',
                                 'disabled': false
                               },
@@ -388,7 +379,7 @@ export class SingleTableComponent implements OnInit {
                       {
                         title: '状态', field: 'EnableText', width: 80, hidden: false,
                         formatter: [
-                          { 'value': '启用', 'bgcolor': '', 'fontcolor': 'text-green', 'valueas': '启用' },
+                          { 'value': '启用', 'bgcolor': '', 'fontcolor': 'text-blue', 'valueas': '启用' },
                           { 'value': '禁用', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '禁用' }
                         ],
                         editor: {
@@ -424,6 +415,16 @@ export class SingleTableComponent implements OnInit {
                         }
                       }
                     ],
+                    'componentType': {
+                      'parent': true,
+                      'child': false,
+                      'own': true
+                    },
+                    'relations': [{
+                      'relationViewId': 'singleTable',
+                      'relationSendContent': [],
+                      'relationReceiveContent': []
+                    }],
                     'toolbar': [
                       {
                         'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
@@ -496,7 +497,7 @@ export class SingleTableComponent implements OnInit {
                           'keyId': 'Id',
                           'layout': 'horizontal',
                           'title': '新增数据',
-                          'width': '600',
+                          'width': '800',
                           'isCard': true,
                           'componentType': {
                             'parent': false,
@@ -546,39 +547,46 @@ export class SingleTableComponent implements OnInit {
                                     'inputType': 'submit',
                                     'name': 'Type',
                                     'label': '类别Id',
+                                    'labelName': 'Name',
+                                    'valueName': 'Id',
                                     'notFoundContent': '',
                                     'selectModel': false,
                                     'showSearch': true,
                                     'placeholder': '--请选择--',
                                     'disabled': false,
                                     'size': 'default',
-                                    'options': [
-                                      {
-                                        'label': '表',
-                                        'value': '1',
-                                        'disabled': false
-                                      },
-                                      {
-                                        'label': '树',
-                                        'value': '2',
-                                        'disabled': false
-                                      },
-                                      {
-                                        'label': '树表',
-                                        'value': '3',
-                                        'disabled': false
-                                      },
-                                      {
-                                        'label': '表单',
-                                        'value': '4',
-                                        'disabled': false
-                                      },
-                                      {
-                                        'label': '标签页',
-                                        'value': '5',
-                                        'disabled': false
-                                      }
-                                    ],
+                                    'ajaxConfig': {
+                                      'url': 'SinoForce.User.AppUser',
+                                      'ajaxType': 'get',
+                                      'params': []
+                                    },
+                                    // 'options': [
+                                    //   {
+                                    //     'label': '表',
+                                    //     'value': '1',
+                                    //     'disabled': false
+                                    //   },
+                                    //   {
+                                    //     'label': '树',
+                                    //     'value': '2',
+                                    //     'disabled': false
+                                    //   },
+                                    //   {
+                                    //     'label': '树表',
+                                    //     'value': '3',
+                                    //     'disabled': false
+                                    //   },
+                                    //   {
+                                    //     'label': '表单',
+                                    //     'value': '4',
+                                    //     'disabled': false
+                                    //   },
+                                    //   {
+                                    //     'label': '标签页',
+                                    //     'value': '5',
+                                    //     'disabled': false
+                                    //   }
+                                    // ],
                                     'layout': 'column',
                                     'span': '24'
                                   }
@@ -605,12 +613,17 @@ export class SingleTableComponent implements OnInit {
                                     'validations': [
                                       {
                                         'validator': 'required',
-                                        'errorMessage': '请输入Case名称'
+                                        'errorMessage': '请输入Case名称!!!!'
                                       },
                                       {
                                         'validator': 'minLength',
                                         'length': '3',
                                         'errorMessage': '请输入最少三个字符'
+                                      },
+                                      {
+                                        'validator': 'maxLength',
+                                        'length': '5',
+                                        'errorMessage': '请输入最5个字符'
                                       }
                                     ]
                                   },
@@ -957,6 +970,94 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
+                        'name': 'batchEditForm', 'class': 'editable-add-btn', 'text': '弹出批量处理表单',
+                        'type': 'showBatchForm',
+                        'dialogConfig': {
+                          'keyId': 'Id',
+                          'title': '批量处理',
+                          'width': '600',
+                          'componentType': {
+                            'parent': false,
+                            'child': false,
+                            'own': true
+                          },
+                          'forms':
+                            [
+                              {
+                                controls: [
+                                  {
+                                    'type': 'select',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'inputType': 'submit',
+                                    'name': 'Enable',
+                                    'label': '状态',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '--请选择--',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'options': [
+                                      {
+                                        'label': '启用',
+                                        'value': true,
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '禁用',
+                                        'value': false,
+                                        'disabled': false
+                                      }
+                                    ],
+                                    'layout': 'column',
+                                    'span': '24'
+                                  },
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
+                                    'type': 'input',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'inputType': 'text',
+                                    'name': 'CaseName',
+                                    'label': '名称',
+                                    'placeholder': '',
+                                    'disabled': false,
+                                    'readonly': false,
+                                    'size': 'default',
+                                    'layout': 'column',
+                                    'span': '24'
+                                  },
+                                ]
+                              },
+                            ],
+                          'buttons':
+                            [
+                              {
+                                'name': 'save', 'text': '保存',
+                                'type': 'primary',
+                                'ajaxConfig': {
+                                  put: [{
+                                    'url': 'SinoForce.AppData.ShowCase',
+                                    'batch': true,
+                                    'params': [
+                                      { name: 'Id', type: 'tempValue', valueName: '_ids', value: ''},
+                                      { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
+                                      { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                    ]
+                                  }]
+                                }
+                              },
+                              { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
+                              { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
+                            ],
+                          'dataList': [],
+                        }
+                      },
+                      {
                         'name': 'showDialogPage', 'class': 'editable-add-btn', 'text': '弹出页面',
                         'type': 'showLayout', 'dialogConfig': {
                           'title': '',
@@ -969,10 +1070,10 @@ export class SingleTableComponent implements OnInit {
                         }
                       },
                       {
-                        'name': 'btnGroup', 'text': '分组操作', 'type': 'group',
+                        'name': 'btnGroup', 'text': ' 分组操作', 'type': 'group', 'icon': 'icon-plus',
                         'group': [
                           {
-                            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                            'name': 'refresh', 'class': 'editable-add-btn', 'text': ' 刷新', 'icon': 'icon-list'
                           },
                           {
                             'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
@@ -1240,10 +1341,38 @@ export class SingleTableComponent implements OnInit {
       */
     ]
   };
-
+  editor;
   constructor(private http: _HttpClient) { }
 
   ngOnInit() { 
   }
 
+  ngAfterViewInit () {
+    this.editor = CodeMirror.fromTextArea(this.codeEditor.nativeElement, {
+      mode: 'application/json',
+      indentWithTabs: true,
+      smartIndent: true,
+      lineNumbers: true,
+      matchBrackets: true,
+      autofocus: true,
+      extraKeys: {'Ctrl-Space': 'autocomplete'},
+      hintOptions: {
+        tables: {
+          users: {name: null, score: null, birthDate: null},
+          countries: {name: null, population: null, size: null}
+        }
+      }
+    });
+  }
+  getValue() {
+    return this.editor.getValue();
+  }
+
+  setValue(data?) {
+    this.editor.setValue(data);
+  }
+
+  create() {
+    this.config = JSON.parse(this.getValue());
+  }
 }

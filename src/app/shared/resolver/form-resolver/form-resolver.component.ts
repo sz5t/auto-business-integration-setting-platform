@@ -94,7 +94,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       });
       controls.push(...items);
     });
-    console.log(controls);
     return controls;
   }
 
@@ -340,6 +339,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
 
   async buttonAction(btn) {
+    debugger;
     let result = false;
     if (this[btn.name] && btn.ajaxConfig) {
       result = await this[btn.name](btn.ajaxConfig);
@@ -350,6 +350,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
     return result;
   }
+
+
 
   async save(ajaxConfig) {
     if (this.form.invalid) {
@@ -372,7 +374,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     let result = false;
     for (let i = 0, len = postConfig.length; i < len; i++) {
       const url = this._buildURL(postConfig[i].url);
-      const body = this._buildParameters(postConfig[i].params);
+      const body = this._buildParameters(postConfig[i].params, postConfig[i].batch ? postConfig[i].batch : false);
       const res = await this._post(url, body);
       if (res && res.Status === 200) {
         result = true;
@@ -385,11 +387,13 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     return result;
   }
 
+
+
   private async put(putConfig) {
     let result = false;
     for (let i = 0, len = putConfig.length; i < len; i++) {
       const url = this._buildURL(putConfig[i].url);
-      const body = this._buildParameters(putConfig[i].params);
+      const body = this._buildParameters(putConfig[i].params, putConfig[i].batch ? putConfig[i].batch : false);
       const res = await this._put(url, body);
       if (res && res.Status === 200) {
         result = true;
@@ -402,9 +406,34 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     return result;
   }
 
-  private _buildParameters(paramsConfig) {
-    const params = {};
-    if (paramsConfig) {
+  private _buildParameters(paramsConfig, isBatch) {
+    let params;
+    if (paramsConfig && isBatch) {
+      params = [];
+      if (this._tempParameters['_ids']) {
+        this._tempParameters['_ids'].map(id => {
+          const p = {};
+          paramsConfig.map(param => {
+            if (param['type'] === 'tempValue') {
+              p[param['name']] = this._tempParameters[param['valueName']];
+            } else if (param['type'] === 'value') {
+              p[param.name] = param.value;
+            } else if (param['type'] === 'GUID') {
+              const fieldIdentity = CommonUtility.uuID(10);
+              p[param.name] = fieldIdentity;
+            } else if (param['type'] === 'componentValue') {
+              p[param.name] = this.value[param.valueName];
+            }
+            if (param['name'] === 'Id') {
+              p[param['name']] = id;
+            }
+
+          });
+          params.push(p);
+        });
+      }
+    } else {
+      params = {};
       paramsConfig.map(param => {
         if (param['type'] === 'tempValue') {
           params[param['name']] = this._tempParameters[param['valueName']];

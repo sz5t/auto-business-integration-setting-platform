@@ -402,7 +402,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         } else if (param.type === 'GUID') {
 
                         } else if (param.type === 'value') {
-                            submitItem[param['name']] = rowData[param['value']];
+                            submitItem[param['name']] = param.value;
                         }
                     });
                     submitData.push(submitItem);
@@ -607,6 +607,68 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     // endregion
 
     // region: 弹出UI
+    private showBatchForm(dialog) {
+        const footer = [];
+        const ids = [];
+        this.dataList.map(item => {
+            if (item.checked) {
+                ids.push(item.Id);
+            }
+        });
+        if (ids.length > 0) {
+            const obj = {
+                _ids: ids
+            };
+            const modal = this.modalService.create({
+                nzTitle: dialog.title,
+                nzWidth: dialog.width,
+                nzContent: component['form'],
+                nzComponentParams: {
+                    config: dialog,
+                    ref: obj
+                },
+                nzFooter: footer
+            });
+    
+            if (dialog.buttons) {
+                dialog.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['onClick'] = (componentInstance) => {
+                        if (btn['name'] === 'save') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(btn);
+                                if (result) {
+                                    modal.close();
+                                    // todo: 操作完成当前数据后需要定位
+                                    this.load();
+                                }
+                            })();
+                        } else if (btn['name'] === 'saveAndKeep') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(btn);
+                                if (result) {
+                                    // todo: 操作完成当前数据后需要定位
+                                    this.load();
+                                }
+                            })();
+                        } else if (btn['name'] === 'close') {
+                            modal.close();
+                        } else if (btn['name'] === 'reset') {
+                            this._resetForm(componentInstance);
+                        }
+    
+                    };
+                    footer.push(button);
+                });
+    
+            }
+        } else {
+            this.message.create('warning', '请先选中需要处理的数据');
+        }
+        
+    }
     private showForm(dialog) {
         const footer = [];
         const obj = {
