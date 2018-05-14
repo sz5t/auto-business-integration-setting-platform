@@ -68,17 +68,18 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
   ngOnChanges() {
     if (this.form) {
-      console.log('load form');
       const controls = Object.keys(this.form.controls);
       const configControls = this.controls.map(item => item.name);
 
       controls
         .filter(control => !configControls.includes(control))
         .forEach(control => this.form.removeControl(control));
+
       configControls
         .filter(control => !controls.includes(control))
         .forEach(name => {
-          const config = this.config.forms.find(control => control.name === name);
+          const config = this.controls.find(control => control.name === name);
+          // const config = this.config.forms.find(control => control.name === name);
           this.form.addControl(name, this.createControl(config));
         });
     }
@@ -339,7 +340,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
 
   async buttonAction(btn) {
-    debugger;
     let result = false;
     if (this[btn.name] && btn.ajaxConfig) {
       result = await this[btn.name](btn.ajaxConfig);
@@ -410,11 +410,13 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     let params;
     if (paramsConfig && isBatch) {
       params = [];
-      if (this._tempParameters['_ids']) {
-        this._tempParameters['_ids'].map(id => {
+      if (this._tempParameters['_checkedItems']) {
+        this._tempParameters['_checkedItems'].map(items => {
           const p = {};
           paramsConfig.map(param => {
-            if (param['type'] === 'tempValue') {
+            if (param['type'] === 'checkedItems') {
+              p[param['name']] = items[param['valueName']];
+            } else if (param['type'] === 'tempValue') {
               p[param['name']] = this._tempParameters[param['valueName']];
             } else if (param['type'] === 'value') {
               p[param.name] = param.value;
@@ -424,10 +426,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             } else if (param['type'] === 'componentValue') {
               p[param.name] = this.value[param.valueName];
             }
-            if (param['name'] === 'Id') {
-              p[param['name']] = id;
-            }
-
           });
           params.push(p);
         });

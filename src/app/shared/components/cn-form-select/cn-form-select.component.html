@@ -6,7 +6,7 @@
        formControlName="{{config.name}}"
        [nzSize]="config.size"
        [nzPlaceHolder]="config.placeholder">
-       <nz-option *ngFor="let option of config.options"
+       <nz-option *ngFor="let option of _options"
                   nzLabel="{{option.label}}"
                   nzValue="{{option.value}}"
        ></nz-option>

@@ -33,7 +33,6 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
-    console.log(this.config);
     if (this.config) {
       this.createBsnComponent();
     }
@@ -41,9 +40,11 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    // if (this.componentRef) {
-    //   this.createBsnComponent();
-    // }
+    console.log('ngchange', this.config, this.componentRef);
+    if (this.componentRef && this.config) {
+      this.container.clear();
+      this.createBsnComponent();
+    }
   }
 
   createBsnComponent() {

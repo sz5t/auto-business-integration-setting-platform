@@ -108,8 +108,8 @@ export class TreeAndMultiTableComponent implements OnInit {
                               'viewId': 'tree_and_mulit_master',
                               'component': 'bsnTable',
                               'keyId': 'Id',
-                              'nzIsPagination': true, // 是否分页
-                              'nzShowTotal': true, // 是否显示总数据量
+                              'pagination': true, // 是否分页
+                              'showTotal': true, // 是否显示总数据量
                               'pageSize': 5, // 默认每页数据条数
                               'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                               'ajaxConfig': {
@@ -452,8 +452,8 @@ export class TreeAndMultiTableComponent implements OnInit {
                               'viewId': 'tree_and_mulit_slaver',
                               'component': 'bsnTable',
                               'keyId': 'Id',
-                              'nzIsPagination': true, // 是否分页
-                              'nzShowTotal': true, // 是否显示总数据量
+                              'pagination': true, // 是否分页
+                              'showTotal': true, // 是否显示总数据量
                               'pageSize': 5, // 默认每页数据条数
                               'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                               'ajaxConfig': {

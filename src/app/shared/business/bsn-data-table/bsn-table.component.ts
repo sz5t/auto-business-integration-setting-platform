@@ -101,8 +101,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (this.config.dataSet) {
             (async () => {
                 for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
-                    const url = this._buildURL(this.config.dataSet[i].ajaxConfig);
-                    const params = this._buildParameters(this.config.dataSet[i].params);
+                    const url = this._buildURL(this.config.dataSet[i].ajaxConfig.url);
+                    const params = this._buildParameters(this.config.dataSet[i].ajaxConfig.params);
                     const data = await this.get(url, params);
                     if (data && data.Status === 200) {
                         if (this.config.dataSet[i].fields) {
@@ -157,6 +157,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             ...this._buildColumnFilter(),
             ...this._buildFocusId()
         };
+        console.log(params);
         (async () => {
             const loadData = await this._load(url, params);
             if (loadData && loadData.Status === 200) {
@@ -218,24 +219,24 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return params;
     }
 
-    private _buildURL(urlConfig) {
+    private _buildURL(ajaxUrl) {
         let url = '';
-        if (urlConfig && this._isUrlString(urlConfig)) {
-            url = urlConfig;
-        } else if (urlConfig) {
-            let parent = '';
-            urlConfig.params.map(param => {
+        if (ajaxUrl && this._isUrlString(ajaxUrl)) {
+            url = ajaxUrl;
+        } else if (ajaxUrl) {
+            const parent = {};
+            ajaxUrl.params.map(param => {
                 if (param['type'] === 'tempValue') {
-                    parent = this._tempParameters[param.value];
+                    parent[param['name']] = this._tempParameters[param.valueName];
                 } else if (param['type'] === 'value') {
                     if (param.value === 'null') {
                         param.value = null;
                     }
-                    parent = param.value;
+                    parent[param['name']] = param.value;
                 } else if (param['type'] === 'GUID') {
                     // todo: 扩展功能
                 } else if (param['type'] === 'componentValue') {
-                    // parent = componentValue[param['valueName']];
+                    // parent[param['name']] = componentValue[param['valueName']];
                 }
             });
         }
@@ -290,7 +291,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     private _updateEditCacheByLoad(dataList) {
         this.editCache = {};
+        console.log(dataList);
         dataList.forEach(item => {
+            console.log(item);
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
@@ -609,15 +612,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     // region: 弹出UI
     private showBatchForm(dialog) {
         const footer = [];
-        const ids = [];
+        const checkedItems = [];
         this.dataList.map(item => {
             if (item.checked) {
-                ids.push(item.Id);
+                checkedItems.push(item);
             }
         });
-        if (ids.length > 0) {
+        if (checkedItems.length > 0) {
             const obj = {
-                _ids: ids
+                _checkedItems: checkedItems
             };
             const modal = this.modalService.create({
                 nzTitle: dialog.title,

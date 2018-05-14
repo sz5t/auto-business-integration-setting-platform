@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, Input, ElementRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
+import { Form, FormGroup } from '@angular/forms';
 declare let CodeMirror: any;
 @Component({
   selector: 'cn-single-table',
@@ -10,6 +11,8 @@ declare let CodeMirror: any;
 })
 export class SingleTableComponent implements OnInit , AfterViewInit {
   @ViewChild('CodeMirror') codeEditor: ElementRef;
+  @ViewChild('ComponentEditor') componentRef: ElementRef;
+  @ViewChild('formEditor') formRef: ElementRef;
   config = {
     rows: [
       {
@@ -830,12 +833,19 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                                     'inputType': 'submit',
                                     'name': 'Type',
                                     'label': '类别Id',
+                                    'labelName': 'Name',
+                                    'valueName': 'Id',
                                     'notFoundContent': '',
                                     'selectModel': false,
                                     'showSearch': true,
                                     'placeholder': '--请选择--',
                                     'disabled': false,
                                     'size': 'default',
+                                    'ajaxConfig': {
+                                      'url': 'SinoForce.User.AppUser',
+                                      'ajaxType': 'get',
+                                      'params': []
+                                    },
                                     'options': [
                                       {
                                         'label': '表',
@@ -1044,8 +1054,8 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                                     'url': 'SinoForce.AppData.ShowCase',
                                     'batch': true,
                                     'params': [
-                                      { name: 'Id', type: 'tempValue', valueName: '_ids', value: ''},
-                                      { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
+                                      { name: 'Id', type: 'checkedItem', valueName: 'Id', value: ''},
+                                      { name: 'CaseName', type: 'checkedItem', valueName: 'CaseName', value: '' },
                                       { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                                     ]
                                   }]
@@ -1087,8 +1097,11 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                     'dataSet': [
                       {
                         'name': 'TypeName',
-                        'ajaxConfig': 'SinoForce.User.AppUser',
-                        'ajaxType': 'get',
+                        'ajaxConfig': {
+                          'url': 'SinoForce.User.AppUser',
+                          'ajaxType': 'get',
+                          'params': []
+                        },
                         'params': [],
                         'fields': [
                           {
@@ -1341,10 +1354,233 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
       */
     ]
   };
+  componentConfig = {
+    'config': {
+      'viewId': 'search_form',
+      'component': 'search_view',
+      'keyId': 'Id',
+      'layout': 'horizontal',
+      'componentType': {
+          'parent': true,
+          'child': false,
+          'own': true
+      },
+      'forms': [
+          {
+              'title': '分类条件',
+              'layout': 'grid',
+              'controls': [
+                  {
+                      'type': 'select',
+                      'labelSize': '6',
+                      'controlSize': '16',
+                      'inputType': 'submit',
+                      'name': 'Enable',
+                      'label': '状态',
+                      'notFoundContent': '',
+                      'selectModel': false,
+                      'showSearch': true,
+                      'placeholder': '--请选择--',
+                      'disabled': false,
+                      'size': 'default',
+                      'options': [
+                          {
+                              'label': '启用',
+                              'value': 1,
+                              'disabled': false
+                          },
+                          {
+                              'label': '禁用',
+                              'value': 0,
+                              'disabled': false
+                          }
+                      ],
+                      'layout': 'column',
+                      'span': '6'
+                  },
+                  {
+                      'type': 'select',
+                      'labelSize': '6',
+                      'controlSize': '16',
+                      'inputType': 'submit',
+                      'name': 'Type',
+                      'label': '类别',
+                      'notFoundContent': '',
+                      'selectModel': false,
+                      'showSearch': true,
+                      'placeholder': '--请选择--',
+                      'disabled': false,
+                      'size': 'default',
+                      'options': [
+                          {
+                              'label': '表',
+                              'value': '1',
+                              'disabled': false
+                          },
+                          {
+                              'label': '树',
+                              'value': '2',
+                              'disabled': false
+                          },
+                          {
+                              'label': '树表',
+                              'value': '3',
+                              'disabled': false
+                          },
+                          {
+                              'label': '表单',
+                              'value': '4',
+                              'disabled': false
+                          },
+                          {
+                              'label': '标签页',
+                              'value': '5',
+                              'disabled': false
+                          }
+                      ],
+                      'layout': 'column',
+                      'span': '6'
+                  }
+              ]
+          },
+          {
+              'title': '扩展条件',
+              'layout': 'grid last',
+              'controls': [
+                  {
+                      'type': 'input',
+                      'labelSize': '6',
+                      'controlSize': '16',
+                      'inputType': 'text',
+                      'name': 'CaseName',
+                      'label': '名称',
+                      'placeholder': '',
+                      'disabled': false,
+                      'readonly': false,
+                      'size': 'default',
+                      'layout': 'column',
+                      'span': '6'
+                  },
+                  {
+                      'type': 'input',
+                      'labelSize': '6',
+                      'controlSize': '16',
+                      'inputType': 'text',
+                      'name': 'Level',
+                      'label': '级别',
+                      'placeholder': '',
+                      'disabled': false,
+                      'readonly': false,
+                      'size': 'default',
+                      'layout': 'column',
+                      'span': '6'
+                  },
+                  {
+                      'type': 'input',
+                      'labelSize': '6',
+                      'controlSize': '16',
+                      'inputType': 'text',
+                      'name': 'CaseCount',
+                      'label': '数量',
+                      'placeholder': '',
+                      'disabled': false,
+                      'readonly': false,
+                      'size': 'default',
+                      'layout': 'column',
+                      'span': '6'
+                  },
+                  {
+                      'type': 'search',
+                      'labelSize': '6',
+                      'controlSize': '16',
+                      'inputType': 'button',
+                      'name': 'Type',
+                      'label': '',
+                      'disabled': false,
+                      'size': 'default',
+                      'layout': 'column',
+                      'span': '6'
+                  }
+              ]
+          }
+      ],
+      'dataList': [],
+      'relations': [
+          {
+              'relationViewId': 'search_form',
+              'relationSendContent': [
+                  {
+                      'name': 'searchFormByValue',
+                      'sender': 'search_form',
+                      'aop': 'after',
+                      'receiver': 'singleTable',
+                      'relationData': {
+                          'name': 'refreshAsChild',
+                          'params': [
+                              {
+                                  'pid': 'CaseName',
+                                  'cid': '_caseName'
+                              },
+                              {
+                                  'pid': 'Type',
+                                  'cid': '_type'
+                              }
+                          ]
+                      }
+                  }
+              ],
+              'relationReceiveContent': []
+          }
+      ]
+    },
+    'dataList': []
+  };
+  formConfig =  { 
+    'forms': [
+      {
+          'title': '分类条件',
+          'layout': 'grid',
+          'controls': [
+              {
+                  'type': 'select',
+                  'labelSize': '6',
+                  'controlSize': '16',
+                  'inputType': 'submit',
+                  'name': 'Enable',
+                  'label': '状态',
+                  'notFoundContent': '',
+                  'selectModel': false,
+                  'showSearch': true,
+                  'placeholder': '--请选择--',
+                  'disabled': false,
+                  'size': 'default',
+                  'options': [
+                      {
+                          'label': '启用',
+                          'value': 1,
+                          'disabled': false
+                      },
+                      {
+                          'label': '禁用',
+                          'value': 0,
+                          'disabled': false
+                      }
+                  ],
+                  'layout': 'column',
+                  'span': '6'
+              }
+          ]
+      }
+  ]
+  };
   editor;
+  componentEditor;
+  formEditor;
+  formGroup: FormGroup;
   constructor(private http: _HttpClient) { }
 
   ngOnInit() { 
+    this.formGroup = new FormGroup({});
   }
 
   ngAfterViewInit () {
@@ -1355,13 +1591,27 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
       lineNumbers: true,
       matchBrackets: true,
       autofocus: true,
-      extraKeys: {'Ctrl-Space': 'autocomplete'},
-      hintOptions: {
-        tables: {
-          users: {name: null, score: null, birthDate: null},
-          countries: {name: null, population: null, size: null}
-        }
-      }
+      extraKeys: {'Ctrl-Space': 'autocomplete'}
+    });
+
+    this.componentEditor = CodeMirror.fromTextArea(this.componentRef.nativeElement, {
+      mode: 'application/json',
+      indentWithTabs: true,
+      smartIndent: true,
+      lineNumbers: true,
+      matchBrackets: true,
+      autofocus: true,
+      extraKeys: {'Ctrl-Space': 'autocomplete'}
+    });
+
+    this.formEditor = CodeMirror.fromTextArea(this.formRef.nativeElement, {
+      mode: 'application/json',
+      indentWithTabs: true,
+      smartIndent: true,
+      lineNumbers: true,
+      matchBrackets: true,
+      autofocus: true,
+      extraKeys: {'Ctrl-Space': 'autocomplete'}
     });
   }
   getValue() {
@@ -1374,5 +1624,13 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
 
   create() {
     this.config = JSON.parse(this.getValue());
+  }
+
+  resolveComponent() {
+    this.componentConfig = JSON.parse(this.componentEditor.getValue());
+  }
+
+  resolveForm() {
+    this.formConfig = JSON.parse(this.formEditor.getValue());
   }
 }

@@ -97,12 +97,12 @@ export class TreeAndTableComponent implements OnInit {
                     'viewId': 'tree_and_table_table',
                     'component': 'bsnTable',
                     'keyId': 'Id',
-                    'nzIsPagination': true, // 是否分页
-                    'nzShowTotal': true, // 是否显示总数据量
+                    'pagination': true, // 是否分页
+                    'showTotal': true, // 是否显示总数据量
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.ShowCase',
+                      'url': 'SinoForce.AppData.GetCase',
                       'ajaxType': 'get',
                       'params': [
                         {
@@ -118,28 +118,28 @@ export class TreeAndTableComponent implements OnInit {
                     'relations': [{
                       'relationViewId': 'tree_and_table_table',
                       'relationSendContent': [
-                        {
-                          'name': 'saveRow',
-                          'sender': 'tree_and_table_table',
-                          'aop': 'after',
-                          'receiver': 'tree_and_table_tree',
-                          'relationData': {
-                            'name': 'refreshAsChild',
-                            'params': [
-                            ]
-                          },
-                        },
-                        {
-                          'name': 'deleteRow',
-                          'sender': 'tree_and_table_table',
-                          'aop': 'after',
-                          'receiver': 'tree_and_table_tree',
-                          'relationData': {
-                            'name': 'refreshAsChild',
-                            'params': [
-                            ]
-                          },
-                        }
+                        // {
+                        //   'name': 'saveRow',
+                        //   'sender': 'tree_and_table_table',
+                        //   'aop': 'after',
+                        //   'receiver': 'tree_and_table_tree',
+                        //   'relationData': {
+                        //     'name': 'refreshAsChild',
+                        //     'params': [
+                        //     ]
+                        //   },
+                        // },
+                        // {
+                        //   'name': 'deleteRow',
+                        //   'sender': 'tree_and_table_table',
+                        //   'aop': 'after',
+                        //   'receiver': 'tree_and_table_tree',
+                        //   'relationData': {
+                        //     'name': 'refreshAsChild',
+                        //     'params': [
+                        //     ]
+                        //   },
+                        // }
                       ],
                       'relationReceiveContent': []
                     }],
@@ -158,7 +158,7 @@ export class TreeAndTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '名称', field: 'CaseName', width: 80,
+                        title: '名称', field: 'CaseName', width: 80, hidden: false,
                         editor: {
                           type: 'input',
                           field: 'CaseName',

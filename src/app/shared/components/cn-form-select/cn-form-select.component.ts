@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
@@ -7,8 +7,8 @@ import { APIResource } from '@core/utility/api-resource';
   selector: 'cn-form-select',
   templateUrl: './cn-form-select.component.html',
 })
-export class CnFormSelectComponent implements OnInit {
-    @Input() config;
+export class CnFormSelectComponent implements OnInit, AfterViewInit {
+  @Input() config;
   @Input() value;
   @Input() bsnData;
   @Input() rowData;
@@ -21,39 +21,44 @@ export class CnFormSelectComponent implements OnInit {
   ) { }
   _selectedMultipleOption;
 
-  async ngOnInit() {
+  ngOnInit() {
     this._options.length = 0;
     if (this.dataSet) {
       // 加载数据集
       this._options = this.dataSet;
+      // this.selectedByLoaded();
     } else if (this.config.ajaxConfig) {
       // 异步加载options
-      const result = await this.asyncLoadOptions(this.config.ajaxConfig);
-      if (this.config.valueType && this.config.valueType === 'list') {
-        const labels = this.config.labelName.split('.');
-        const values = this.config.valueName.split('.');
-        result.Data.forEach(d => {
-          d[this.config.valueName].forEach(v => {
-            this._options.push({ label: v.ParameterName, value: v.ParameterName });
+      (async () => {
+        const result = await this.asyncLoadOptions(this.config.ajaxConfig);
+        if (this.config.valueType && this.config.valueType === 'list') {
+          const labels = this.config.labelName.split('.');
+          const values = this.config.valueName.split('.');
+          result.Data.forEach(d => {
+            d[this.config.valueName].forEach(v => {
+              this._options.push({ label: v.ParameterName, value: v.ParameterName });
+            });
           });
-        });
-      } else {
-        
-        result.Data.forEach(d => {
-          this._options.push({ 'label': d[this.config.labelName], 'value': d[this.config.valueName] });
-        });
-      }
-
+        } else {
+          result.Data.forEach(d => {
+            this._options.push({ 'label': d[this.config.labelName], 'value': d[this.config.valueName] });
+          });
+        }
+        // this.selectedByLoaded();
+      })();
     } else {
-       
+
       // 加载固定数据
       this._options = this.config.options;
+      // this.selectedByLoaded();
     }
+  }
+
+  ngAfterViewInit() {
     this.selectedByLoaded();
   }
 
   async asyncLoadOptions(p?, componentValue?, type?) {
-    debugger;
     const params = {
     };
     let tag = true;
@@ -85,7 +90,6 @@ export class CnFormSelectComponent implements OnInit {
           params[param.name] = componentValue[param.valueName];
         }
       });
-      console.log('ppppppppppp', p);
       if (this.isString(p.url)) {
         url = p.url;
       } else {
@@ -112,16 +116,17 @@ export class CnFormSelectComponent implements OnInit {
        console.log("服务器返回",dd); */
 
       return this.apiService.getProj(url, params).toPromise();
-    } else if (p.ajaxType === 'put') {
-      console.log('put参数', params);
-      return this.apiService.putProj(url, params).toPromise();
-    } else if (p.ajaxType === 'post') {
-      console.log('post参数', params);
-      console.log(url);
-      return this.apiService.postProj(url, params).toPromise();
-    } else {
-      return null;
     }
+    // else if (p.ajaxType === 'put') {
+    //   console.log('put参数', params);
+    //   return this.apiService.putProj(url, params).toPromise();
+    // } else if (p.ajaxType === 'post') {
+    //   console.log('post参数', params);
+    //   console.log(url);
+    //   return this.apiService.postProj(url, params).toPromise();
+    // } else {
+    //   return null;
+    // }
   }
 
   selectedByLoaded() {
