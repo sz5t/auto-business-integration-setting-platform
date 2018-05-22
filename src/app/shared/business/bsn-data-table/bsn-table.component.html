@@ -40,6 +40,7 @@
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">
                 <th 
+                    [nzWidth]="col.width"
                     [nzShowSort]="col.showSort" 
                     [nzShowFilter]="col.showFilter" 
                     [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" 

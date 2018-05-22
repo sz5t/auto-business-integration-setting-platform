@@ -39,7 +39,6 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
 
   // region: 组件生命周期事件
   ngOnInit() {
-    console.log(this.config);
     this.form = this.createGroup();
     if (this.config.relations) {
       this._relativeResolver = new RelativeResolver();
@@ -78,7 +77,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
       configControls
         .filter(control => !controls.includes(control))
         .forEach(name => {
-          const config = this.config.forms.find(control => control.name === name);
+          const config = this.controls.find(control => control.name === name);
           this.form.addControl(name, this.createControl(config));
         });
     }
@@ -167,7 +166,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
                 if (this._tempParameters[param.valueName]) {
                   params[param.name] = this._tempParameters[param.valueName];
                 } else {
-                  console.log('参数不全不能加载');
+                  // console.log('参数不全不能加载');
                   tag = false;
                   return;
                 }
@@ -212,14 +211,13 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
       }
     }
     if (p.ajaxType === 'get' && tag) {
-      console.log('get参数', params);
+      // console.log('get参数', params);
       return this._http.getProj(url, params).toPromise();
     } else if (p.ajaxType === 'put') {
-      console.log('put参数', params);
+      // console.log('put参数', params);
       return this._http.putProj(url, params).toPromise();
     } else if (p.ajaxType === 'post') {
-      console.log('post参数', params);
-      console.log(url);
+      // console.log('post参数', params);
       return this._http.postProj(url, params).toPromise();
     } else {
       return null;
@@ -235,9 +233,9 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
     this.isSpinning = true;
     const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
     if (ajaxData) {
-      console.log('异步加载表单数据load', ajaxData);
+      // console.log('异步加载表单数据load', ajaxData);
       if (ajaxData.Data) {
-        console.log('待赋值的表单数据', ajaxData.Data);
+        // console.log('待赋值的表单数据', ajaxData.Data);
         this.setFormValue(ajaxData.Data[0]);
         // 给主键赋值
         if (this.config.keyId) {
@@ -258,8 +256,6 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
   }
 
   async saveForm() {
-    console.log('执行保存方法', this.value);
-
     if (this.config.toolbar) {
       const index = this.config.toolbar.findIndex(item => item.name === 'saveForm');
       if (this.config.toolbar[index].ajaxConfig) {
@@ -268,7 +264,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
           // 修改保存
           const ajaxData = await this.execAjax(pconfig['update'], this.value);
           if (ajaxData) {
-            console.log('修改保存成功', ajaxData);
+            // console.log('修改保存成功', ajaxData);
             // this._tempParameters['_id'] = ajaxData.Data[0].Id;
 
           }
@@ -285,9 +281,6 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
                     this._tempParameters[out.name] = ajaxData.Data[out['dataName']];
                   });
                 }
-
-                console.log('新增保存成功循环', ajaxData);
-
               }
             }
           } else {
@@ -325,7 +318,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
 
 
   async buttonAction(btn) {
-    console.log(btn);
+    // console.log(btn);
     let result = false;
     if (this[btn.name] && btn.ajaxConfig) {
       result =  await this[btn.name](btn.ajaxConfig);
@@ -441,7 +434,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
     for (const d in data) {
       this._tempParameters[d] = data[d];
     }
-    console.log('初始化参数', this._tempParameters);
+    // console.log('初始化参数', this._tempParameters);
   }
 
   initParametersLoad(data?) {
@@ -449,7 +442,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
       this._tempParameters[d] = data[d];
     }
     this.load();
-    console.log('初始化参数并load', this._tempParameters);
+    // console.log('初始化参数并load', this._tempParameters);
   }
 
   // endregion

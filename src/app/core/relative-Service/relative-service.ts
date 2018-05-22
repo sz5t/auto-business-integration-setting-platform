@@ -86,7 +86,6 @@ export class RelativeResolver {
               if (sendEvent.isRegister) {
                 const parent = {};
                 sendEvent.data.params.forEach(param => {
-                  console.log(e[0][param['pid']], param['pid']);
                   parent[param['cid']] = e[0].node ? e[0].node[param['pid']] : e[0][param['pid']];
                 });
                 const receiver = {

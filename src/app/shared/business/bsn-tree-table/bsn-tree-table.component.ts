@@ -31,305 +31,7 @@ const component: { [type: string]: Type<any> } = {
     ]
 })
 export class BsnTreeTableComponent extends CnComponentBase implements OnInit, OnDestroy {
-    @Input() config: any = {
-        'viewId': 'testTreetable',
-        'component': 'bsnTable',
-        'keyId': 'Id',
-        'pagination': true, // 是否分页
-        'showTotal': true, // 是否显示总数据量
-        'pageSize': 5, // 默认每页数据条数
-        'pageSizeOptions': [1, 5, 10, 20, 30, 40, 50],
-        'ajaxConfig': {
-            'url': 'SinoForce.AppData.ShowCase',
-            'ajaxType': 'get',
-            'params': [
-                { name: 'ParentId', type: 'value', valueName: '', 'value': null }
-            ]
-        },
-        'componentType': {
-            'parent': false,
-            'child': false,
-            'own': true
-        },
-        'relations': [{
-            'relationViewId': 'testTreetable',
-            'relationSendContent': [],
-            'relationReceiveContent': []
-        }],
-        'ShowName': [
-            { title: '标题', field: 'name', valueName: 'CaseName' },
-        ],
-        'expand': {
-            'ajaxConfig': {
-                'url': 'SinoForce.AppData.ShowCase',
-                'ajaxType': 'get',
-                'params': [
-                    { name: 'ParentId', type: 'componentValue', valueName: 'Id', 'value': '' }
-                ]
-            }
-        },
-        'columns': [
-            {
-                title: 'Id', field: 'Id', width: 80, hidden: true,
-                editor: {
-                    type: 'input',
-                    field: 'Id',
-                    options: {
-                        'type': 'input',
-                        'labelSize': '6',
-                        'controlSize': '10',
-                        'inputType': 'text',
-                    }
-                }
-            },
-            {
-                title: '名称', field: 'CaseName', width: 80,
-                editor: {
-                    type: 'input',
-                    field: 'CaseName',
-                    options: {
-                        'type': 'input',
-                        'labelSize': '6',
-                        'controlSize': '10',
-                        'inputType': 'text',
-                    }
-                }
-            },
-            {
-                title: '类别', field: 'Type', width: 80, hidden: false,
-                editor: {
-                    type: 'select',
-                    field: 'Type',
-                    options: {
-                        'type': 'select',
-                        'labelSize': '6',
-                        'controlSize': '10',
-                        'inputType': 'submit',
-                        'name': 'sex',
-                        'label': 'Type',
-                        'notFoundContent': '',
-                        'selectModel': false,
-                        'showSearch': true,
-                        'placeholder': '-请选择-',
-                        'disabled': false,
-                        'size': 'default',
-                        'clear': true,
-                        'width': '130px',
-                        'options': [
-                            {
-                                'label': '表',
-                                'value': '1',
-                                'disabled': false
-                            },
-                            {
-                                'label': '树',
-                                'value': '2',
-                                'disabled': false
-                            },
-                            {
-                                'label': '树表',
-                                'value': '3',
-                                'disabled': false
-                            },
-                            {
-                                'label': '表单',
-                                'value': '4',
-                                'disabled': false
-                            },
-                            {
-                                'label': '标签页',
-                                'value': '5',
-                                'disabled': false
-                            }
-                        ]
-                    }
-                }
-            },
-            {
-                title: '数量', field: 'CaseCount', width: 80, hidden: false,
-                editor: {
-                    type: 'input',
-                    field: 'CaseCount',
-                    options: {
-                        'type': 'input',
-                        'labelSize': '6',
-                        'controlSize': '10',
-                        'inputType': 'text',
-                    }
-                }
-            },
-            {
-                title: '级别', field: 'Level', width: 80, hidden: false,
-                editor: {
-                    type: 'input',
-                    field: 'Level',
-                    options: {
-                        'type': 'input',
-                        'labelSize': '6',
-                        'controlSize': '10',
-                        'inputType': 'text',
-                    }
-                }
-            },
-            {
-                title: '创建时间', field: 'CreateTime', width: 80, hidden: false,
-                editor: {
-                    type: 'input',
-                    field: 'CreateTime',
-                    options: {
-                        'type': 'input',
-                        'labelSize': '6',
-                        'controlSize': '10',
-                        'inputType': 'text',
-                    }
-                }
-            },
-            {
-                title: '备注', field: 'Remark', width: 80, hidden: false,
-                editor: {
-                    type: 'input',
-                    field: 'Remark',
-                    options: {
-                        'type': 'input',
-                        'labelSize': '6',
-                        'controlSize': '10',
-                        'inputType': 'text',
-                    }
-                }
-            },
-            {
-                title: '状态', field: 'Enable', width: 80, hidden: false,
-                editor: {
-                    type: 'select',
-                    field: 'Enable',
-                    options: {
-                        'type': 'select',
-                        'labelSize': '6',
-                        'controlSize': '10',
-                        'inputType': 'submit',
-                        'name': 'Enable',
-                        'notFoundContent': '',
-                        'selectModel': false,
-                        'showSearch': true,
-                        'placeholder': '-请选择-',
-                        'disabled': false,
-                        'size': 'default',
-                        'clear': true,
-                        'width': '80px',
-                        'options': [
-                            {
-                                'label': '启用',
-                                'value': true,
-                                'disabled': false
-                            },
-                            {
-                                'label': '禁用',
-                                'value': false,
-                                'disabled': false
-                            }
-                        ]
-                    }
-                }
-            }
-        ],
-        'toolbar': [
-            {
-                'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
-            },
-            {
-                'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
-            },
-            {
-                'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改'
-            },
-            {
-                'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除',
-                'ajaxConfig': {
-                    delete: [{
-                        'actionName': 'delete',
-                        'url': 'ShowCase',
-                        'ajaxType': 'delete'
-                    }]
-                }
-            },
-            {
-                'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存',
-                'type': 'method/action',
-                'ajaxConfig': {
-                    post: [{
-                        'actionName': 'add',
-                        'url': 'ShowCase',
-                        'ajaxType': 'post',
-                        'params': [
-                            { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                            { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
-                            { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                            { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                            { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                            { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                            { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                            { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
-                        ],
-                        'output': [
-                            {
-                                name: '_id',
-                                type: '',
-                                dataName: 'Id'
-                            }
-                        ]
-                    }],
-                    put: [{
-                        'url': 'ShowCase',
-                        'ajaxType': 'put',
-                        'params': [
-                            { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
-                            { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                            { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
-                            { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                            { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                            { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                            { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                            { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                            { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
-                        ]
-                    }]
-                }
-            },
-            {
-                'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消',
-            },
-            {
-                'name': 'showModal', 'class': 'editable-add-btn', 'text': '测试方法注入',
-                'type': 'modal',
-                'ajaxConfig': {
-                    add: {
-                        'url': 'AppConfigPack_test',
-                        'ajaxType': 'post',
-                        'params': [
-                            { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
-                            { name: 'Name', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
-                            { name: 'TagA', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
-                            { name: 'TagB', type: 'value', valueName: '取值参数名称', value: 'liutest11' },
-                            { name: 'Metadata', type: 'tempValue', valueName: 'dataList', value: 'liutest11' }
-
-                        ]
-                    },
-                    update: {
-                        'url': 'AppConfigPack_test',
-                        'ajaxType': 'put',
-                        'params': [
-                            { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                            { name: 'Metadata', type: 'tempValue', valueName: 'dataList', value: '' }
-                        ]
-                    }
-                },
-            },
-            {
-                'name': 'showDialogPage', 'class': 'editable-add-btn', 'text': '弹出页面',
-                'type': 'showLayout'
-            }
-        ]
-    };
+    @Input() config;
     @Input() dataList = []; // 表格数据集合
     // region: 分页默认参数
     loading = false;
@@ -446,14 +148,16 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             ...this._buildFilter(this.config.ajaxConfig.filter),
             ...this._buildSort(),
             ...this._buildColumnFilter(),
-            ...this._buildFocusId()
+            ...this._buildFocusId(),
+            ...this._buildRecursive()
         };
         (async () => {
             const loadData = await this._load(url, params);
             if (loadData && loadData.Status === 200) {
                 if (loadData.Data && loadData.Data.Rows) {
-                    loadData.Data.Rows.forEach(row => {
+                    loadData.Data.Rows.map(row => {
                         row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+                        this.expandDataCache[row.Id] = this.convertTreeToList(row);
                     });
                     this._updateEditCacheByLoad(loadData.Data.Rows);
                     this.dataList = loadData.Data.Rows;
@@ -577,6 +281,10 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             });
         }
         return filterParams;
+    }
+
+    private _buildRecursive() {
+        return {_recursive: true};
     }
 
     private _updateEditCacheByLoad(dataList) {
@@ -1050,69 +758,82 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
     // endregion
 
-    async collapse(array: any[], data: any, $event: boolean) {
-        console.log('点击树节点展开', array, data, $event);
+    expandChange(array: any[], data: any, $event: boolean) {
         if ($event === false) {
-            console.log('点击树节点关闭');
-
-            if (data.children) {
-                data.children.forEach(d => {
-                    const target = array.find(a => a.key === d.key);
-                    target.expand = false;
-                    this.collapse(array, target, false);
-                });
-            } else {
-                return;
-            }
-        } else {
-            console.log('点击树节点展开->异步请求');
-            // data.children =  await this.expandLoad(data);
-            this.dataList[0]['children'] = await this.expandLoad(data);
-            console.log('组装结果', data.children);
-            if (data.children) {
-                data.children.forEach(d => {
-                    // const target = array.find(a => a.key === d.key);
-                    // target['expand'] = true;
-                    // this.collapse(array, target, false);
-                });
-            } else {
-                return;
-            }
-        }
-
-        console.log('最终展示有关的数据', this.expandDataCache);
-    }
-
-
-    async expandLoad(componentValue?) {
-        let childs = [];
-        const url = this._buildURL(this.config.expand.ajaxConfig.url);
-        const params = {
-            // ...this._buildParameters(this.config.expand.ajaxConfig.params, componentValue),
-        };
-
-        const loadData = await this._load(url, params);
-        console.log('#数表展开节点异步返回#', loadData);
-        if (loadData && loadData.Status === 200) {
-
-            if (loadData.Data && loadData.Data) {
-                loadData.Data.forEach(row => {
-                    row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-                    if (this.config.ShowName) {
-                        this.config.ShowName.forEach(col => {
-                            row[col['field']] = row[col['valueName']];
-                        });
+            if (data.Children) {
+                data.Children.forEach(d => {
+                    d['key'] = d[this.config.keyId];
+                    const target = array.find(a => a[this.config.keyId] === d['key']);
+                    if (target) {
+                        target['expand'] = false;
+                        this.expandChange(array, target, false);
                     }
-                    row['children'] = [];
+                    
                 });
-                // this.dataToTreetable(loadData.Data);
-                childs = loadData.Data;
-
-            }
+            } else {
+                return;
         }
-        return childs;
-
     }
+        
+        // if ($event === false) {
+        //     if (data.Children) {
+        //         data.Children.forEach(d => {
+        //             const target = array.find(a => a.key === d.key);
+        //             target.expand = false;
+        //             this.collapse(array, target, false);
+        //         });
+        //     } else {
+        //         return;
+        //     }
+        // } else {
+        //     console.log('点击树节点展开->异步请求');
+        //     // data.children =  await this.expandLoad(data);
+        //     this.dataList[0]['children'] = await this.expandLoad(data);
+        //     console.log('组装结果', data.children);
+        //     if (data.Children) {
+        //         data.Children.forEach(d => {
+        //             // const target = array.find(a => a.key === d.key);
+        //             // target['expand'] = true;
+        //             // this.collapse(array, target, false);
+        //         });
+        //     } else {
+        //         return;
+        //     }
+        // }
+
+        //console.log('最终展示有关的数据', this.expandDataCache);
+    }
+
+
+    // async expandLoad(componentValue?) {
+    //     let childs = [];
+    //     const url = this._buildURL(this.config.ajaxConfig.url);
+    //     const params = {
+    //         ...this._buildParameters(this.config.ajaxConfig.params, componentValue),
+    //     };
+
+    //     const loadData = await this._load(url, params);
+    //     console.log('#数表展开节点异步返回#', loadData);
+    //     if (loadData && loadData.Status === 200) {
+
+    //         if (loadData.Data && loadData.Data) {
+    //             loadData.Data.forEach(row => {
+    //                 row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+    //                 if (this.config.ShowName) {
+    //                     this.config.ShowName.forEach(col => {
+    //                         row[col['field']] = row[col['valueName']];
+    //                     });
+    //                 }
+    //                 row['Children'] = [];
+    //             });
+    //             // this.dataToTreetable(loadData.Data);
+    //             childs = loadData.Data;
+
+    //         }
+    //     }
+    //     return childs;
+
+    // }
 
 
     convertTreeToList(root: object): any[] {
@@ -1124,13 +845,19 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         while (stack.length !== 0) {
             const node = stack.pop();
             this.visitNode(node, hashMap, array);
-            if (node.children) {
-                for (let i = node.children.length - 1; i >= 0; i--) {
-                    stack.push({ ...node.children[i], level: node.level + 1, expand: false, parent: node });
+            if (node.Children) {
+                for (let i = node.Children.length - 1; i >= 0; i--) {
+                    stack.push(
+                        { 
+                            ...node.Children[i],
+                            level: node.level + 1,
+                            expand: false,
+                            parent: node,
+                            key: node.Children[i][this.config.keyId]
+                        });
                 }
             }
         }
-
         return array;
     }
 

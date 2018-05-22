@@ -1265,30 +1265,44 @@
                         <nz-card nzTitle="配置代码">
                             <button nz-button nzType="primary" (click)="resolveForm()">生成</button>
                             <textarea #formEditor>
-                                       {
-                                           "forms": [
-                                            {
-                                                "title": "分类条件",
-                                                "layout": "grid",
-                                                "controls": [
-                                                    {
-                                                        "type": "input",
-                                                        "labelSize": "6",
-                                                        "controlSize": "16",
-                                                        "inputType": "text",
-                                                        "name": "CaseName",
-                                                        "label": "名称",
-                                                        "placeholder": "",
-                                                        "disabled": false,
-                                                        "readonly": false,
-                                                        "size": "default",
-                                                        "layout": "column",
-                                                        "span": "6"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
+                                { 
+                                    "forms": [
+                                      {
+                                          "title": "分类条件",
+                                          "layout": "grid",
+                                          "controls": [
+                                              {
+                                                  "type": "select",
+                                                  "labelSize": "6",
+                                                  "controlSize": "16",
+                                                  "inputType": "submit",
+                                                  "name": "Enable",
+                                                  "label": "状态",
+                                                  "notFoundContent": "",
+                                                  "selectModel": false,
+                                                  "showSearch": true,
+                                                  "placeholder": "--请选择--",
+                                                  "disabled": false,
+                                                  "size": "default",
+                                                  "options": [
+                                                      {
+                                                          "label": "启用",
+                                                          "value": 1,
+                                                          "disabled": false
+                                                      },
+                                                      {
+                                                          "label": "禁用",
+                                                          "value": 0,
+                                                          "disabled": false
+                                                      }
+                                                  ],
+                                                  "layout": "column",
+                                                  "span": "6"
+                                              }
+                                          ]
+                                      }
+                                  ]
+                                  }
                                 </textarea>
                         </nz-card>
 

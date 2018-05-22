@@ -4,7 +4,7 @@
       [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
       <cn-layout-resolver [layoutId]="layoutId" [config]="c"></cn-layout-resolver>
       <nz-card [nzTitle]="cardTitle" *ngIf="c.viewCfg">
-        <ng-template #cardTitle>
+        <ng-template #cardTitle *ngIf="c.title">
             <i class="{{c.icon}}"></i>
           {{c.title}}
         </ng-template>

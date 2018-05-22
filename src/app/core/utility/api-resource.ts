@@ -213,7 +213,8 @@ export class APIResource {
    * @type {string}
    */
   public static LoginUrl = 'http://192.168.1.8:8016/eb43/Res/';
-
+  
+  // public static LoginUrl = 'http://39.108.141.68:8016/eb43/Res/';
 
   /**
    * 本地URL
@@ -221,11 +222,12 @@ export class APIResource {
    */
   public static localUrl =  'http://localhost:4200/assets';
   // public static localUrl =  'http://192.168.1.8:8002/assets';
+  // public static localUrl =  'http://192.168.1.8:8002/assets';
 
 
     /**
      * 配置系统客户ID
-     * @type {string}pr
+     * @type {string}
      */
   public static SysPlatCustomerId = 'f2771e4c90db29439e3c986d9859dc74';
     /**
