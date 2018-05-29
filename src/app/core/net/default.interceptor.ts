@@ -1,8 +1,10 @@
+import { CacheService } from '@delon/cache';
 import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpErrorResponse,
-         HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent,
-       } from '@angular/common/http';
+import {
+    HttpInterceptor, HttpRequest, HttpHandler, HttpErrorResponse,
+    HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent,
+} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
@@ -16,7 +18,11 @@ import { environment } from '@env/environment';
  */
 @Injectable()
 export class DefaultInterceptor implements HttpInterceptor {
-    constructor(private injector: Injector) {}
+    constructor(
+        private injector: Injector,
+        private cacheService: CacheService
+    ) {
+    }
 
     get msg(): NzMessageService {
         return this.injector.get(NzMessageService);
@@ -50,15 +56,12 @@ export class DefaultInterceptor implements HttpInterceptor {
             case 404:
             case 500:
                 const EvMsg: any = event;
-                if(EvMsg.error.Message === '请先登录或重新登录' || EvMsg.error.Message === '闲置时间过长，请重新登录')
-                {
+                if (EvMsg.error.Message === '请先登录或重新登录' || EvMsg.error.Message === '闲置时间过长，请重新登录') {
                     this.goTo('/passport/login');
-                }
-                else
-                {
+                } else {
                     this.msg.error(`${EvMsg.error.Message}`);
                 }
-                //this.goTo(`/${event.status}`);
+                // this.goTo(`/${event.status}`);
                 break;
         }
         return of(event);
@@ -69,22 +72,34 @@ export class DefaultInterceptor implements HttpInterceptor {
 
         // 统一加上服务端前缀
         let url = req.url;
+
         if (!url.startsWith('https://') && !url.startsWith('http://')) {
-            url = environment.SERVER_URL + url;
+            url = this._buildURL() + url;
         }
 
         const newReq = req.clone({
             url: url
         });
         return next.handle(newReq).pipe(
-                    mergeMap((event: any) => {
-                        // 允许统一对请求错误处理，这是因为一个请求若是业务上错误的情况下其HTTP请求的状态是200的情况下需要
-                        if (event instanceof HttpResponse && event.status === 200)
-                            return this.handleData(event);
-                        // 若一切都正常，则后续操作
-                        return of(event);
-                    }),
-                    catchError((err: HttpErrorResponse) => this.handleData(err))
-                );
+            mergeMap((event: any) => {
+                // 允许统一对请求错误处理，这是因为一个请求若是业务上错误的情况下其HTTP请求的状态是200的情况下需要
+                if (event instanceof HttpResponse && event.status === 200)
+                    return this.handleData(event);
+                // 若一切都正常，则后续操作
+                return of(event);
+            }),
+            catchError((err: HttpErrorResponse) => this.handleData(err))
+        );
+    }
+
+    _buildURL() {
+        let url;
+        const currentConfig: any = this.cacheService.getNone('currentConfig');
+        if (!currentConfig) {
+            url = '';
+        } else {
+            url = currentConfig.Server;
+        }
+        return url;
     }
 }

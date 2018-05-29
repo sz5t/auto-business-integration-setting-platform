@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { SettingsService } from '@delon/theme';
-import {CacheService} from '@delon/cache';
+import { CacheService } from '@delon/cache';
 
 @Component({
     selector: 'app-header',
@@ -22,7 +22,7 @@ export class HeaderComponent {
     searchToggleStatus: boolean;
     projectName: string;
 
-    constructor(private cacheService: CacheService,public settings: SettingsService) {
+    constructor(private cacheService: CacheService, public settings: SettingsService) {
         this.projectName = this.cacheService.getNone('AppName');
     }
 

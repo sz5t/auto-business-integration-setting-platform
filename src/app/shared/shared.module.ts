@@ -68,7 +68,7 @@ const COMPONENTS = [
     CnFormSelectComponent,
     CnDatePickerComponent,
     // CnTimePickerComponent,
-    // CnFormRangePickerComponent,
+    CnFormRangePickerComponent,
     CnFormCheckboxComponent,
     CnFormCheckboxGroupComponent,
     CnFormRadioGroupComponent,

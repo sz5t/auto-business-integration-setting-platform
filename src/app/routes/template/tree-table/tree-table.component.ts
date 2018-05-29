@@ -65,6 +65,7 @@ export class TreeTableComponent implements OnInit {
                           options: {
                             'type': 'input',
                             'inputType': 'text',
+                            'width': '100px'
                           }
                         }
                       },
@@ -873,7 +874,7 @@ export class TreeTableComponent implements OnInit {
                                     'url': 'SinoForce.AppData.ShowCase',
                                     'batch': true,
                                     'params': [
-                                      { name: 'Id', type: 'checkedItem', valueName: 'Id', value: ''},
+                                      { name: 'Id', type: 'checkedItem', valueName: 'Id', value: '' },
                                       { name: 'CaseName', type: 'checkedItem', valueName: 'CaseName', value: '' },
                                       { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                                     ]
@@ -893,9 +894,9 @@ export class TreeTableComponent implements OnInit {
                           'layoutName': 'singleTable',
                           'width': 800,
                           'buttons': [
-                              { 'name': 'ok1', 'text': '确定', 'class': 'editable-add-btn', 'type': 'primary'},
-                              { 'name': 'close', 'text': '关闭' }
-                            ]
+                            { 'name': 'ok1', 'text': '确定', 'class': 'editable-add-btn', 'type': 'primary' },
+                            { 'name': 'close', 'text': '关闭' }
+                          ]
                         }
                       },
                       {
@@ -1173,8 +1174,8 @@ export class TreeTableComponent implements OnInit {
       */
     ]
   };
-    constructor(private http: _HttpClient) { }
+  constructor(private http: _HttpClient) { }
 
-    ngOnInit() { }
+  ngOnInit() { }
 
 }

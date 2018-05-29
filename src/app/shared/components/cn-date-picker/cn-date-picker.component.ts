@@ -1,28 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
+import { Component, OnInit, Input } from '@angular/core';
+
 
 @Component({
   selector: 'cn-date-picker',
-  templateUrl: './cn-date-picker.component.html',
-  styles: [
-      `.picker
-        {
-          width: '250px';
-          border: '1px solid #d9d9d9';
-          borderRadius: '4px';
-          position:absolute;
-          z-index: 1000; 
-        }
-      `
-  ]
+  templateUrl: './cn-date-picker.component.html'
 })
 export class CnDatePickerComponent implements OnInit {
-    date;
-    constructor(
-        private http: _HttpClient
-    ) { }
+  @Input() config;
+  date;
+  constructor(
+  ) { }
 
-    ngOnInit() {
-    }
+  ngOnInit() {
+  }
 
 }

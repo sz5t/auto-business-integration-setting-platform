@@ -584,44 +584,6 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                               {
                                 controls: [
                                   {
-                                    'type': 'select',
-                                    'labelSize': '6',
-                                    'controlSize': '16',
-                                    'inputType': 'submit',
-                                    'name': 'Type',
-                                    'label': '用例',
-                                    'labelName': 'CaseName',
-                                    'valueName': 'Id',
-                                    'notFoundContent': '',
-                                    'selectModel': false,
-                                    'showSearch': true,
-                                    'placeholder': '--请选择--',
-                                    'disabled': false,
-                                    'size': 'default',
-                                    'cascader': [
-                                      {
-                                        'sender': 'appUser',
-                                        'type': 'receiver'
-                                      }
-                                    ],
-                                    'ajaxConfig': {
-                                      'url': 'SinoForce.AppData.GetCase',
-                                      'ajaxType': 'get',
-                                      'cascader': true,
-                                      'params': [
-                                        {
-                                          'name': 'Type', 'type': 'tempValue', 'valueName': '_typeId', 'value': ''
-                                        }
-                                      ]
-                                    },
-                                    'layout': 'column',
-                                    'span': '24'
-                                  }
-                                ]
-                              },
-                              {
-                                controls: [
-                                  {
                                     'type': 'input',
                                     'labelSize': '6',
                                     'controlSize': '16',
@@ -726,6 +688,30 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                                     'readonly': false,
                                     'size': 'default',
                                     'layout': 'column',
+                                    'showTime': true,
+                                    'format': 'yyyy-MM-dd',
+                                    'showToday': true,
+                                    'span': '24'
+                                  }
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
+                                    'type': 'rangePicker',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'inputType': 'text',
+                                    'name': 'CreateTime',
+                                    'label': '时间范围',
+                                    'placeholder': '',
+                                    'disabled': false,
+                                    'readonly': false,
+                                    'size': 'default',
+                                    'layout': 'column',
+                                    'showTime': true,
+                                    'format': 'yyyy-MM-dd',
+                                    'showToday': true,
                                     'span': '24'
                                   }
                                 ]

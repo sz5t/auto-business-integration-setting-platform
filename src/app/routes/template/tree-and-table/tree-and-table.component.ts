@@ -35,7 +35,7 @@ export class TreeAndTableComponent implements OnInit {
                     'component': 'bsnTree',
                     'asyncData': true, // 
                     'expandAll': true, //  
-                    'checkable': false,  //    在节点之前添加一个复选框 false
+                    'checkable': true,  //    在节点之前添加一个复选框 false
                     'showLine': false,  //   显示连接线 fal
                     'columns': [ // 字段映射，映射成树结构所需
                       { title: '主键', field: 'key', valueName: 'Id' },

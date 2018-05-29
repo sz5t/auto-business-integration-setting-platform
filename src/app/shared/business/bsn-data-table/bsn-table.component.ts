@@ -454,11 +454,20 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     cancelRow() {
-        this.dataList.forEach(item => {
-            if (item.checked === true) {
-                this._cancelEdit(item.key);
+        let len = this.dataList.length;
+        for (let i = 0; i < len; i++) {
+            if (this.dataList[i]['checked']) {
+                if (this.dataList[i]['row_status'] === 'adding') {
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    i--;
+                    len--;
+                } else {
+                    this._cancelEdit(this.dataList[i].key);
+                }
+                
             }
-        });
+        }
+    
         return true;
     }
 
@@ -471,6 +480,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const index = this.dataList.findIndex(item => item.key === key);
         this.editCache[key].edit = false;
         this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
+        
     }
 
     private _saveEdit(key: string): void {
@@ -523,7 +533,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
         rowContentNew['row_status'] = 'adding';
-        this.dataList = [...this.dataList, rowContentNew];
+        this.dataList = [rowContentNew, ...this.dataList ];
         // this.dataList.push(this.rowContent);
         this._updateEditCache();
         this._startEdit(fieldIdentity.toString());
@@ -578,7 +588,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     toolbarAction(btn) {
         if (this[btn.name]) {
-            this[btn.name]() && this._toolbarEnables(btn.enables);
+            this[btn.name]();
         } else if (this[btn.type]) {
             const buttons = this.config.toolbar.filter(button => button.type === btn.type);
             const index = buttons.findIndex(button => button.name === btn.name);
@@ -595,14 +605,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private _toolbarEnables(enables) {
-
-        this.config.toolbar.map(btn => {
-            if (!enables[btn.name]) {
-                delete btn['disabled'];
-            } else {
-                btn['disabled'] = '';
-            }
-        });
+        return true;
+        // this.config.toolbar.map(btn => {
+        //     if (!enables[btn.name]) {
+        //         delete btn['disabled'];
+        //     } else {
+        //         btn['disabled'] = '';
+        //     }
+        // });
     }
     // endregion
 

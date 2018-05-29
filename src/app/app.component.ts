@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
     private settings: SettingsService,
     private router: Router,
     private titleSrv: TitleService) {
+      if (typeof G2 !== 'undefined') G2.track(false);
   }
 
   ngOnInit() {

@@ -1,12 +1,12 @@
 {
     "app": {
         "name": "自动化业务装配系统",
-        "description": "Ng-zorro admin panel front-end framework"
+        "description": "SinoForce 自动化业务装配系统"
     },
     "user": {
-        "name": "Admin",
+        "name": "管理员",
         "avatar": "./assets/img/avatar.jpg",
-        "email": "cipchk@qq.com"
+        "email": "admin@admin.com"
     },
     "menu": [
         {

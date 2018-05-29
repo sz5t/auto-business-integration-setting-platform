@@ -159,7 +159,8 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
                         this.expandDataCache[row.Id] = this.convertTreeToList(row);
                     });
-                    this._updateEditCacheByLoad(loadData.Data.Rows);
+                    //this._updateEditCacheByLoad(loadData.Data.Rows);
+                    this._updateEditCacheByLoad(this._getAllItemList());
                     this.dataList = loadData.Data.Rows;
                     this.total = loadData.Data.Total;
                 } else {
@@ -284,12 +285,12 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     private _buildRecursive() {
-        return {_recursive: true};
+        return { _recursive: true };
     }
 
-    private _updateEditCacheByLoad(dataList) {
+    private _updateEditCacheByLoad(data) {
         this.editCache = {};
-        dataList.forEach(item => {
+        data.forEach(item => {
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
@@ -304,9 +305,13 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             return;
         }
         $event.stopPropagation();
-        this.dataList.map(row => {
-            row.selected = false;
-        });
+
+
+        for (const r in this.expandDataCache) {
+            this.expandDataCache[r].map(row => {
+                row['selected'] = false;
+            });
+        }
         data['selected'] = true;
         this._selectRow = data;
     }
@@ -341,18 +346,40 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     // region: 表格操作
 
-    checkAll(value) {
-        this.dataList.forEach(data => {
-            if (!data.disabled) {
-                data.checked = value;
+    _getAllItemList() {
+        let list = [];
+        if (this.expandDataCache && this.dataList) {
+            for (const r in this.expandDataCache) {
+                list = list.concat(this.expandDataCache[r]);
             }
-        });
+        }
+        return list;
+    }
+
+    checkAll(value) {
+        for (const r in this.expandDataCache) {
+            this.expandDataCache[r].map(data => {
+                if (!data['disabled']) {
+                    data['checked'] = value;
+                }
+            });
+        }
+
         this.refChecked();
     }
 
     refChecked() {
+
+        let allCount = 0;
+        // parent count
         this.checkedCount = this.dataList.filter(w => w.checked).length;
-        this.allChecked = this.checkedCount === this.dataList.length;
+        // child count
+        for (const r in this.expandDataCache) {
+            this.checkedCount += this.expandDataCache[r].filter(c => c.checked).length;
+            allCount += this.expandDataCache[r].length;
+        }
+
+        this.allChecked = this.checkedCount === allCount;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
     }
 
@@ -360,7 +387,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
-        this.dataList.map(item => {
+        this._getAllItemList().map(item => {
             delete item['$type'];
             if (item['row_status'] === 'adding') {
                 addRows.push(item);
@@ -453,7 +480,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     cancelRow() {
-        this.dataList.forEach(item => {
+        this._getAllItemList().forEach(item => {
             if (item.checked === true) {
                 this._cancelEdit(item.key);
             }
@@ -467,37 +494,40 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     private _cancelEdit(key: string): void {
-        const index = this.dataList.findIndex(item => item.key === key);
+        const itemList = this._getAllItemList();
+        const index = itemList.findIndex(item => item.key === key);
         this.editCache[key].edit = false;
-        this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
+        this.editCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
     }
 
     private _saveEdit(key: string): void {
-        const index = this.dataList.findIndex(item => item.key === key);
+        const itemList = this._getAllItemList();
+        const index = itemList.findIndex(item => item.key === key);
         let checked = false;
         let selected = false;
 
-        if (this.dataList[index].checked) {
-            checked = this.dataList[index].checked;
+        if (itemList[index].checked) {
+            checked = itemList[index].checked;
         }
-        if (this.dataList[index].selected) {
-            selected = this.dataList[index].selected;
+        if (itemList[index].selected) {
+            selected = itemList[index].selected;
         }
 
-        this.dataList[index] = this.editCache[key].data;
-        this.dataList[index].checked = checked;
-        this.dataList[index].selected = selected;
+        itemList[index] = this.editCache[key].data;
+        itemList[index].checked = checked;
+        itemList[index].selected = selected;
 
         this.editCache[key].edit = false;
     }
 
     private _deleteEdit(i: string): void {
-        const dataSet = this.dataList.filter(d => d.key !== i);
+        const dataSet = this._getAllItemList().filter(d => d.key !== i);
+        // 需要特殊处理层级问题
         this.dataList = dataSet;
     }
 
     private _updateEditCache(): void {
-        this.dataList.forEach(item => {
+        this._getAllItemList().forEach(item => {
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
@@ -522,7 +552,8 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
         rowContentNew['row_status'] = 'adding';
-        this.dataList = [...this.dataList, rowContentNew];
+        // 需要特殊处理层级问题
+        this.dataList = [rowContentNew, ...this.dataList];
         // this.dataList.push(this.rowContent);
         this._updateEditCache();
         this._startEdit(fieldIdentity.toString());
@@ -531,7 +562,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     updateRow() {
-        this.dataList.forEach(item => {
+        this._getAllItemList().forEach(item => {
             if (item.checked) {
                 if (item['row_status'] && item['row_status'] === 'adding') {
 
@@ -551,7 +582,8 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             nzOnOk: () => {
                 const newData = [];
                 const serverData = [];
-                this.dataList.forEach(item => {
+                const itemList = this._getAllItemList();
+                itemList.forEach(item => {
                     if (item.checked === true && item['row_status'] === 'adding') {
                         // 删除新增临时数据
                         newData.push(item.key);
@@ -563,7 +595,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                 });
                 if (newData.length > 0) {
                     newData.forEach(d => {
-                        this.dataList.splice(this.dataList.indexOf(d), 1);
+                        itemList.splice(itemList.indexOf(d), 1);
                     });
                 }
                 if (serverData.length > 0) {
@@ -576,6 +608,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     toolbarAction(btn) {
+        console.log(btn);
         if (this[btn.name]) {
             this[btn.name]() && this._toolbarEnables(btn.enables);
         } else if (this[btn.type]) {
@@ -595,13 +628,14 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     private _toolbarEnables(enables) {
 
-        this.config.toolbar.map(btn => {
-            if (!enables[btn.name]) {
-                delete btn['disabled'];
-            } else {
-                btn['disabled'] = '';
-            }
-        });
+        return true;
+        // this.config.toolbar.map(btn => {
+        //     if (!enables[btn.name]) {
+        //         delete btn['disabled'];
+        //     } else {
+        //         btn['disabled'] = '';
+        //     }
+        // });
     }
     // endregion
 
@@ -768,13 +802,13 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         target['expand'] = false;
                         this.expandChange(array, target, false);
                     }
-                    
+
                 });
             } else {
                 return;
+            }
         }
-    }
-        
+
         // if ($event === false) {
         //     if (data.Children) {
         //         data.Children.forEach(d => {
@@ -848,7 +882,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             if (node.Children) {
                 for (let i = node.Children.length - 1; i >= 0; i--) {
                     stack.push(
-                        { 
+                        {
                             ...node.Children[i],
                             level: node.level + 1,
                             expand: false,

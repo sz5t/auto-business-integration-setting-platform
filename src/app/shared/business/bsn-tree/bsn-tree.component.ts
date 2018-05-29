@@ -15,6 +15,8 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     treeData;
     _relativeResolver;
     _tempValue = {};
+    checkedKeys = [];
+    selectedKeys = [];
     selfEvent = {
         clickNode: [],
         expandNode: [],
@@ -119,13 +121,40 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         return result;
     }
 
+    treeToListData(treeData) {
+        let list = [];
+        const item: {title: any, key: any, isLeaf: boolean} = {
+            title: treeData.title,
+            key: treeData.key,
+            isLeaf: treeData.isLeaf
+        };
+        list.push(item);
+        if (treeData.children && treeData.children.length > 0 ) {
+            treeData.children.map(d => {
+                list = list.concat(this.treeToListData(d));
+            });
+            
+        }
+
+        return list;
+
+    }
+
     onMouseAction(actionName, $event) {
-        console.log(actionName);
+
         this[actionName]($event);
     }
 
     clickNode = (e) => {
         console.log('node click', e);
+    }
+
+    checkboxChange = (e) => {
+        let checkItemList = [];
+        e.checkedKeys.map(item => {
+            checkItemList = checkItemList.concat(this.treeToListData(item));
+        });
+        console.log(checkItemList);
     }
 
     ngOnDestroy() {

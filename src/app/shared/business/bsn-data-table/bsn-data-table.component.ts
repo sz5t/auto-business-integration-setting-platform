@@ -1201,12 +1201,12 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                 config: this._editorConfig
             },
             nzFooter: [{
-              label: 'change component tilte from outside',
-              onClick: (componentInstance) => {
-               // componentInstance.title = 'title in inner component is changed';
-              }
+                label: 'change component tilte from outside',
+                onClick: (componentInstance) => {
+                    // componentInstance.title = 'title in inner component is changed';
+                }
             }]
-          });
+        });
     }
 
 
@@ -1219,43 +1219,43 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      * 生成方法（自定义方法）
      */
     createMethod() {
-     
-      // 每个方法，有自定义变量，对变量的操作，执行异步请求
-      // 将数据集 格式化，json 生成，或者格式转化
-      // 方法名称，取toolbar name
-      // 参数 ， 拼装成json对象传递进去
-      // 创建的方法，也可以直接调用
-      // 方法返回，返回值也存储在临时变量 
-      //     好处，不处理各种返回传递；
-      //     不好处，业务对象数据，比较复杂，各种数据混在一起，可能会串数据，对命名，等都有要求，日后优化力度大
-      // 消息，内置的合理，动态生成的可能会有执行成功后发消息，类似这种，将消息单独出来，在方法完成后或异步请求执行成功后调用
-      this.CRUD['add'] = function (params?) {
-          console.log('createMethod，add');
-      };
+
+        // 每个方法，有自定义变量，对变量的操作，执行异步请求
+        // 将数据集 格式化，json 生成，或者格式转化
+        // 方法名称，取toolbar name
+        // 参数 ， 拼装成json对象传递进去
+        // 创建的方法，也可以直接调用
+        // 方法返回，返回值也存储在临时变量 
+        //     好处，不处理各种返回传递；
+        //     不好处，业务对象数据，比较复杂，各种数据混在一起，可能会串数据，对命名，等都有要求，日后优化力度大
+        // 消息，内置的合理，动态生成的可能会有执行成功后发消息，类似这种，将消息单独出来，在方法完成后或异步请求执行成功后调用
+        this.CRUD['add'] = function (params?) {
+            console.log('createMethod，add');
+        };
 
     }
 
     methodItem() {
 
-         this.config.toolbar.forEach(bar => {
+        this.config.toolbar.forEach(bar => {
             this.CRUD[bar.name] = function (params?) {
                 console.log('createMethod', bar.name);
                 // 1.解析动作前
                 // 2. 当前动作
                 // 2.1 异步请求
-                   // 每个异步请求前，后均有动作，细化每个函数执行一个，粗化是一个方法简析各种
-                   // 2.1.1  请求前，判断参数等其他信息，参数组织
-                   // 2.1.2  执行结果分析
-                   // 2.1.2.1 执行成功-》操作
-                   // 2.1.2.1.1 操作后续，发消息？给临时变量赋值？
-                   // 2.1.2.2 执行失败-》操作
+                // 每个异步请求前，后均有动作，细化每个函数执行一个，粗化是一个方法简析各种
+                // 2.1.1  请求前，判断参数等其他信息，参数组织
+                // 2.1.2  执行结果分析
+                // 2.1.2.1 执行成功-》操作
+                // 2.1.2.1.1 操作后续，发消息？给临时变量赋值？
+                // 2.1.2.2 执行失败-》操作
                 // 2.2 弹出窗体
-                   // 表单 和 复杂页面。 表单自提交数据，复杂页面 保存等效果在页面中实现
-                   //
+                // 表单 和 复杂页面。 表单自提交数据，复杂页面 保存等效果在页面中实现
+                //
 
                 // 3. 解析动作后
             };
-         });
+        });
     }
 
 
