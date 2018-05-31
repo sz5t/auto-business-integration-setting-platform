@@ -32,9 +32,9 @@ export class TreeAndFormComponent implements OnInit {
                                 {
                                     config: {
                                         'viewId': 'tree_and_form_tree',
-                                        'component': 'bsnTree',
+                                        'component': 'bsnAsyncTree',
                                         'asyncData': true, // 
-                                        'expandAll': true, //  
+                                        'expandAll': false, //  
                                         'checkable': false,  //    在节点之前添加一个复选框 false
                                         'showLine': false,  //   显示连接线 fal
                                         'columns': [ // 字段映射，映射成树结构所需
@@ -48,15 +48,27 @@ export class TreeAndFormComponent implements OnInit {
                                             'own': false
                                         },
                                         'parent': [
-                                            { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: 'null' }
+                                            { name: 'ParentId', type: 'value', valueName: '', value: 'null' }
                                         ],
                                         'ajaxConfig': {
                                             'url': 'SinoForce.AppData.ShowCase',
                                             'ajaxType': 'get',
                                             'params': [
-                                                // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                                { name: 'ParentId', type: 'componentValue', valueName: '', value: 'null' }
                                             ]
                                         },
+                                        'expand': [
+                                            {
+                                                'type': false,
+                                                'ajaxConfig': {
+                                                    'url': 'SinoForce.AppData.ShowCase',
+                                                    'ajaxType': 'get',
+                                                    'params': [
+                                                        { name: 'ParentId', type: 'componentValue', valueName: '', value: '' }
+                                                    ]
+                                                }
+                                            }
+                                        ],
                                         'relations': [{
                                             'relationViewId': 'tree_and_form_tree',
                                             'relationSendContent': [

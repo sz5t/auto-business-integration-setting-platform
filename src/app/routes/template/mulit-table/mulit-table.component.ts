@@ -34,7 +34,7 @@ export class MulitTableComponent implements OnInit {
                     'pageSize': 5, // 默pageSizeOptions认每页数据条数
                     '': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.GetCase',
+                      'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         {
@@ -847,7 +847,7 @@ export class MulitTableComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.GetCase',
+                      'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' }
@@ -1068,10 +1068,9 @@ export class MulitTableComponent implements OnInit {
                               { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
                               { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
                               // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                              { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                              { name: 'Enabled', type: 'componentValue', valueName: 'Enabled', value: '' },
                               { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                              { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
+                              { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
                               { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
                             ],
                             'output': [
@@ -1086,14 +1085,14 @@ export class MulitTableComponent implements OnInit {
                             'url': 'SinoForce.AppData.ShowCase',
                             'ajaxType': 'put',
                             'params': [
+                              
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
+                              { name: 'Enabled', type: 'componentValue', valueName: 'Enable', value: '' },
                               { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
                               { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
                               // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                               { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                               { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                              { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                               { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
                             ]
                           }]
@@ -1332,7 +1331,7 @@ export class MulitTableComponent implements OnInit {
                                       { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
                                       { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
                                       { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                      { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                      { name: 'Enabled', type: 'componentValue', valueName: 'Enabled', value: '' },
                                       { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
                                       { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
                                       { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
@@ -1350,7 +1349,7 @@ export class MulitTableComponent implements OnInit {
                                       { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
                                       { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
                                       { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                      { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                      { name: 'Enabled', type: 'componentValue', valueName: 'Enabled', value: '' },
                                       { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
                                       { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
                                       { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },

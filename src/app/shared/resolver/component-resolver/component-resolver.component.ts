@@ -1,3 +1,5 @@
+import { BsnTreeTableComponent } from './../../business/bsn-tree-table/bsn-tree-table.component';
+import { BsnAsyncTreeComponent } from './../../business/bsn-async-tree/bsn-async-tree.component';
 import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-resolver.component';
 import { BsnTableComponent } from './../../business/bsn-data-table/bsn-table.component';
 import {
@@ -13,9 +15,11 @@ const component: { [type: string]: Type<any> } = {
   code_edit: CnCodeEditComponent,
   bsnDataTable: BsnDataTableComponent,
   bsnTable: BsnTableComponent,
+  bsnTreeTable: BsnTreeTableComponent,
   form_view: FormResolverComponent,
   search_view: SearchResolverComponent,
-  bsnTree: CnBsnTreeComponent
+  bsnTree: CnBsnTreeComponent,
+  bsnAsyncTree: BsnAsyncTreeComponent
 };
 @Component({
   selector: 'cn-component-resolver',
@@ -40,7 +44,6 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    console.log('ngchange', this.config, this.componentRef);
     if (this.componentRef && this.config) {
       this.container.clear();
       this.createBsnComponent();

@@ -187,7 +187,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 if (this._tempParameters[param.valueName]) {
                   params[param.name] = this._tempParameters[param.valueName];
                 } else {
-                  console.log('参数不全不能加载');
+                  // console.log('参数不全不能加载');
                   tag = false;
                   return;
                 }
@@ -232,14 +232,13 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       }
     }
     if (p.ajaxType === 'get' && tag) {
-      console.log('get参数', params);
+      // console.log('get参数', params);
       return this._http.getProj(url, params).toPromise();
     } else if (p.ajaxType === 'put') {
-      console.log('put参数', params);
+      // console.log('put参数', params);
       return this._http.putProj(url, params).toPromise();
     } else if (p.ajaxType === 'post') {
-      console.log('post参数', params);
-      console.log(url);
+      // console.log('post参数', params);
       return this._http.postProj(url, params).toPromise();
     } else {
       return null;
@@ -255,9 +254,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     this.isSpinning = true;
     const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
     if (ajaxData) {
-      console.log('异步加载表单数据load', ajaxData);
+      // console.log('异步加载表单数据load', ajaxData);
       if (ajaxData.Data) {
-        console.log('待赋值的表单数据', ajaxData.Data);
+        // console.log('待赋值的表单数据', ajaxData.Data);
         this.setFormValue(ajaxData.Data[0]);
         // 给主键赋值
         if (this.config.keyId) {
@@ -303,16 +302,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                     this._tempParameters[out.name] = ajaxData.Data[out['dataName']];
                   });
                 }
-
-                console.log('新增保存成功循环', ajaxData);
-
               }
             }
           } else {
             const ajaxData = await this.execAjax(pconfig['add'], this.value);
             if (ajaxData) {
-              console.log('新增保存成功', ajaxData);
-
             }
           }
         }
@@ -338,7 +332,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   }
 
   searchFormByValue(data) {
-    console.log(data);
+    // console.log(data);
   }
 
 
@@ -495,7 +489,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     for (const d in data) {
       this._tempParameters[d] = data[d];
     }
-    console.log('初始化参数', this._tempParameters);
+    // console.log('初始化参数', this._tempParameters);
   }
 
   initParametersLoad(data?) {
@@ -503,7 +497,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       this._tempParameters[d] = data[d];
     }
     this.load();
-    console.log('初始化参数并load', this._tempParameters);
+    // console.log('初始化参数并load', this._tempParameters);
   }
 
 

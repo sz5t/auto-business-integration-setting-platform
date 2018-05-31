@@ -49,7 +49,6 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     async getTreeData() {
-        console.log('ajaxConfig', this.config.ajaxConfig);
         const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
         return ajaxData;
     }
@@ -86,8 +85,14 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                         }
                     });
                 }
-                this.treeData = this.listToTreeData(TotreeBefore, parent);
-                console.log(this.treeData, parent);
+                const result = [new NzTreeNode({
+                    title: '根节点',
+                    key: 'null',
+                    isLeaf: false,
+                    children: []
+                })];
+                result[0].children.push(...this.listToTreeData(TotreeBefore, parent));
+                this.treeData = result;
             }
         })();
     }
@@ -95,8 +100,8 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     load() {
         this.loadTreeData();
     }
-    listToTreeData(data, parentid) {
-        const result = [];
+    listToTreeData(data, parentid):  NzTreeNode[] {
+        const result: NzTreeNode[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].ParentId === parentid) {
@@ -106,9 +111,11 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 } else {
                     data[i]['isLeaf'] = true;
                 }
+                data[i].level = '';
                 result.push(new NzTreeNode(data[i]));
             }
         }
+        
         return result;
     }
 

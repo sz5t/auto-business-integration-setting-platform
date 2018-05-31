@@ -157,7 +157,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             ...this._buildColumnFilter(),
             ...this._buildFocusId()
         };
-        console.log(params);
+        // console.log('url params', params);
         (async () => {
             const loadData = await this._load(url, params);
             if (loadData && loadData.Status === 200) {
@@ -291,9 +291,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     private _updateEditCacheByLoad(dataList) {
         this.editCache = {};
-        console.log(dataList);
         dataList.forEach(item => {
-            console.log(item);
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
@@ -303,7 +301,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         });
     }
 
-    private selectRow(data, $event) {
+    private selectRow(data?, $event?) {
         if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
             return;
         }
@@ -328,7 +326,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.load();
     }
 
-    columnFilter(field: string, values: string[] ) {
+    columnFilter(field: string, values: string[]) {
         const filter = {};
         if (values.length > 0 && field) {
             filter['field'] = field;
@@ -337,7 +335,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         } else {
             this._columnFilterList = [];
         }
-        
+
         this.load();
     }
 
@@ -374,14 +372,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         });
         if (addRows.length > 0) {
             // save add;
-            console.log(addRows);
+            // console.log(addRows);
 
             isSuccess = await this.executeSave(addRows, 'post');
         }
 
         if (updateRows.length > 0) {
             // 
-            console.log(updateRows);
+            // console.log(updateRows);
             isSuccess = await this.executeSave(updateRows, 'put');
         }
         return isSuccess;
@@ -410,7 +408,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     });
                     submitData.push(submitItem);
                 });
-
                 const response = await this[method](postConfig[i].url, submitData);
                 if (response && response.Status === 200) {
                     this.message.create('success', '保存成功');
@@ -466,7 +463,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private _startEdit(key: string): void {
-        console.log('start edit', key);
+        // console.log('start edit', key);
         this.editCache[key].edit = true;
     }
 
@@ -632,7 +629,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 },
                 nzFooter: footer
             });
-    
+
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};
@@ -661,21 +658,22 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
                         }
-    
+
                     };
                     footer.push(button);
                 });
-    
+
             }
         } else {
             this.message.create('warning', '请先选中需要处理的数据');
         }
-        
+
     }
     private showForm(dialog) {
         const footer = [];
         const obj = {
-            _id: this._selectRow[dialog.keyId]
+            _id: this._selectRow[dialog.keyId],
+            _parentId: this._tempParameters['_parentId']
         };
         const modal = this.modalService.create({
             nzTitle: dialog.title,
@@ -772,14 +770,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         } else if (btn['name'] === 'ok') {
                             // 
                         }
-    
+
                     };
                     footer.push(button);
                 });
-    
+
             }
         });
-        
+
     }
     // endregion
 
@@ -815,7 +813,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 }
             });
         }
-        
+
         return fontColor;
     }
 
@@ -823,5 +821,5 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     }
     // endregion
-    
+
 }

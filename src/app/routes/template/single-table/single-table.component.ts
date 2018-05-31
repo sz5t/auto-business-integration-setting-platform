@@ -20,7 +20,7 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
           cols: [
             {
               id: 'area2',
-              title: '查询',
+              //title: '查询',
               span: 24,
               icon: 'anticon anticon-search',
               size: {
@@ -215,7 +215,7 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
           cols: [
             {
               id: 'area1',
-              title: '数据网格',
+              //title: '数据网格',
               span: 24,
               icon: 'icon-list',
               size: {
@@ -238,7 +238,7 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.GetCase',
+                      'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
                       'params': [],
                       'filter': [
@@ -262,7 +262,7 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                         }
                       },
                       {
-                        title: '名称', field: 'CaseName', width: 80,
+                        title: '名称', field: 'CaseName', width: '90px',
                         showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
@@ -274,7 +274,7 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                         }
                       },
                       {
-                        title: '类别', field: 'TypeName', width: 80, hidden: false,
+                        title: '类别', field: 'TypeName', width: '100px', hidden: false,
                         showFilter: true, showSort: true,
                         editor: {
                           type: 'select',
@@ -549,7 +549,7 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                                     'controlSize': '16',
                                     'inputType': 'submit',
                                     'name': 'Type',
-                                    'label': '类别Id',
+                                    'label': '类别',
                                     'labelName': 'Name',
                                     'valueName': 'Id',
                                     'notFoundContent': '',
@@ -563,33 +563,57 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                                       'ajaxType': 'get',
                                       'params': []
                                     },
-                                    // 'options': [
-                                    //   {
-                                    //     'label': '表',
-                                    //     'value': '1',
-                                    //     'disabled': false
-                                    //   },
-                                    //   {
-                                    //     'label': '树',
-                                    //     'value': '2',
-                                    //     'disabled': false
-                                    //   },
-                                    //   {
-                                    //     'label': '树表',
-                                    //     'value': '3',
-                                    //     'disabled': false
-                                    //   },
-                                    //   {
-                                    //     'label': '表单',
-                                    //     'value': '4',
-                                    //     'disabled': false
-                                    //   },
-                                    //   {
-                                    //     'label': '标签页',
-                                    //     'value': '5',
-                                    //     'disabled': false
-                                    //   }
-                                    // ],
+                                    'cascader': [
+                                      {
+                                        'name': 'appUser',
+                                        'type': 'sender',
+                                        'cascaderData': {
+                                          'params': [
+                                            {
+                                              'pid': 'Id', 'cid': '_typeId'
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
+                                    'type': 'select',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'inputType': 'submit',
+                                    'name': 'Type',
+                                    'label': '用例',
+                                    'labelName': 'CaseName',
+                                    'valueName': 'Id',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '--请选择--',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'cascader': [
+                                      {
+                                        'sender': 'appUser',
+                                        'type': 'receiver'
+                                      }
+                                    ],
+                                    'ajaxConfig': {
+                                      'url': 'SinoForce.AppData.GetCase',
+                                      'ajaxType': 'get',
+                                      'cascader': true,
+                                      'params': [
+                                        {
+                                          'name': 'Type', 'type': 'tempValue', 'valueName': '_typeId', 'value': ''
+                                        }
+                                      ]
+                                    },
                                     'layout': 'column',
                                     'span': '24'
                                   }
@@ -1536,38 +1560,38 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
     'dataList': []
   };
   formConfig =  { 
-    'forms': [
+    "forms": [
       {
-          'title': '分类条件',
-          'layout': 'grid',
-          'controls': [
+          "title": "分类条件",
+          "layout": "grid",
+          "controls": [
               {
-                  'type': 'select',
-                  'labelSize': '6',
-                  'controlSize': '16',
-                  'inputType': 'submit',
-                  'name': 'Enable',
-                  'label': '状态',
-                  'notFoundContent': '',
-                  'selectModel': false,
-                  'showSearch': true,
-                  'placeholder': '--请选择--',
-                  'disabled': false,
-                  'size': 'default',
-                  'options': [
+                  "type": "select",
+                  "labelSize": "6",
+                  "controlSize": "16",
+                  "inputType": "submit",
+                  "name": "Enable",
+                  "label": "状态",
+                  "notFoundContent": "",
+                  "selectModel": false,
+                  "showSearch": true,
+                  "placeholder": "--请选择--",
+                  "disabled": false,
+                  "size": "default",
+                  "options": [
                       {
-                          'label': '启用',
-                          'value': 1,
-                          'disabled': false
+                          "label": "启用",
+                          "value": 1,
+                          "disabled": false
                       },
                       {
-                          'label': '禁用',
-                          'value': 0,
-                          'disabled': false
+                          "label": "禁用",
+                          "value": 0,
+                          "disabled": false
                       }
                   ],
-                  'layout': 'column',
-                  'span': '6'
+                  "layout": "column",
+                  "span": "6"
               }
           ]
       }
