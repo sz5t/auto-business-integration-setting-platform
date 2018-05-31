@@ -1,8 +1,8 @@
-import { CommonUtility } from '@core/utility/Common-utility';
+import { CommonTools } from './common-tools';
 import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { APIResource } from '@core/utility/api-resource';
+import { APIResource } from './api-resource';
 import { _HttpClient } from '@delon/theme';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '@env/environment';
@@ -266,7 +266,7 @@ export class ApiService {
 
   // region: read inner config data
   getLocalData(name) {
-    const urls = APIResource.localUrl + '/data/' + name + '.json?rtc=' + CommonUtility.uuID(10);
+    const urls = APIResource.localUrl + '/data/' + name + '.json?rtc=' + CommonTools.uuID(10);
     return this.http.get<any>(urls);
   }
   // endregion

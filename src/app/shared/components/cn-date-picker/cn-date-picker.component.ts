@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -7,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class CnDatePickerComponent implements OnInit {
   @Input() config;
+  formGroup: FormGroup;
   date;
   constructor(
   ) { }

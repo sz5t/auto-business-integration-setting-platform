@@ -95,7 +95,7 @@ export class UserManagerComponent implements OnInit {
         this._cacheMapData.get(data.Id).checked = data.checked;
     }
 
-    refresh(data?) {
+    refresh() {
         this.refreshData();
     }
 

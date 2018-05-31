@@ -102,7 +102,7 @@ export class ListComponent implements OnInit {
         this.load(1);
     }
 
-    _checkAll() {
+    _checkAll($event) {
         this.list.forEach(item => item.checked = this._allChecked);
         this.refChecked();
     }

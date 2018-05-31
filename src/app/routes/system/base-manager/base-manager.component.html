@@ -28,7 +28,7 @@
             nzSize = "small">
     <thead (nzSortChange)="sort($event)" nzSingleSort>
     <tr>
-        <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll($event)"></th>
+        <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll()"></th>
         <th nzShowSort nzSortKey="Name">模块名称</th>
         <th nzShowSort nzSortKey="Remark">备注</th>
         <th nzShowSort nzSortKey="Order">排序</th>
@@ -84,5 +84,5 @@
     </ng-template>
 </nz-card>
 
-<button nz-button  (click)="appPerMerge($event)">测试访问许可</button>
+<button nz-button  (click)="appPerMerge()">测试访问许可</button>
 

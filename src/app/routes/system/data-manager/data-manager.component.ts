@@ -196,7 +196,7 @@ export class DataManagerComponent implements OnInit {
         } );
     }
 
-    refreshEntityProDef(parentId?: string, reset = false) {
+    refreshEntityProDef(parentId?: string, reset?) {
         if ( reset ) {
             this._ecurrent = 1;
         }
@@ -330,7 +330,7 @@ export class DataManagerComponent implements OnInit {
         if ( items.length === 1) {
             const itemId = items.pop();
             let ITEM = {};
-            this._tdataSet.forEach( (item) => {if (item.Id == itemId) ITEM = item; } );
+            this._tdataSet.forEach( (item) => {if (item.Id === itemId) ITEM = item; } );
 
             const subscription = this.modalService.create({
                 nzTitle          : '修改数据',

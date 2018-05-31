@@ -21,6 +21,11 @@ import { _HttpClient } from '@delon/theme';
 })
 export class PrivManagerComponent implements OnInit {
 
+    _total = 0;
+    _loading;
+    _dataSet;
+    _current;
+    _pageSize = 10;
     constructor(
         private http: _HttpClient
     ) { }
@@ -28,4 +33,11 @@ export class PrivManagerComponent implements OnInit {
     ngOnInit() {
     }
 
+    refreshData(event?) {
+
+    }
+
+    sort() {
+
+    }
 }

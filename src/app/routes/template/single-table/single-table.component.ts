@@ -430,6 +430,15 @@ export class SingleTableComponent implements OnInit , AfterViewInit {
                     }],
                     'toolbar': [
                       {
+                        'name': 'cus', 'text': '自定义事件', 'type': 'injectFunction',
+                        'context': {
+                          'name': 'text1',
+                          'arguments': [],
+                          'content': 'alert(this)'
+                        }
+
+                      },
+                      {
                         'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
                       },
                       {

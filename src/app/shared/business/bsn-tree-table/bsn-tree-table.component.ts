@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, Input, OnDestroy, Type } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
-import { ApiService } from '@core/utility/api-service';
-import { CommonUtility } from '@core/utility/Common-utility';
-import { APIResource } from '@core/utility/api-resource';
+import { ApiService } from '../../../core/utility/api-service';
+import { CommonTools } from '../../../core/utility/common-tools';
+import { APIResource } from '../../../core/utility/api-resource';
 import { NzModalService, NzMessageService } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
@@ -159,7 +159,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
                         this.expandDataCache[row.Id] = this.convertTreeToList(row);
                     });
-                    //this._updateEditCacheByLoad(loadData.Data.Rows);
+                    // this._updateEditCacheByLoad(loadData.Data.Rows);
                     this._updateEditCacheByLoad(this._getAllItemList());
                     this.dataList = loadData.Data.Rows;
                     this.total = loadData.Data.Total;
@@ -200,7 +200,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                 } else if (param['type'] === 'value') {
                     params[param.name] = param.value;
                 } else if (param['type'] === 'GUID') {
-                    const fieldIdentity = CommonUtility.uuID(10);
+                    const fieldIdentity = CommonTools.uuID(10);
                     params[param.name] = fieldIdentity;
                 } else if (param['type'] === 'componentValue') {
                     // params[param.name] = componentValue[param.valueName];
@@ -316,7 +316,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         this._selectRow = data;
     }
 
-    private searchData(reset: boolean = false) {
+    searchData(reset: boolean = false) {
         if (reset) {
             this.pageIndex = 1;
         }
@@ -548,7 +548,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     addRow() {
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
-        const fieldIdentity = CommonUtility.uuID(6);
+        const fieldIdentity = CommonTools.uuID(6);
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
         rowContentNew['row_status'] = 'adding';
@@ -835,7 +835,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         //     }
         // }
 
-        //console.log('最终展示有关的数据', this.expandDataCache);
+        // console.log('最终展示有关的数据', this.expandDataCache);
     }
 
 

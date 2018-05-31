@@ -7,6 +7,7 @@ import { _HttpClient } from '@delon/theme';
 })
 export class CnGridRangePickerComponent implements OnInit {
   @Input() config;
+  model;
   constructor(
       private http: _HttpClient
   ) { }

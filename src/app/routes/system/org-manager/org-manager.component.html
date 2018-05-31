@@ -15,9 +15,9 @@
               [nzLoading]="_loading"
               [nzTotal]="_total"
               [(nzPageIndex)]="_current"
-              (nzPageIndexChange)="refreshOrg(false,$event)"
+              (nzPageIndexChange)="refreshOrg(false)"
               [nzPageSize]="_pageSize"
-              (nzPageSizeChange)="refreshOrg(true,$event)"
+              (nzPageSizeChange)="refreshOrg(true)"
               [nzBordered] = "true"
               [nzShowTotal]="totalTemplate"
               nzSize = "small" >

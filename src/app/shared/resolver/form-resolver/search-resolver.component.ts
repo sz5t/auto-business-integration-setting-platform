@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ApiService } from '@core/utility/api-service';
+import { ApiService } from '../../../core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { CommonUtility } from '@core/utility/Common-utility';
-import { APIResource } from '@core/utility/api-resource';
+import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
+import { CommonTools } from '../../../core/utility/common-tools';
+import { APIResource } from '../../../core/utility/api-resource';
 import { concat } from 'rxjs/observable/concat';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 
@@ -182,7 +182,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
             params[param.name] = param.value;
 
           } else if (param.type === 'GUID') {
-            const fieldIdentity = CommonUtility.uuID(10);
+            const fieldIdentity = CommonTools.uuID(10);
             params[param.name] = fieldIdentity;
           } else if (param.type === 'componentValue') {
             params[param.name] = componentValue[param.valueName];
@@ -198,7 +198,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
           if (param['type'] === 'value') {
             pc = param.value;
           } else if (param.type === 'GUID') {
-            const fieldIdentity = CommonUtility.uuID(10);
+            const fieldIdentity = CommonTools.uuID(10);
             pc = fieldIdentity;
           } else if (param.type === 'componentValue') {
             pc = componentValue[param.valueName];
@@ -380,7 +380,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
         } else if (param['type'] === 'value') {
           params[param.name] = param.value;
         } else if (param['type'] === 'GUID') {
-          const fieldIdentity = CommonUtility.uuID(10);
+          const fieldIdentity = CommonTools.uuID(10);
           params[param.name] = fieldIdentity;
         } else if (param['type'] === 'componentValue') {
           params[param.name] = this.value[param.valueName];

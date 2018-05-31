@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
-import { ApiService } from '@core/utility/api-service';
+import { ApiService } from '../../../core/utility/api-service';
 import { NzMessageService, NzTreeNode } from 'ng-zorro-antd';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { APIResource } from '@core/utility/api-resource';
+import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
+import { APIResource } from '../../../core/utility/api-resource';
 import { CnComponentBase } from '@shared/components/cn-component-base';
-import { CommonUtility } from '@core/utility/Common-utility';
+import { CommonTools } from '../../../core/utility/common-tools';
 @Component({
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
@@ -82,7 +82,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                             parent = param.value;
 
                         } else if (param.type === 'GUID') {
-                            const fieldIdentity = CommonUtility.uuID(10);
+                            const fieldIdentity = CommonTools.uuID(10);
                             parent = fieldIdentity;
                         }
                     });
@@ -195,7 +195,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                     params[param.name] = param.value;
 
                 } else if (param.type === 'GUID') {
-                    const fieldIdentity = CommonUtility.uuID(10);
+                    const fieldIdentity = CommonTools.uuID(10);
                     params[param.name] = fieldIdentity;
                 } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue.value;
@@ -209,7 +209,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                     if (param['type'] === 'value') {
                         pc = param.value;
                     } else if (param.type === 'GUID') {
-                        const fieldIdentity = CommonUtility.uuID(10);
+                        const fieldIdentity = CommonTools.uuID(10);
                         pc = fieldIdentity;
                     } else if (param.type === 'componentValue') {
                         pc = componentValue.value;

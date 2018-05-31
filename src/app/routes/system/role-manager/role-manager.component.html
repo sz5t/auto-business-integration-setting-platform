@@ -1,10 +1,10 @@
 <page-header [title]=""></page-header>
 <nz-card>
     <div class = "table-operations">
-        <button  nz-button (click)="refresh($event)">刷新 </button>
+        <button  nz-button (click)="refresh()">刷新 </button>
         <button nz-button (click)="showRoleForComponent('Add')">新增</button>
         <button nz-button (click)="showRoleForComponent('Edit')">修改</button>
-        <button  nz-button (click)="delete($event)">删除</button>
+        <button  nz-button (click)="delete()">删除</button>
     </div>
   <nz-table #nzTable
             [nzData]="_dataSet"
@@ -21,7 +21,7 @@
             nzSize = "small">
     <thead >
     <tr>
-      <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll($event)"></th>
+      <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll()"></th>
       <th>角色名称</th>
       <th >备注 </th>
       <th >创建时间</th>

@@ -2,10 +2,10 @@
 <page-header [title]=""></page-header>
 <nz-card>
     <div class = "table-operations">
-        <button nz-button (click)="trefresh($event)">刷新 </button>
+        <button nz-button (click)="trefresh()">刷新 </button>
         <button nz-button (click)="showTypeForComponent('Add')">新增</button>
         <button nz-button (click)="showTypeForComponent('Edit')">修改</button>
-        <button nz-button (click)="tdelete($event)">删除</button>
+        <button nz-button (click)="tdelete()">删除</button>
     </div>
     <nz-table #nzTable
               [nzData]="_tdataSet"
@@ -23,7 +23,7 @@
               nzSize = "small">
         <thead (nzSortChange)="sortType($event)" nzSingleSort>
         <tr>
-            <th nzShowCheckbox  [(nzChecked)]="_tallChecked" [nzIndeterminate]="_tindeterminate" (nzCheckedChange)="_tcheckAll($event)"></th>
+            <th nzShowCheckbox  [(nzChecked)]="_tallChecked" [nzIndeterminate]="_tindeterminate" (nzCheckedChange)="_tcheckAll()"></th>
             <th nzShowSort nzSortKey="Name">名称</th>
             <th nzShowSort nzSortKey="Caption">标签</th>
             <th nzShowSort nzSortKey="ShareScope">共享范围</th>
@@ -68,14 +68,14 @@
               [(nzPageIndex)]="_ecurrent"
               (nzPageIndexChange)="refreshEntityProDef()"
               [(nzPageSize)]="_epageSize"
-              (nzPageSizeChange)="refreshEntityProDef(true)"
+              (nzPageSizeChange)="refreshEntityProDef('',true)"
               [nzBordered] = "true"
               [nzShowTotal]="childrenTotalTemplate"
               nzTitle='所属字段列表'
               nzSize = "small">
         <thead (nzSortChange)="sortEntity($event)" nzSingleSort>
         <tr>
-            <th nzShowCheckbox  [(nzChecked)]="_eallChecked" [nzIndeterminate]="_eindeterminate" (nzCheckedChange)="_echeckAll($event)"></th>
+            <th nzShowCheckbox  [(nzChecked)]="_eallChecked" [nzIndeterminate]="_eindeterminate" (nzCheckedChange)="_echeckAll()"></th>
             <th nzShowSort nzSortKey="Name">属性名称</th>
             <th nzShowSort nzSortKey="Caption">属性标签</th>
             <th nzShowSort nzSortKey="PropertyType">类型</th>

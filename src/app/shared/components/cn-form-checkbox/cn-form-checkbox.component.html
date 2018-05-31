@@ -3,7 +3,7 @@
    {{config.label}}
   </nz-form-label>
   <nz-form-control [formGroup]="formGroup" [nzSm]="config.controlSize" [nzXs]="24">
-    <label formControlName="{{config.name}}" nz-checkbox [(ngModel)]="_checked" [nzDisabled]="config.disabled">
+    <label formControlName="{{config.name}}" nz-checkbox [(ngModel)]="model" [nzDisabled]="config.disabled">
       <span>{{config.label}}</span>
     </label>
   </nz-form-control>

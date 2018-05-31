@@ -1567,6 +1567,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   _currentNode;
   _operationName;
   _isConfirmLoading = false;
+  _layoutNameValue;
 
   private dropdown: NzDropdownContextComponent;
   @ViewChild('addTemplate') addTemplate: TemplateRef<void>;
@@ -2232,6 +2233,10 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
       }
     }
     return result;
+  }
+
+  _loadLayoutData($event) {
+
   }
   // endregion
 }

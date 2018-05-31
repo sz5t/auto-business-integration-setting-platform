@@ -3,7 +3,6 @@ import { APIResource } from './../../../core/utility/api-resource';
 import { ApiService } from '@core/utility/api-service';
 import { Component, Input, OnInit } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
-import { CommonUtility } from '@core/utility/common-utility';
 
 @Component({
   selector: 'cn-tabs-resolver',

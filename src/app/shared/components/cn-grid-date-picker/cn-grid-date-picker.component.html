@@ -1,13 +1,10 @@
 
-  <nz-datepicker
-    name="{{config.name}}"
-    [nzSize]="config.size"
-    [nzMode]="config.dateModel"
-    [nzFormat]="config.format"
-    [nzPlaceHolder]="config.placeholder"
-    [nzDisabled]="config.disabled"
-    [nzAllowClear]=true
-    [(ngModel)]="date"
-  >
-  </nz-datepicker>
+<nz-date-picker
+[(ngModel)]="model"
+formControlName="{{config.name}}"
+nzShowTime="config.showTime"
+[nzFormat]="config.format"
+[nzShowToday]="config.showToday"
+[nzAllowClear]="true"
+></nz-date-picker>
 

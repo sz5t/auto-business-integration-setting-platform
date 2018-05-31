@@ -4,10 +4,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { CommonUtility } from '@core/utility/Common-utility';
-import { APIResource } from '@core/utility/api-resource';
+import { APIResource } from '../../../core/utility/api-resource';
 import { concat } from 'rxjs/observable/concat';
 import { CnComponentBase } from '@shared/components/cn-component-base';
+import { CommonTools } from '../../../core/utility/common-tools';
 
 @Component({
   selector: 'cn-form-resolver,[cn-form-resolver]',
@@ -200,7 +200,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             params[param.name] = param.value;
 
           } else if (param.type === 'GUID') {
-            const fieldIdentity = CommonUtility.uuID(10);
+            const fieldIdentity = CommonTools.uuID(10);
             params[param.name] = fieldIdentity;
           } else if (param.type === 'componentValue') {
             params[param.name] = componentValue[param.valueName];
@@ -216,7 +216,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
           if (param['type'] === 'value') {
             pc = param.value;
           } else if (param.type === 'GUID') {
-            const fieldIdentity = CommonUtility.uuID(10);
+            const fieldIdentity = CommonTools.uuID(10);
             pc = fieldIdentity;
           } else if (param.type === 'componentValue') {
             pc = componentValue[param.valueName];
@@ -415,7 +415,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             } else if (param['type'] === 'value') {
               p[param.name] = param.value;
             } else if (param['type'] === 'GUID') {
-              const fieldIdentity = CommonUtility.uuID(10);
+              const fieldIdentity = CommonTools.uuID(10);
               p[param.name] = fieldIdentity;
             } else if (param['type'] === 'componentValue') {
               p[param.name] = this.value[param.valueName];
@@ -432,7 +432,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         } else if (param['type'] === 'value') {
           params[param.name] = param.value;
         } else if (param['type'] === 'GUID') {
-          const fieldIdentity = CommonUtility.uuID(10);
+          const fieldIdentity = CommonTools.uuID(10);
           params[param.name] = fieldIdentity;
         } else if (param['type'] === 'componentValue') {
           params[param.name] = this.value[param.valueName];

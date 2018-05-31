@@ -499,6 +499,7 @@ export class ComponentSettingComponent implements OnInit {
         ]
     };
     treeData;
+    _layoutNameValue;
     constructor(
         private http: _HttpClient,
         private _http: ApiService,
@@ -516,6 +517,9 @@ export class ComponentSettingComponent implements OnInit {
         const moduleData = await this.getModuleData(params);
         //   初始化模块列表，将数据加载到及联下拉列表当中
         this._funcOptions = this.arrayToTree(moduleData.Data, '');
+    }
+    _loadLayoutData($event) {
+
     }
     //   获取布局设置列表
     getLayoutConfigData(params) {

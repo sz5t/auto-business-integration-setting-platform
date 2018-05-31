@@ -124,7 +124,7 @@ export class RoleManagerComponent implements OnInit {
     });
   }
 
-    refresh(data?) {
+    refresh() {
         this.refreshData();
     }
 
@@ -194,7 +194,7 @@ export class RoleManagerComponent implements OnInit {
                     } else {
                         this.msgSrv.error(response.Message);
                     }
-                })
+                });
             }
         });
     }

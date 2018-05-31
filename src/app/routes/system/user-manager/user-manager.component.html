@@ -2,11 +2,11 @@
 <page-header [title]=""></page-header>
 <nz-card>
   <div class = "table-operations">
-    <button nz-button (click)="refresh($event)">刷新 </button>
+    <button nz-button (click)="refresh()">刷新 </button>
     <button nz-button (click)="showUserForComponent('Add')">新增</button>
     <button nz-button (click)="showUserForComponent('Edit')">修改</button>
-    <button nz-button (click)="delete($event)">删除</button>
-      <button nz-button (click)="settingRole($event)">角色设置</button>
+    <button nz-button (click)="delete()">删除</button>
+      <button nz-button (click)="settingRole()">角色设置</button>
   </div>
   <nz-table #nzTable
             [nzData]="_dataSet"
@@ -23,7 +23,7 @@
             nzSize = "small">
     <thead (nzSortChange)="sort($event)" nzSingleSort>
     <tr>
-        <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll($event)"></th>
+        <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll()"></th>
         <th nzShowSort nzSortKey="Name">用户名</th>
         <th nzShowSort nzSortKey="Code">编码</th>
         <th nzShowSort nzSortKey="IdCardNumber">身份标识</th>

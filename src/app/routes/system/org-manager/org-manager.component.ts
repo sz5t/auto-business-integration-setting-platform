@@ -160,7 +160,7 @@ export class OrgManagerComponent implements OnInit {
         }
     }
 
-    refreshOrg(reset = false) {
+    refreshOrg(reset?) {
         this.dataItems.clear();
         if ( reset ) {
             this._current = 1;

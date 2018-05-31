@@ -53,7 +53,7 @@ export class ModalBaseComponent implements OnInit {
     private modal: NzModalRef) {
 
   }
-  emitDataOutside() {
+  emitDataOutside($event) {
 
     if (!this.validateForm.valid)
       return;

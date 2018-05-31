@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { CommonUtility } from '@core/utility/Common-utility';
-import { ApiService } from '@core/utility/api-service';
-import { APIResource } from '@core/utility/api-resource';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
+import { CommonTools } from '../../../core/utility/common-tools';
+import { ApiService } from '../../../core/utility/api-service';
+import { APIResource } from '../../../core/utility/api-resource';
+import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 
@@ -174,7 +174,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     params[param.name] = param.value;
 
                 } else if (param.type === 'GUID') {
-                    const fieldIdentity = CommonUtility.uuID(10);
+                    const fieldIdentity = CommonTools.uuID(10);
                     params[param.name] = fieldIdentity;
                 } else if (param.type === 'componentValue') {
                     console.log(componentValue);
@@ -191,7 +191,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     if (param['type'] === 'value') {
                         pc = param.value;
                     } else if (param.type === 'GUID') {
-                        const fieldIdentity = CommonUtility.uuID(10);
+                        const fieldIdentity = CommonTools.uuID(10);
                         pc = fieldIdentity;
                     } else if (param.type === 'componentValue') {
                         pc = componentValue.value;
@@ -223,7 +223,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         this.load('', 1);
     }
 
-    _checkAll() {
+    _checkAll($event?) {
         this.dataList.forEach(item => item.checked = this._allChecked);
         this.refChecked();
     }
@@ -416,7 +416,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     addRow(): void {
         this.toolbarEnables('action', 'addRow');
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
-        const fieldIdentity = CommonUtility.uuID(6);
+        const fieldIdentity = CommonTools.uuID(6);
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
         this.dataList = [...this.dataList, rowContentNew];
@@ -642,7 +642,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                 } else {
                     const _dataList = data[d];
                     _dataList.forEach(item => {
-                        const fieldIdentity = CommonUtility.uuID(6);
+                        const fieldIdentity = CommonTools.uuID(6);
                         item['key'] = fieldIdentity;
                     });
                     this.updateEditCacheByLoad(_dataList);

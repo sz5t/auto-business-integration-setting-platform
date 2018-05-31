@@ -209,4 +209,8 @@ export class BlockSettingComponent implements OnInit {
     return result;
   }
 
+  resetForm($event) {
+
+  }
+
 }

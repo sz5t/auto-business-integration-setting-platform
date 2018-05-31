@@ -60,8 +60,9 @@
         <nz-card nzTitle="动态" [nzBordered]="false" [nzLoading]="loading" class="ant-card__body-nopadding mb-lg active-card">
             <nz-list nzSize="large" class="activities">
                 <nz-list-item *ngFor="let item of activities">
+                        <!-- [nzAvatar]="item.user.avatar" -->
                     <nz-list-item-meta
-                        [nzAvatar]="item.user.avatar"
+                        
                         [nzTitle]="activeTitle"
                         [nzDescription]="activeDescription">
                         <ng-template #activeTitle>

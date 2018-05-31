@@ -2,6 +2,7 @@ import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'cn-form-select',
@@ -13,6 +14,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit {
   @Input() bsnData;
   @Input() rowData;
   @Input() dataSet;
+  formGroup: FormGroup;
   // @Output() updateValue = new EventEmitter();
   _options = [];
   // _selectedMultipleOption:any[];

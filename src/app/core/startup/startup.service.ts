@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { zip } from 'rxjs/observable/zip';
 import { catchError } from 'rxjs/operators';
 import { I18NService } from '../i18n/i18n.service';
-import { SystemResource } from '@core/utility/system-resource';
+import { SystemResource } from '../utility/system-resource';
 
 /**
  * 用于应用启动时

@@ -107,3 +107,21 @@ Thanks for understanding!
 ### License
 
 The MIT License (see the [LICENSE](https://github.com/cipchk/ng-alain/blob/master/LICENSE) file for the full text)
+
+##创建景象
+sudo docker build . -t sinoforce -f Dockerfile
+
+##
+docker-compose up -d
+
+docker run -d -p 3000:3000 --name sinoforce sinoforce
+
+##停止服务
+docker stop $(docker ps -a -q)
+
+##删除容器
+docker rm $(docker ps -a -q)
+
+##显示镜像
+docker images
+docker rm $(docker images -q)

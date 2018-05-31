@@ -6,10 +6,10 @@ import { TypeOperationComponent } from './../../../routes/system/data-manager/ty
 import { Component, OnInit, Input, OnDestroy, Type } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { CommonUtility } from '@core/utility/Common-utility';
-import { ApiService } from '@core/utility/api-service';
-import { APIResource } from '@core/utility/api-resource';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
+import { CommonTools } from '../../../core/utility/common-tools';
+import { ApiService } from '../../../core/utility/api-service';
+import { APIResource } from '../../../core/utility/api-resource';
+import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
@@ -162,8 +162,19 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             const loadData = await this._load(url, params);
             if (loadData && loadData.Status === 200) {
                 if (loadData.Data && loadData.Data.Rows) {
+                    // 设置聚焦ID
+                    // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
+                    let focusId;
+                    if (loadData.FocusId) {
+                        focusId = loadData.FocusId;
+                    } else {
+                        loadData.Data.Rows.length > 0 && (focusId = loadData.Data.Rows[0].Id);
+                    }
                     loadData.Data.Rows.forEach(row => {
                         row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+                        if (row.Id === focusId) {
+                            this.selectRow(row);
+                        }
                     });
                     this._updateEditCacheByLoad(loadData.Data.Rows);
                     this.dataList = loadData.Data.Rows;
@@ -205,7 +216,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 } else if (param['type'] === 'value') {
                     params[param.name] = param.value;
                 } else if (param['type'] === 'GUID') {
-                    const fieldIdentity = CommonUtility.uuID(10);
+                    const fieldIdentity = CommonTools.uuID(10);
                     params[param.name] = fieldIdentity;
                 } else if (param['type'] === 'componentValue') {
                     // params[param.name] = componentValue[param.valueName];
@@ -302,10 +313,13 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private selectRow(data?, $event?) {
-        if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
-            return;
+        if ($event) {
+            if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
+                return;
+            }
+            $event.stopPropagation();
         }
-        $event.stopPropagation();
+       
         this.dataList.map(row => {
             row.selected = false;
         });
@@ -313,7 +327,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this._selectRow = data;
     }
 
-    private searchData(reset: boolean = false) {
+    searchData(reset: boolean = false) {
         if (reset) {
             this.pageIndex = 1;
         }
@@ -529,7 +543,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     addRow() {
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
-        const fieldIdentity = CommonUtility.uuID(6);
+        const fieldIdentity = CommonTools.uuID(6);
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
         rowContentNew['row_status'] = 'adding';
@@ -593,8 +607,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             const buttons = this.config.toolbar.filter(button => button.type === btn.type);
             const index = buttons.findIndex(button => button.name === btn.name);
             if (index >= 0) {
-                this[buttons[index].type](buttons[index].dialogConfig);
-
+                if (buttons[index].dialogConfig) {
+                    this[buttons[index].type](buttons[index].dialogConfig);
+                } else if (buttons[index].context) {
+                    this[buttons[index].type](buttons[index].context);
+                }
+                
             }
         }
     }
@@ -602,6 +620,19 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     valueChange(data) {
         const index = this.dataList.findIndex(item => item.key === data.key);
         this.editCache[data.key].data[data.name] = data.data;
+    }
+
+    private injectFunction(context) {
+        let arr = [];
+        if (context.arguments && context.arguments.length > 0) {
+            arr = context.arguments;
+        }
+        if (context.content) {
+            arr = arr.concat(context.content);
+        }
+        
+        const func = new Function(...arr);
+        func();
     }
 
     private _toolbarEnables(enables) {
