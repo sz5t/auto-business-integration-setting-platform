@@ -555,13 +555,13 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
               this.cascadeList[c.name][cobj.cascadeName]['relation'] = item.data.relation_data.option;
               dataTypeItem['relation'] = item.data.relation_data.option;
             }
-            console.log('jxdate->item ', dataTypeItem);
+          
             dataType.push(dataTypeItem);
 
           });
 
           cobj['cascadeValueItems'].forEach(item => {
-            console.log('jx->item ', item);
+          
             const valueTypeItem = {};
             if (item.caseValue) {
               // 取值， 解析 正则表达式
@@ -612,6 +612,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   }
 
 
+
+
+
   valueChange(data?) {
     console.log('解析结果预览：', this.cascadeList);
     console.log('有操作', data);
@@ -640,56 +643,56 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
               if (this.cascadeList[sendCasade][key]['dataType']) {
                 this.cascadeList[sendCasade][key]['dataType'].forEach(caseItem => {
 
-                    // region: 解析开始 根据组件类型组装新的配置【静态option组装】
-                    if (caseItem['type'] === 'option') {
-                      // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
-                      let Exist = false;
-                      changeConfig_new.forEach(config_new => {
-                           if (config_new.name === control.name) {
-                             Exist = true;
-                             config_new['options'] = caseItem['option'];
-                           }
-                      });
-                      if (!Exist) {
-                        control.options = caseItem['option'];
-                        control = JSON.parse(JSON.stringify(control));
-                        changeConfig_new.push(control);
+                  // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                  if (caseItem['type'] === 'option') {
+                    // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
+                    let Exist = false;
+                    changeConfig_new.forEach(config_new => {
+                      if (config_new.name === control.name) {
+                        Exist = true;
+                        config_new['options'] = caseItem['option'];
                       }
-                     
+                    });
+                    if (!Exist) {
+                      control.options = caseItem['option'];
+                      control = JSON.parse(JSON.stringify(control));
+                      changeConfig_new.push(control);
                     }
-                   if (caseItem['type'] === 'ajax') {
-                      // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
-                      // 解析参数 
-                     
-                      const caseCodeValue = { };
-                      caseItem['ajax'].forEach(ajaxItem => {
-                        if (ajaxItem['type'] === 'value') {
-                          caseCodeValue['name'] = data[ajaxItem['valueName']];
-                        }
-                        // 其他取值【日后扩展部分】
-                      });
-                      let Exist = false; 
-                      changeConfig_new.forEach(config_new => {
-                           if (config_new.name === control.name) {
-                             Exist = true;
-                             config_new['caseCodeValue'] = caseCodeValue;
-                           }
-                      });
-                      if (!Exist) {
-                        control['caseCodeValue'] = caseCodeValue;
-                        control = JSON.parse(JSON.stringify(control));
-                        changeConfig_new.push(control);
-                      }
 
+                  }
+                  if (caseItem['type'] === 'ajax') {
+                    // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+                    // 解析参数 
+
+                    const caseCodeValue = {};
+                    caseItem['ajax'].forEach(ajaxItem => {
+                      if (ajaxItem['type'] === 'value') {
+                        caseCodeValue['name'] = data[ajaxItem['valueName']];
+                      }
+                      // 其他取值【日后扩展部分】
+                    });
+                    let Exist = false;
+                    changeConfig_new.forEach(config_new => {
+                      if (config_new.name === control.name) {
+                        Exist = true;
+                        config_new['caseCodeValue'] = caseCodeValue;
+                      }
+                    });
+                    if (!Exist) {
+                      control['caseCodeValue'] = caseCodeValue;
+                      control = JSON.parse(JSON.stringify(control));
+                      changeConfig_new.push(control);
                     }
-                
+
+                  }
+
                   // endregion  解析结束
 
                 });
 
 
               }
-             if (this.cascadeList[sendCasade][key]['valueType']) {
+              if (this.cascadeList[sendCasade][key]['valueType']) {
 
                 this.cascadeList[sendCasade][key]['valueType'].forEach(caseItem => {
 
@@ -704,20 +707,31 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
                       let Exist = false;
                       changeConfig_new.forEach(config_new => {
-                           if (config_new.name === control.name) {
-                             Exist = true;
-                             config_new['options'] = caseItem['option'];
-                           }
+                        if (config_new.name === control.name) {
+                          Exist = true;
+                          config_new['options'] = caseItem['option'];
+                        }
                       });
                       if (!Exist) {
                         control.options = caseItem['option'];
                         control = JSON.parse(JSON.stringify(control));
                         changeConfig_new.push(control);
                       }
-                    } else if (caseItem['type'] === 'ajax') {
+                    }
+                    if (caseItem['type'] === 'ajax') {
                       // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
 
                     }
+                    if (caseItem['type'] === 'show') {
+
+                      if (caseItem['show']) {
+                       //
+                       control['hidden'] = caseItem['show']['hidden'];
+                      }
+                    
+                     
+                    }
+
                   }
                   // endregion  解析结束
 
