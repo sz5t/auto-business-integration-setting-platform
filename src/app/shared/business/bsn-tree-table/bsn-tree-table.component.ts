@@ -1,14 +1,16 @@
-import { Component, OnInit, ViewChild, Input, OnDestroy, Type } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
-import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
+
+import { Component, OnInit, ViewChild, Input, OnDestroy, Type, Inject } from '@angular/core';
 import { ApiService } from '../../../core/utility/api-service';
 import { CommonTools } from '../../../core/utility/common-tools';
-import { APIResource } from '../../../core/utility/api-resource';
 import { NzModalService, NzMessageService } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
+import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES } from '../../../core/relative-Service/BsnTableStatus';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
+import { Subscription } from 'rxjs/Subscription';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -71,31 +73,38 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     rowContent = {};
     dataSet = {};
     checkedCount = 0;
+
+    _statusSubscription: Subscription;
+    _cascadeSubscription: Subscription;
     // endregion
 
     constructor(
         private _http: ApiService,
         private message: NzMessageService,
         private modalService: NzModalService,
-        private relativeMessage: RelativeService
+        private relativeMessage: RelativeService,
+        @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
     ) { super(); }
 
     // region: 生命周期事件
     ngOnInit() {
-        this._relativeResolver = new RelativeResolver();
-        if (this.config.relations && this.config.relations.length > 0) {
-            this._relativeResolver.reference = this;
-            this._relativeResolver.relativeService = this.relativeMessage;
-            this._relativeResolver.relations = this.config.relations;
-            this._relativeResolver.initParameterEvents = [this.load];
-            this._relativeResolver.tempParameter = this._tempParameters;
-            this._relativeResolver.resolverRelation();
-        }
+        // this._relativeResolver = new RelativeResolver();
+        // if (this.config.relations && this.config.relations.length > 0) {
+        //     this._relativeResolver.reference = this;
+        //     this._relativeResolver.relativeService = this.relativeMessage;
+        //     this._relativeResolver.relations = this.config.relations;
+        //     this._relativeResolver.initParameterEvents = [this.load];
+        //     this._relativeResolver.tempParameter = this._tempParameters;
+        //     this._relativeResolver.resolverRelation();
+        // }
+        this.resolverRelation();
         if (this.config.dataSet) {
             (async () => {
                 for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
-                    const url = this._buildURL(this.config.dataSet[i].ajaxConfig);
-                    const params = this._buildParameters(this.config.dataSet[i].params);
+                    const url = this._buildURL(this.config.dataSet[i].ajaxConfig.url);
+                    const params = this._buildParameters(this.config.dataSet[i].ajaxConfig.params);
                     const data = await this.get(url, params);
                     if (data && data.Status === 200) {
                         if (this.config.dataSet[i].fields) {
@@ -119,6 +128,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                 }
             })();
         }
+        this.pageSize = this.config.pageSize ? this.config.pageSize : this.pageSize;
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
@@ -130,6 +140,94 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     ngOnDestroy() {
         if (this._relativeResolver) {
             this._relativeResolver.unsubscribe();
+        }
+        if (this._statusSubscription) {
+            this._statusSubscription.unsubscribe();
+        }
+        if (this._cascadeSubscription) {
+            this._cascadeSubscription.unsubscribe();
+        }
+    }
+    // endregion
+
+    // region: 解析消息
+    private resolverRelation() {
+        // 注册按钮状态触发接收器
+        this._statusSubscription = this.stateEvents.subscribe(updateState => {
+            if (updateState._viewId === this.config.viewId) {
+                const option = updateState.option;
+                switch (updateState._mode) {
+                    case BSN_COMPONENT_MODES.CREATE:
+                        this.addRow();
+                        break;
+                    case BSN_COMPONENT_MODES.EDIT:
+                        this.updateRow();
+                        break;
+                    case BSN_COMPONENT_MODES.CANCEL:
+                        this.cancelRow();
+                        break;
+                    case BSN_COMPONENT_MODES.SAVE:
+                        this.saveRow();
+                        break;
+                    case BSN_COMPONENT_MODES.DELETE:
+                        this.deleteRow();
+                        break;
+                    case BSN_COMPONENT_MODES.DIALOG:
+                        this.dialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.WINDOW:
+                        this.windowDialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.FORM:
+                        this.formDialog(option);
+                        break;
+                }
+            }
+        });
+        // 通过配置中的组件关系类型设置对应的事件接受者
+        // 表格内部状态触发接收器console.log(this.config);
+        if (this.config.componentType && this.config.componentType.parent === true) {
+            // 注册消息发送方法
+            // 注册行选中事件发送消息
+            this.after(this, 'selectRow', () => {
+                this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                    data: this._selectRow
+                }));
+            });
+        }
+        if (this.config.componentType && this.config.componentType.child === true) {
+            this._cascadeSubscription = this.cascadeEvents.subscribe(cascadeEvent => {
+                // 解析子表消息配置
+                if (this.config.relations && this.config.relations.length > 0) {
+                    this.config.relations.forEach(relation => {
+                        if (relation.relationViewId === cascadeEvent._viewId) {
+                            // 获取当前设置的级联的模式
+                            const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode];
+                            // 获取传递的消息数据
+                            const option = cascadeEvent.option;
+                            // 解析参数
+                            if (relation.params && relation.params.length > 0) {
+                                relation.params.forEach(param => {
+                                    this._tempParameters[param['cid']] = option.data[param['pid']];
+                                });
+                            }
+                            // 匹配及联模式
+                            switch (mode) {
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                    this.load();
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                    this.load();
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                                    break;
+                            }
+                        }
+                    });
+                }
+            });
         }
     }
     // endregion
@@ -242,7 +340,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         const params = {};
         if (this.config['pagination']) {
             params['_page'] = this.pageIndex;
-            this.pageSize = this.config.pageSize ? this.config.pageSize : this.pageSize;
             params['_rows'] = this.pageSize;
         }
         return params;
@@ -450,6 +547,14 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
             }
         }
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
+        }
         return isSuccess;
     }
 
@@ -475,6 +580,14 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                     this.load();
                 }
             }
+        }
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
         }
         return isSuccess;
     }
@@ -870,6 +983,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     // }
 
 
+
     convertTreeToList(root: object): any[] {
         const stack = [];
         const array = [];
@@ -902,5 +1016,25 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         }
     }
 
+    dialog(option) {
+        if (this.config.dialog && this.config.dialog.length > 0) {
+            const index = this.config.dialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.dialog[index]);
+        }
+    }
+
+    windowDialog(option) {
+        if (this.config.windowDialog && this.config.windowDialog.length > 0) {
+            const index = this.config.windowDialog.findIndex(item => item.name === option.name);
+            this.showLayout(this.config.windowDialog[index]);
+        }
+    }
+
+    formDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.formDialog[index]);
+        }
+    }
 
 }

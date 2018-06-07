@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
@@ -20,10 +21,11 @@ export class RelativeService {
     return this.subject.asObservable();
   }
 }
+
 // endregion
 
-@Injectable()
 // region: global relative service
+@Injectable()
 export class RelativeResolver {
 
   // 接收消息的组件
@@ -192,3 +194,23 @@ export class RelativeResolver {
 }
 // endregion
 
+// region: third part 
+
+@Injectable() 
+export class BsnTableRelativeMessageService {
+  private subject = new Subject<BsnToolbarRelativeMessage> ();
+  sendMessage(msg: BsnToolbarRelativeMessage) {
+    this.subject.next(msg);
+  }
+  get messages(): Observable<BsnToolbarRelativeMessage> {
+    return this.subject;
+  }
+} 
+
+export class BsnToolbarRelativeMessage {
+  senderViewId: string;
+  action: string;
+  messageData: any[];
+}
+
+// endregion

@@ -1,16 +1,21 @@
 
+import { Observable } from 'rxjs/Observable';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from './../../../core/relative-Service/BsnTableStatus';
+
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { ComponentSettingResolverComponent } from '@shared/resolver/component-resolver/component-setting-resolver.component';
 import { LayoutResolverComponent } from './../../resolver/layout-resolver/layout-resolver.component';
 import { TypeOperationComponent } from './../../../routes/system/data-manager/type-operation.component';
-import { Component, OnInit, Input, OnDestroy, Type } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Type, Inject } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { CommonTools } from '../../../core/utility/common-tools';
 import { ApiService } from '../../../core/utility/api-service';
 import { APIResource } from '../../../core/utility/api-resource';
-import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
+import { RelativeService, RelativeResolver, BsnTableRelativeMessageService } from '../../../core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
+import { Observer } from 'rxjs/Observer';
+import { Subscription } from 'rxjs/Subscription';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -76,28 +81,37 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     rowContent = {};
     dataSet = {};
     checkedCount = 0;
+
+    _statusSubscription: Subscription;
+    _cascadeSubscription: Subscription;
     // endregion
 
     constructor(
         private _http: ApiService,
         private message: NzMessageService,
         private modalService: NzModalService,
-        private relativeMessage: RelativeService
+        private relativeMessage: RelativeService,
+        @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
+
     ) {
         super();
     }
 
     // region: 生命周期事件
     ngOnInit() {
-        this._relativeResolver = new RelativeResolver();
-        if (this.config.relations && this.config.relations.length > 0) {
-            this._relativeResolver.reference = this;
-            this._relativeResolver.relativeService = this.relativeMessage;
-            this._relativeResolver.relations = this.config.relations;
-            this._relativeResolver.initParameterEvents = [this.load];
-            this._relativeResolver.tempParameter = this._tempParameters;
-            this._relativeResolver.resolverRelation();
-        }
+        // this._relativeResolver = new RelativeResolver();
+        // if (this.config.relations && this.config.relations.length > 0) {
+        //     this._relativeResolver.reference = this;
+        //     this._relativeResolver.relativeService = this.relativeMessage;
+        //     this._relativeResolver.relations = this.config.relations;
+        //     this._relativeResolver.initParameterEvents = [this.load];
+        //     this._relativeResolver.tempParameter = this._tempParameters;
+        //     this._relativeResolver.resolverRelation();
+        // }
+        
+        this.resolverRelation();
         if (this.config.dataSet) {
             (async () => {
                 for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
@@ -109,7 +123,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             const dataSetObjs = [];
                             data.Data.map(d => {
                                 const setObj = {};
-                                this.config.dataSet[i].fields.map(fieldItem => {
+                                this.config.dataSet[i].fields.forEach((fieldItem, index) => {
                                     if (d[fieldItem.field]) {
                                         setObj[fieldItem.name] = d[fieldItem.field];
                                     }
@@ -126,6 +140,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 }
             })();
         }
+        this.pageSize = this.config.pageSize ? this.config.pageSize : this.pageSize;
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
@@ -134,11 +149,101 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this.load();
         }
     }
+    private resolverRelation() {
+        // 注册按钮状态触发接收器
+        this._statusSubscription = this.stateEvents.subscribe(updateState => {
+            if (updateState._viewId === this.config.viewId) {
+                const option = updateState.option;
+                switch (updateState._mode) {
+                    case BSN_COMPONENT_MODES.CREATE:
+                        this.addRow();
+                        break;
+                    case BSN_COMPONENT_MODES.EDIT:
+                        this.updateRow();
+                        break;
+                    case BSN_COMPONENT_MODES.CANCEL:
+                        this.cancelRow();
+                        break;
+                    case BSN_COMPONENT_MODES.SAVE:
+                        this.saveRow();
+                        break;
+                    case BSN_COMPONENT_MODES.DELETE:
+                        this.deleteRow();
+                        break;
+                    case BSN_COMPONENT_MODES.DIALOG:
+                        this.dialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.WINDOW:
+                        this.windowDialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.FORM:
+                        this.formDialog(option);
+                        break;
+                }
+            }
+        });
+        // 通过配置中的组件关系类型设置对应的事件接受者
+        // 表格内部状态触发接收器console.log(this.config);
+        if (this.config.componentType && this.config.componentType.parent === true) {
+            // 注册消息发送方法
+            // 注册行选中事件发送消息
+            this.after(this, 'selectRow', () => {
+                this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                    data: this._selectRow
+                }));
+            });
+        }
+        if (this.config.componentType && this.config.componentType.child === true) {
+            this._cascadeSubscription = this.cascadeEvents.subscribe(cascadeEvent => {
+                // 解析子表消息配置
+                if (this.config.relations && this.config.relations.length > 0) {
+                    this.config.relations.forEach(relation => {
+                        if (relation.relationViewId === cascadeEvent._viewId) {
+                            // 获取当前设置的级联的模式
+                            const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode];
+                            // 获取传递的消息数据
+                            const option = cascadeEvent.option;
+                            // 解析参数
+                            if (relation.params && relation.params.length > 0) {
+                                relation.params.forEach(param => {
+                                    this._tempParameters[param['cid']] = option.data[param['pid']];
+                                });
+                            }
+                            // 匹配及联模式
+                            switch (mode) {
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                    this.load();
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                    this.load();
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                                    break;
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
     ngOnDestroy() {
         if (this._relativeResolver) {
             this._relativeResolver.unsubscribe();
         }
+        if (this._statusSubscription) {
+            this._statusSubscription.unsubscribe();
+        }
+        if (this._cascadeSubscription) {
+            this._cascadeSubscription.unsubscribe();
+        }
     }
+    // endregion
+
+    // region: 解析消息
+
     // endregion
 
     // region: 功能实现
@@ -170,10 +275,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     } else {
                         loadData.Data.Rows.length > 0 && (focusId = loadData.Data.Rows[0].Id);
                     }
-                    loadData.Data.Rows.forEach(row => {
+                    loadData.Data.Rows.forEach((row, index) => {
                         row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
                         if (row.Id === focusId) {
                             this.selectRow(row);
+                        }
+                        if (loadData.Data.Page === 1) {
+                            row['_serilize'] = index + 1;
+                        } else {
+                            row['_serilize'] = (loadData.Data.Page - 1) * loadData.Data.PageSize + index + 1;
                         }
                     });
                     this._updateEditCacheByLoad(loadData.Data.Rows);
@@ -258,7 +368,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const params = {};
         if (this.config['pagination']) {
             params['_page'] = this.pageIndex;
-            this.pageSize = this.config.pageSize ? this.config.pageSize : this.pageSize;
             params['_rows'] = this.pageSize;
         }
         return params;
@@ -319,7 +428,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             }
             $event.stopPropagation();
         }
-       
+
         this.dataList.map(row => {
             row.selected = false;
         });
@@ -435,8 +544,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     this._saveEdit(row.key);
                 });
                 this.load();
-
             }
+        }
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
         }
         return isSuccess;
     }
@@ -464,6 +580,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 }
             }
         }
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
+        }
         return isSuccess;
     }
 
@@ -478,10 +602,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 } else {
                     this._cancelEdit(this.dataList[i].key);
                 }
-                
+
             }
         }
-    
+
         return true;
     }
 
@@ -494,7 +618,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const index = this.dataList.findIndex(item => item.key === key);
         this.editCache[key].edit = false;
         this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
-        
+
     }
 
     private _saveEdit(key: string): void {
@@ -547,7 +671,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
         rowContentNew['row_status'] = 'adding';
-        this.dataList = [rowContentNew, ...this.dataList ];
+        this.dataList = [rowContentNew, ...this.dataList];
         // this.dataList.push(this.rowContent);
         this._updateEditCache();
         this._startEdit(fieldIdentity.toString());
@@ -570,6 +694,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     deleteRow() {
+        if (this.dataList.filter(item => item.checked === true).length <= 0) {
+            this.message.create('info', '请选选择要删除的数据');
+            return false;
+        }
         this.modalService.confirm({
             nzTitle: '确认删除选中的记录？',
             nzContent: '',
@@ -612,7 +740,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 } else if (buttons[index].context) {
                     this[buttons[index].type](buttons[index].context);
                 }
-                
             }
         }
     }
@@ -630,7 +757,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (context.content) {
             arr = arr.concat(context.content);
         }
-        
+
         const func = new Function(...arr);
         func();
     }
@@ -863,4 +990,24 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
     // endregion
 
+    dialog(option) {
+        if (this.config.dialog && this.config.dialog.length > 0) {
+            const index = this.config.dialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.dialog[index]);
+        }
+    }
+
+    windowDialog(option) {
+        if (this.config.windowDialog && this.config.windowDialog.length > 0) {
+            const index = this.config.windowDialog.findIndex(item => item.name === option.name);
+            this.showLayout(this.config.windowDialog[index]);
+        }
+    }
+
+    formDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.formDialog[index]);
+        }
+    }
 }

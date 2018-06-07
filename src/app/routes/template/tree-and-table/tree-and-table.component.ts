@@ -44,7 +44,7 @@ export class TreeAndTableComponent implements OnInit {
                     ],
                     'componentType': {
                       'parent': true,
-                      'child': false,
+                      'child': true,
                       'own': false
                     },
                     'parent': [
@@ -54,27 +54,35 @@ export class TreeAndTableComponent implements OnInit {
                       'url': 'SinoForce.AppData.ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                       // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                        // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
                       ]
                     },
-                    'relations': [{
-                      'relationViewId': 'tree_and_table_tree',
-                      'relationSendContent': [
-                        {
-                          'name': 'clickNode',
-                          'sender': 'tree_and_table_tree',
-                          'aop': 'after',
-                          'receiver': 'tree_and_table_table',
-                          'relationData': {
-                            'name': 'refreshAsChild',
-                            'params': [
-                              { 'pid': 'key', 'cid': '_parentId' }
-                            ]
-                          },
-                        }
-                      ],
-                      'relationReceiveContent': []
-                    }]
+                    'relations': [
+                      {
+                        'relationViewId': 'tree_and_table_table',
+                        'cascadeMode': 'REFRESH',
+                        'params': []
+                      }
+                    ]
+                    // 'relations': [{
+                    //   'relationViewId': 'tree_and_table_tree',
+
+                    //   'relationSendContent': [
+                    //     {
+                    //       'name': 'clickNode',
+                    //       'sender': 'tree_and_table_tree',
+                    //       'aop': 'after',
+                    //       'receiver': 'tree_and_table_table',
+                    //       'relationData': {
+                    //         'name': 'refreshAsChild',
+                    //         'params': [
+                    //           { 'pid': 'key', 'cid': '_parentId' }
+                    //         ]
+                    //       },
+                    //     }
+                    //   ],
+                    //   'relationReceiveContent': []
+                    // }]
                   },
                   dataList: []
                 }
@@ -287,22 +295,31 @@ export class TreeAndTableComponent implements OnInit {
                       'own': false
                     },
                     'relations': [{
-                      'relationViewId': 'tree_and_table_table',
-                      'relationSendContent': [
+                      'relationViewId': 'tree_and_table_tree',
+                      'cascadeMode': 'REFRESH_AS_CHILD',
+                      'params': [
                         {
-                          'name': 'load',
-                          'sender': 'tree_and_table_table',
-                          'aop': 'after',
-                          'receiver': 'tree_and_table_tree',
-                          'relationData': {
-                            'name': 'refreshAsChild',
-                            'params': [
-                            ]
-                          }
+                          pid: 'key', cid: '_parentId'
                         }
-                      ],
-                      'relationReceiveContent': []
+                      ]
                     }],
+                    // 'relations': [{
+                    //   'relationViewId': 'tree_and_table_table',
+                    //   'relationSendContent': [
+                    //     {
+                    //       'name': 'load',
+                    //       'sender': 'tree_and_table_table',
+                    //       'aop': 'after',
+                    //       'receiver': 'tree_and_table_tree',
+                    //       'relationData': {
+                    //         'name': 'refreshAsChild',
+                    //         'params': [
+                    //         ]
+                    //       }
+                    //     }
+                    //   ],
+                    //   'relationReceiveContent': []
+                    // }],
                     'toolbar': [
                       {
                         'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
@@ -359,7 +376,7 @@ export class TreeAndTableComponent implements OnInit {
                               // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                               { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                               { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                              //{ name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
+                              // { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
                               { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                               { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
                             ]
@@ -953,7 +970,7 @@ export class TreeAndTableComponent implements OnInit {
                                     'url': 'SinoForce.AppData.ShowCase',
                                     'batch': true,
                                     'params': [
-                                      { name: 'Id', type: 'checkedItem', valueName: 'Id', value: ''},
+                                      { name: 'Id', type: 'checkedItem', valueName: 'Id', value: '' },
                                       { name: 'CaseName', type: 'checkedItem', valueName: 'CaseName', value: '' },
                                       { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                                     ]
@@ -973,9 +990,9 @@ export class TreeAndTableComponent implements OnInit {
                           'layoutName': 'singleTable',
                           'width': 800,
                           'buttons': [
-                              { 'name': 'ok1', 'text': '确定', 'class': 'editable-add-btn', 'type': 'primary'},
-                              { 'name': 'close', 'text': '关闭' }
-                            ]
+                            { 'name': 'ok1', 'text': '确定', 'class': 'editable-add-btn', 'type': 'primary' },
+                            { 'name': 'close', 'text': '关闭' }
+                          ]
                         }
                       },
                       {
@@ -1029,7 +1046,7 @@ export class TreeAndTableComponent implements OnInit {
           ]
         }
       }
-      
+
     ]
   };
 

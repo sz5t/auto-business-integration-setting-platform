@@ -859,8 +859,11 @@ export class MulitTableComponent implements OnInit {
                       'own': false
                     },
                     'relations': [{
-                      'relationViewId': 'childTable',
-                      'relationSendContent': [],
+                      'relationViewId': 'parentTable',
+                      'cascadeMode': 'REFRESH_AS_CHILD',
+                      'params': [
+                        { pid: 'Id', cid: '_parentId' }
+                      ],
                       'relationReceiveContent': []
                     }],
                     'columns': [

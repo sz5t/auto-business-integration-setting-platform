@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from './../../../core/relative-Service/BsnTableStatus';
+import { Component, OnInit, Input, OnDestroy, Inject } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '../../../core/utility/api-service';
 import { NzMessageService, NzTreeNode } from 'ng-zorro-antd';
@@ -6,6 +7,9 @@ import { RelativeService, RelativeResolver } from '../../../core/relative-Servic
 import { APIResource } from '../../../core/utility/api-resource';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '../../../core/utility/common-tools';
+import { Observer } from 'rxjs/Observer';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 @Component({
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
@@ -22,25 +26,103 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         expandNode: [],
         load: []
     };
+    _clickedNode: any;
+
+    _statusSubscription: Subscription;
+    _cascadeSubscription: Subscription;
     constructor(
         private _http: ApiService,
-        private _messageService: RelativeService
+        private _messageService: RelativeService,
+        @Inject(BSN_COMPONENT_MODES) private eventStatus: Observable<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
     }
 
     ngOnInit() {
-        if (this.config.relations) {
-            this._relativeResolver = new RelativeResolver();
-            this._relativeResolver.reference = this;
-            this._relativeResolver.relativeService = this._messageService;
-            this._relativeResolver.initParameter = [this.loadTreeData];
-            this._relativeResolver.initParameterEvents = [this.loadTreeData];
-            this._relativeResolver.relations = this.config.relations;
-            this._relativeResolver.resolverRelation();
-            this._tempValue = this._relativeResolver. _tempParameter;
+        // if (this.config.relations) {
+        //     this._relativeResolver = new RelativeResolver();
+        //     this._relativeResolver.reference = this;
+        //     this._relativeResolver.relativeService = this._messageService;
+        //     this._relativeResolver.initParameter = [this.loadTreeData];
+        //     this._relativeResolver.initParameterEvents = [this.loadTreeData];
+        //     this._relativeResolver.relations = this.config.relations;
+        //     this._relativeResolver.resolverRelation();
+        //     this._tempValue = this._relativeResolver. _tempParameter;
+        // }
+        
+        this._statusSubscription = this.eventStatus.subscribe(updateStatus => {
+            if (this.config.viewId = updateStatus._viewId) {
+                const option = updateStatus.option;
+                switch (updateStatus._mode) {
+                    case BSN_COMPONENT_MODES.ADD_NODE:
+                    break;
+                    case BSN_COMPONENT_MODES.DELETE_NODE:
+                    break;
+                    case BSN_COMPONENT_MODES.EDIT_NODE:
+                    break;
+                    case BSN_COMPONENT_MODES.SAVE:
+                    break;
+                    case BSN_COMPONENT_MODES.FORM:
+                    break;
+                    case BSN_COMPONENT_MODES.DIALOG:
+                    break;
+                    case BSN_COMPONENT_MODES.WINDOW:
+                    break;
+                }
+            }
+        });
+     
+        if (this.config.componentType && this.config.componentType.parent === true) {
+            this.after(this, 'clickNode', () => {
+                this._clickedNode && this.cascade.next(
+                    new BsnComponentMessage(
+                        BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                        this.config.viewId,
+                        {
+                            data: this._clickedNode
+                        }
+                    )
+                );
+            });
         }
+
+        if (this.config.componentType && this.config.componentType.child === true) {
+            this._statusSubscription =  this.cascadeEvents.subscribe(cascadeEvent => {
+                if (this.config.relations && this.config.relations.length > 0) {
+                    this.config.relations.forEach(relation => {
+                        if (relation.relationViewId === cascadeEvent._viewId) {
+                            // 获取当前设置的级联的模式
+                            const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode];
+                            // 获取传递的消息数据
+                            const option = cascadeEvent.option;
+                            // 解析参数
+                            if (relation.params && relation.params.length > 0) {
+                                relation.params.forEach(param => {
+                                    this._tempValue[param['cid']] = option.data[param['pid']];
+                                });
+                            }
+                            switch (mode) {
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                    this.load();
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                    this.load();
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.SELECTED_NODE:
+                                break;
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         if (this.config.componentType) {
+            if (this.config.componentType.parent === true) {
+                this.loadTreeData();
+            }
             if (!this.config.componentType.child) {
                 this.loadTreeData();
             }
@@ -56,7 +138,6 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     loadTreeData() {
-        console.log ( '执行树刷新');
         (async () => {
             const data = await this.getTreeData();
             if (data.Data && data.Status === 200) {
@@ -113,6 +194,10 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 } else {
                     data[i]['isLeaf'] = true;
                 }
+                
+                if (this._clickedNode && (data[i]['key'] === this._clickedNode['key'])) {
+                    data[i]['isSelected'] = true;
+                }
                 data[i].level = '';
                 result.push(new NzTreeNode(data[i]));
             }
@@ -146,7 +231,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     clickNode = (e) => {
-        console.log('node click', e);
+        this._clickedNode = e.node;
     }
 
     checkboxChange = (e) => {
@@ -158,8 +243,14 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     ngOnDestroy() {
-        if (this._relativeResolver) {
-            this._relativeResolver.unsubscribe();
+        // if (this._relativeResolver) {
+        //     this._relativeResolver.unsubscribe();
+        // }
+        if (this._statusSubscription) {
+            this._statusSubscription.unsubscribe();
+        }
+        if (this._cascadeSubscription) {
+            this._cascadeSubscription.unsubscribe();
         }
     }
 

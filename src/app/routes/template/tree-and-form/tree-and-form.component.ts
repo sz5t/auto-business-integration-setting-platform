@@ -286,13 +286,15 @@ export class TreeAndFormComponent implements OnInit {
                                             ],
 
                                         'dataList': [],
-                                        'relations': [
-                                            {
-                                                relationViewId: 'tree_and_form_form',
-                                                relationSendContent: [],
-                                                relationReceiveContent: []
-                                            }
-                                        ]
+                                        'relations': [{
+                                            'relationViewId': 'tree_and_form_tree',
+                                            'cascadeMode': 'REFRESH_AS_CHILD',
+                                            'params': [
+                                              {
+                                                pid: 'key', cid: '_parentId'
+                                              }
+                                            ]
+                                          }]
                                     },
                                     dataList: []
                                 }

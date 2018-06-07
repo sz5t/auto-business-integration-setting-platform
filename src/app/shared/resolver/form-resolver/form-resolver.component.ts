@@ -1,19 +1,19 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { APIResource } from '../../../core/utility/api-resource';
-import { concat } from 'rxjs/observable/concat';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '../../../core/utility/common-tools';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from './../../../core/relative-Service/BsnTableStatus';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 
 @Component({
   selector: 'cn-form-resolver,[cn-form-resolver]',
   templateUrl: './form-resolver.component.html',
 })
-export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges {
+export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges, OnDestroy {
 
   @Input() config;
   @Input() dataList;
@@ -28,11 +28,17 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   };
   _tempParameters = {};
   isSpinning = false;
+  _statusSubscription;
+  _cascadeSubscription;
+
   constructor(
     private formBuilder: FormBuilder,
     private _http: ApiService,
     private message: NzMessageService, private modalService: NzModalService,
-    private _messageService: RelativeService
+    private _messageService: RelativeService,
+    @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+    @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+    @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
   ) {
     super();
   }
@@ -40,16 +46,17 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   // region: 组件生命周期事件
   ngOnInit() {
     this.form = this.createGroup();
-    if (this.config.relations) {
-      this._relativeResolver = new RelativeResolver();
-      this._relativeResolver.reference = this;
-      this._relativeResolver.relativeService = this._messageService;
-      this._relativeResolver.initParameter = [this.load];
-      this._relativeResolver.initParameterEvents = [this.load];
-      this._relativeResolver.relations = this.config.relations;
-      this._relativeResolver.resolverRelation();
-      this._tempParameters = this._relativeResolver._tempParameter;
-    }
+    // if (this.config.relations) {
+    //   this._relativeResolver = new RelativeResolver();
+    //   this._relativeResolver.reference = this;
+    //   this._relativeResolver.relativeService = this._messageService;
+    //   this._relativeResolver.initParameter = [this.load];
+    //   this._relativeResolver.initParameterEvents = [this.load];
+    //   this._relativeResolver.relations = this.config.relations;
+    //   this._relativeResolver.resolverRelation();
+    //   this._tempParameters = this._relativeResolver._tempParameter;
+    // }
+    this.resolverRelation();
     if (this.ref) {
       for (const p in this.ref) {
         this._tempParameters[p] = this.ref[p];
@@ -65,6 +72,100 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       }
     }
   }
+
+  ngOnDestroy() {
+    if (this._statusSubscription) {
+        this._statusSubscription.unsubscribe();
+    }
+    if (this._cascadeSubscription) {
+        this._cascadeSubscription.unsubscribe();
+    }
+}
+
+  // region: 解析消息
+  private resolverRelation() {
+    // 注册按钮状态触发接收器
+    this._statusSubscription = this.stateEvents.subscribe(updateState => {
+      if (updateState._viewId === this.config.viewId) {
+        const option = updateState.option;
+        switch (updateState._mode) {
+          case BSN_COMPONENT_MODES.CREATE:
+
+            break;
+          case BSN_COMPONENT_MODES.EDIT:
+
+            break;
+          case BSN_COMPONENT_MODES.CANCEL:
+
+            break;
+          case BSN_COMPONENT_MODES.SAVE:
+
+            break;
+          case BSN_COMPONENT_MODES.DELETE:
+
+            break;
+          case BSN_COMPONENT_MODES.DIALOG:
+
+            break;
+          case BSN_COMPONENT_MODES.WINDOW:
+
+            break;
+          case BSN_COMPONENT_MODES.FORM:
+
+            break;
+        }
+      }
+    });
+    // 通过配置中的组件关系类型设置对应的事件接受者
+    // 表格内部状态触发接收器console.log(this.config);
+    if (this.config.componentType && this.config.componentType.parent === true) {
+      // 注册消息发送方法
+      // 注册行选中事件发送消息
+      this.after(this, 'save', () => {
+        this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH, this.config.viewId, {
+          data: this.value
+        }));
+      });
+    }
+    if (this.config.componentType && this.config.componentType.child === true) {
+      this._cascadeSubscription = this.cascadeEvents.subscribe(cascadeEvent => {
+        console.log('1');
+        // 解析子表消息配置
+        if (this.config.relations && this.config.relations.length > 0) {
+          this.config.relations.forEach(relation => {
+            if (relation.relationViewId === cascadeEvent._viewId) {
+              console.log('2');
+              // 获取当前设置的级联的模式
+              const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode];
+              // 获取传递的消息数据
+              const option = cascadeEvent.option;
+              // 解析参数
+              if (relation.params && relation.params.length > 0) {
+                relation.params.forEach(param => {
+                  this._tempParameters[param['cid']] = option.data[param['pid']];
+                });
+              }
+              // 匹配及联模式
+              switch (mode) {
+                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                  this.load();
+                  break;
+                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                  console.log('form load');
+                  this.load();
+                  break;
+                case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                  break;
+                case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                  break;
+              }
+            }
+          });
+        }
+      });
+    }
+  }
+  // endregion
 
   ngOnChanges() {
     if (this.form) {
@@ -251,9 +352,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     this.isSpinning = true;
     const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
     if (ajaxData) {
-      // console.log('异步加载表单数据load', ajaxData);
+      console.log('异步加载表单数据load', ajaxData);
       if (ajaxData.Data) {
-        // console.log('待赋值的表单数据', ajaxData.Data);
+        console.log('待赋值的表单数据', ajaxData.Data);
         this.setFormValue(ajaxData.Data[0]);
         // 给主键赋值
         if (this.config.keyId) {

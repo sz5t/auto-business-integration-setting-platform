@@ -1,3 +1,5 @@
+
+import { BsnTableRelativeMessageService } from './core/relative-Service/relative-service';
 import { NgModule, LOCALE_ID, APP_INITIALIZER, Injector } from '@angular/core';
 import { HttpClient, HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
@@ -25,7 +27,9 @@ import { I18NService } from '@core/i18n/i18n.service';
 import { UEditorModule } from 'ngx-ueditor';
 import { NgxTinymceModule } from 'ngx-tinymce';
 import { ApiService } from '@core/utility/api-service';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
+import { RelativeService, RelativeResolver, BsnToolbarRelativeMessage } from '@core/relative-Service/relative-service';
+import { BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODES } from './core/relative-Service/BsnTableStatus';
+import { Subject } from 'rxjs/Subject';
 // JSON-Schema form
 // import { JsonSchemaModule } from '@shared/json-schema/json-schema.module';
 
@@ -87,6 +91,14 @@ export function StartupServiceFactory(startupService: StartupService): Function 
             useFactory: StartupServiceFactory,
             deps: [StartupService],
             multi: true
+        },
+        {
+            provide: BSN_COMPONENT_MODES, 
+            useValue: new Subject<BsnComponentMessage>()
+        },
+        {
+            provide: BSN_COMPONENT_CASCADE, 
+            useValue: new Subject<BsnComponentMessage>()
         },
         ApiService,
         RelativeService,

@@ -46,7 +46,7 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
   ngOnChanges() {
     if (this.componentRef && this.config) {
       this.container.clear();
-      this.createBsnComponent();
+      // this.createBsnComponent();
     }
   }
 
