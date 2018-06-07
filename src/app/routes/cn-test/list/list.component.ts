@@ -12,7 +12,7 @@ export interface TreeNodeInterface {
     expand: boolean;
     address: string;
     children?: TreeNodeInterface[];
-  }
+}
 // import { RandomUserService } from '../randomUser.service';
 @Component({
     selector: 'app-list',
@@ -162,9 +162,9 @@ export class ListComponent implements OnInit {
            });
          } */
 
-         this.data.forEach(item => {
-            this.expandDataCache[ item.key ] = this.convertTreeToList(item);
-          });
+        this.data.forEach(item => {
+            this.expandDataCache[item.key] = this.convertTreeToList(item);
+        });
     }
 
     showMsg(msg: string) {
@@ -660,7 +660,7 @@ export class ListComponent implements OnInit {
                 },
             },
             { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' },
-          
+
         ]
 
     };
@@ -1166,185 +1166,596 @@ export class ListComponent implements OnInit {
 
 
 
-    expandKeys = [ '1001', '10001' ];
-    checkedKeys = [ '10001', '1002' ];
-    selectedKeys = [ '10001', '100011' ];
+    expandKeys = ['1001', '10001'];
+    checkedKeys = ['10001', '1002'];
+    selectedKeys = ['10001', '100011'];
     expandDefault = false;
     nodesnewtree = [
-      new NzTreeNode({
-        title   : 'root1',
-        key     : '1001',
-        children: [
-          {
-            title   : 'child1',
-            key     : '10001',
+        new NzTreeNode({
+            title: 'root1',
+            key: '1001',
             children: [
-              {
-                title   : 'child1.1',
-                key     : '100011',
-                children: []
-              },
-              {
-                title   : 'child1.2',
-                key     : '100012',
-                children: [
-                  {
-                    title   : 'grandchild1.2.1',
-                    key     : '1000121',
-                    isLeaf  : true,
-                    disabled: true
-                  },
-                  {
-                    title : 'grandchild1.2.2',
-                    key   : '1000122',
-                    isLeaf: true
-                  }
-                ]
-              }
+                {
+                    title: 'child1',
+                    key: '10001',
+                    children: [
+                        {
+                            title: 'child1.1',
+                            key: '100011',
+                            children: []
+                        },
+                        {
+                            title: 'child1.2',
+                            key: '100012',
+                            children: [
+                                {
+                                    title: 'grandchild1.2.1',
+                                    key: '1000121',
+                                    isLeaf: true,
+                                    disabled: true
+                                },
+                                {
+                                    title: 'grandchild1.2.2',
+                                    key: '1000122',
+                                    isLeaf: true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    title: 'child2',
+                    key: '10002'
+                }
             ]
-          },
-          {
-            title: 'child2',
-            key  : '10002'
-          }
-        ]
-      }),
-      new NzTreeNode({
-        title   : 'root2',
-        key     : '1002',
-        children: [
-          {
-            title          : 'child2.1',
-            key            : '10021',
-            children       : [],
-            disableCheckbox: true
-          },
-          {
-            title   : 'child2.2',
-            key     : '10022',
+        }),
+        new NzTreeNode({
+            title: 'root2',
+            key: '1002',
             children: [
-              {
-                title: 'grandchild2.2.1',
-                key  : '100221'
-              }
+                {
+                    title: 'child2.1',
+                    key: '10021',
+                    children: [],
+                    disableCheckbox: true
+                },
+                {
+                    title: 'child2.2',
+                    key: '10022',
+                    children: [
+                        {
+                            title: 'grandchild2.2.1',
+                            key: '100221'
+                        }
+                    ]
+                }
             ]
-          }
-        ]
-      }),
-      new NzTreeNode({ title: 'root3', key: '1003' })
+        }),
+        new NzTreeNode({ title: 'root3', key: '1003' })
     ];
-  
+
     mouseAction(name: string, event: NzFormatEmitEvent): void {
-      console.log(name, event);
+        console.log(name, event);
     }
-  
+
 
 
 
     // --------------------------
     data = [
         {
-          key     : 1,
-          name    : 'John Brown sr.',
-          age     : 60,
-          address : 'New York No. 1 Lake Park',
-          children: [
-            {
-              key    : 11,
-              name   : 'John Brown',
-              age    : 42,
-              address: 'New York No. 2 Lake Park'
-            },
-            {
-              key     : 12,
-              name    : 'John Brown jr.',
-              age     : 30,
-              address : 'New York No. 3 Lake Park',
-              children: [ {
-                key    : 121,
-                name   : 'Jimmy Brown',
-                age    : 16,
-                address: 'New York No. 3 Lake Park'
-              } ]
-            },
-            {
-              key     : 13,
-              name    : 'Jim Green sr.',
-              age     : 72,
-              address : 'London No. 1 Lake Park',
-              children: [
+            key: 1,
+            name: 'John Brown sr.',
+            age: 60,
+            address: 'New York No. 1 Lake Park',
+            children: [
                 {
-                  key     : 131,
-                  name    : 'Jim Green',
-                  age     : 42,
-                  address : 'London No. 2 Lake Park',
-                  children: [
-                    {
-                      key    : 1311,
-                      name   : 'Jim Green jr.',
-                      age    : 25,
-                      address: 'London No. 3 Lake Park'
-                    },
-                    {
-                      key    : 1312,
-                      name   : 'Jimmy Green sr.',
-                      age    : 18,
-                      address: 'London No. 4 Lake Park'
-                    }
-                  ]
+                    key: 11,
+                    name: 'John Brown',
+                    age: 42,
+                    address: 'New York No. 2 Lake Park'
+                },
+                {
+                    key: 12,
+                    name: 'John Brown jr.',
+                    age: 30,
+                    address: 'New York No. 3 Lake Park',
+                    children: [{
+                        key: 121,
+                        name: 'Jimmy Brown',
+                        age: 16,
+                        address: 'New York No. 3 Lake Park'
+                    }]
+                },
+                {
+                    key: 13,
+                    name: 'Jim Green sr.',
+                    age: 72,
+                    address: 'London No. 1 Lake Park',
+                    children: [
+                        {
+                            key: 131,
+                            name: 'Jim Green',
+                            age: 42,
+                            address: 'London No. 2 Lake Park',
+                            children: [
+                                {
+                                    key: 1311,
+                                    name: 'Jim Green jr.',
+                                    age: 25,
+                                    address: 'London No. 3 Lake Park'
+                                },
+                                {
+                                    key: 1312,
+                                    name: 'Jimmy Green sr.',
+                                    age: 18,
+                                    address: 'London No. 4 Lake Park'
+                                }
+                            ]
+                        }
+                    ]
                 }
-              ]
-            }
-          ]
+            ]
         },
         {
-          key    : 2,
-          name   : 'Joe Black',
-          age    : 32,
-          address: 'Sidney No. 1 Lake Park'
+            key: 2,
+            name: 'Joe Black',
+            age: 32,
+            address: 'Sidney No. 1 Lake Park'
         }
-      ];
-      expandDataCache = {};
-    
-      collapse(array: any[], data: any, $event: boolean): void {
+    ];
+    expandDataCache = {};
+
+    collapse(array: any[], data: any, $event: boolean): void {
         if ($event === false) {
-          if (data.children) {
-            data.children.forEach(d => {
-              const target = array.find(a => a.key === d.key);
-              target.expand = false;
-              this.collapse(array, target, false);
-            });
-          } else {
-            return;
-          }
+            if (data.children) {
+                data.children.forEach(d => {
+                    const target = array.find(a => a.key === d.key);
+                    target.expand = false;
+                    this.collapse(array, target, false);
+                });
+            } else {
+                return;
+            }
         }
-      }
-    
-      convertTreeToList(root: object): any[] {
+    }
+
+    convertTreeToList(root: object): any[] {
         const stack = [];
         const array = [];
         const hashMap = {};
         stack.push({ ...root, level: 0, expand: false });
-    
+
         while (stack.length !== 0) {
-          const node = stack.pop();
-          this.visitNode(node, hashMap, array);
-          if (node.children) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-              stack.push({ ...node.children[ i ], level: node.level + 1, expand: false, parent: node });
+            const node = stack.pop();
+            this.visitNode(node, hashMap, array);
+            if (node.children) {
+                for (let i = node.children.length - 1; i >= 0; i--) {
+                    stack.push({ ...node.children[i], level: node.level + 1, expand: false, parent: node });
+                }
             }
-          }
         }
-    
+
         return array;
-      }
-    
-      visitNode(node: any, hashMap: object, array: any[]): void {
-        if (!hashMap[ node.key ]) {
-          hashMap[ node.key ] = true;
-          array.push(node);
+    }
+
+    visitNode(node: any, hashMap: object, array: any[]): void {
+        if (!hashMap[node.key]) {
+            hashMap[node.key] = true;
+            array.push(node);
         }
-      }
-    
+    }
+
+
+
+    /**
+     * 20180521 测试表单级联解析
+     */
+    configFormNew = {
+        'forms':
+            [
+                {
+                    controls: [
+                        {
+                          
+                            'type': 'select',
+                            'labelSize': '6',
+                            'controlSize': '16',
+                            'inputType': 'submit',
+                            'name': 'Enable',
+                            'label': '状态',
+                            'notFoundContent': '',
+                            'selectModel': false,
+                            'showSearch': true,
+                            'placeholder': '--请选择--',
+                            'disabled': false,
+                            'size': 'default',
+                            'options': [
+                                {
+                                    'label': '启用',
+                                    'value': true,
+                                    'disabled': false
+                                },
+                                {
+                                    'label': '禁用',
+                                    'value': false,
+                                    'disabled': false
+                                }
+                            ],
+                            'layout': 'column',
+                            'span': '24'
+                        },
+                    ]
+                },
+                {
+                    controls: [
+                        {
+                            'hidden': false,
+                            'type': 'select',
+                            'labelSize': '6',
+                            'controlSize': '16',
+                            'inputType': 'submit',
+                            'name': 'Type',
+                            'label': '类别Id',
+                            'labelName': 'Name',
+                            'valueName': 'Id',
+                            'notFoundContent': '',
+                            'selectModel': false,
+                            'showSearch': true,
+                            'placeholder': '--请选择--',
+                            'disabled': false,
+                            'size': 'default',
+                            /*  'ajaxConfig': {
+                                 'url': 'SinoForce.User.AppUser',
+                                 'ajaxType': 'get',
+                                 'params': []
+                             }, */
+                            'options': [
+                                {
+                                    'label': '表',
+                                    'value': '1',
+                                    'disabled': false
+                                },
+                                {
+                                    'label': '树',
+                                    'value': '2',
+                                    'disabled': false
+                                },
+                                {
+                                    'label': '树表',
+                                    'value': '3',
+                                    'disabled': false
+                                },
+                                {
+                                    'label': '表单',
+                                    'value': '4',
+                                    'disabled': false
+                                },
+                                {
+                                    'label': '标签页',
+                                    'value': '5',
+                                    'disabled': false
+                                }
+                            ],
+                            'layout': 'column',
+                            'span': '24'
+                        }
+                    ]
+                },
+                {
+                    controls: [
+                        {
+                            'hidden': false,
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '16',
+                            'inputType': 'text',
+                            'name': 'CaseName',
+                            'label': '名称',
+                            'placeholder': '',
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24'
+                        },
+                    ]
+                },
+                {
+                    controls: [
+                        {
+                            'hidden': false,
+                            'type': 'select',
+                            'labelSize': '6',
+                            'controlSize': '16',
+                            'inputType': 'submit',
+                            'name': 'Level',
+                            'label': '级别',
+                            'notFoundContent': '',
+                            'selectModel': false,
+                            'showSearch': true,
+                            'placeholder': '--请选择--',
+                            'disabled': false,
+                            'size': 'default',
+                            'options': [
+                                {
+                                    'label': '初级',
+                                    'value': 0,
+                                    'disabled': false
+                                },
+                            ]
+                        },
+                    ]
+                },
+                {
+                    controls: [
+                        {
+                            'hidden': false,
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '16',
+                            'inputType': 'text',
+                            'name': 'CaseCount',
+                            'label': '数量',
+                            'placeholder': '',
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24'
+                        },
+
+                    ]
+                },
+                {
+                    controls: [
+                        {
+                            'hidden': false,
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '16',
+                            'inputType': 'text',
+                            'name': 'Remark',
+                            'label': '备注',
+                            'placeholder': '',
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24'
+                        }
+                    ]
+                }
+            ],
+        'cascade': [ // 配置 信息
+            {
+                name: 'Type', // 发出级联请求的小组件（就是配置里的name 字段名称）
+                CascadeObjects: [// 当前小组件级联对象数组
+                    {
+                        cascadeName: 'Enable', // field 对象 接收级联信息的小组件
+                        cascadeValueItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                            // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
+                            // [dataType\valueType]大类别，是直接级联变化，还是根据change值含义变化
+                            {
+                                // 缺少case描述语言
+                                // 描述当前值是什么，触发
+                                caseValue: { valueName: 'value', regular: '^1$' }, // 哪个字段的值触发，正则表达
+                                data: {
+                                    type: 'option', // option/ajax/setValue
+                                    option_data: { // 静态数据集
+                                        option: [
+                                            { value: '1', label: '1' }
+                                        ]
+                                    },
+                                    ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+
+                                        // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                    },
+                                    setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                        value: '新值'
+                                    },
+                                    show_data: { // 当前表单的展示字段等信息
+
+                                    },
+                                    relation_data: {
+
+                                    }
+
+                                }
+                            },
+                            // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
+                            // [dataType\valueType]大类别，是直接级联变化，还是根据change值含义变化
+                            {
+                                // 缺少case描述语言
+                                // 描述当前值是什么，触发
+                                caseValue: { valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
+                                //  [
+                                //     { type: 'in', value: '1' },
+                                //     { type: 'range', fromValue: '1', toValue: '' },
+                                // ],
+                                data: {
+                                    type: 'option', // option/ajax/setValue
+                                    option_data: { // 静态数据集
+                                        option: [
+                                            { value: '2', label: '2' }
+                                        ]
+                                    },
+                                    ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+
+                                        // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                    },
+                                    setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                        value: '新值'
+                                    },
+                                    show_data: { // 当前表单的展示字段等信息
+
+                                    },
+                                    relation_data: {
+
+                                    }
+
+                                }
+                            },
+                            {
+                                // 缺少case描述语言
+                                // 描述当前值是什么，触发
+                                caseValue: { valueName: 'value', regular: '^3$' }, // 哪个字段的值触发，正则表达
+                                //  [
+                                //     { type: 'in', value: '1' },
+                                //     { type: 'range', fromValue: '1', toValue: '' },
+                                // ],
+                                data: {
+                                    type: 'show', // option/ajax/setValue
+                                    option_data: { // 静态数据集
+                                        option: [
+                                            { value: '3', label: '3' }
+                                        ]
+                                    },
+                                    ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+
+                                        // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                    },
+                                    setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                        value: '新值'
+                                    },
+                                    show_data: { // 当前表单的展示字段等信息
+                                        option: // 默认所有操作 状态都是false，为true 的时候当前操作限制操作
+                                            { hidden: false}
+                                        
+                                    },
+                                    relation_data: {
+
+                                    }
+
+                                }
+                            },
+                            {
+                                // 缺少case描述语言
+                                // 描述当前值是什么，触发
+                                caseValue: { valueName: 'value', regular: '^4$' }, // 哪个字段的值触发，正则表达
+                                //  [
+                                //     { type: 'in', value: '1' },
+                                //     { type: 'range', fromValue: '1', toValue: '' },
+                                // ],
+                                data: {
+                                    type: 'show', // option/ajax/setValue
+                                    option_data: { // 静态数据集
+                                        option: [
+                                            { value: '4', label: '4' }
+                                        ]
+                                    },
+                                    ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+
+                                        // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                    },
+                                    setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                        value: '新值'
+                                    },
+                                    show_data: { // 当前表单的展示字段等信息
+                                        option: // 默认所有操作 状态都是false，为true 的时候当前操作限制操作
+                                            { hidden: true}
+                                        
+                                    },
+                                    relation_data: {
+
+                                    }
+
+                                }
+                            },
+                           
+
+
+                        ],
+                        cascadeDateItems: [ ]  // 应答描述数组，同一个组件可以做出不同应答
+                            
+                    },
+                    {
+                        cascadeName: 'Level', // field 对象 接收级联信息的小组件
+                        cascadeValueItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                            // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
+                            {
+                                // 缺少case描述语言
+                                // 描述当前值是什么，触发
+                                caseValue: { valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
+                                //  [
+                                //     { type: 'in', value: '1' },
+                                //     { type: 'range', fromValue: '1', toValue: '' },
+                                // ],
+                                data: {
+                                    type: 'option', // option/ajax/setValue
+                                    option_data: { // 静态数据集
+                                        option: [
+                                            { value: '1', label: '高级' },
+                                            { value: '2', label: '中级' },
+                                            { value: '3', label: '普通' }
+                                        ]
+                                    },
+                                    ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+
+                                        // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                    },
+                                    setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                        value: '新值'
+                                    },
+                                    show_data: { // 当前表单的展示字段等信息
+
+                                    },
+                                    relation_data: {
+
+                                    }
+
+                                }
+                            },
+
+
+                        ],
+                        cascadeDateItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                            // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
+                            {
+                                data: {
+                                    type: 'ajax', // option/ajax/setValue
+                                    option_data: { // 静态数据集
+                                        option: [
+                                            { value: '1', label: '高级date' },
+                                            { value: '2', label: '高级date' },
+                                            { value: '3', label: '高级date' }
+                                        ]
+                                    },
+                                    ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+
+                                        // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                        option: [
+                                            { name: 'typevalue', type : 'value', value: '1', valueName: 'value'  },
+                                        ]
+                                    },
+                                    setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                        value: '新值'
+                                    },
+                                    show_data: { // 当前表单的展示字段等信息
+
+                                    },
+                                    relation_data: {
+
+                                    }
+                                }
+
+
+                            }
+
+
+                        ]
+                    }
+                ],
+
+            }
+
+        ]
+    };
+
+
+
+
+
+
 
 }

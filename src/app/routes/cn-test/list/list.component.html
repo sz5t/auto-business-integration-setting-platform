@@ -1,6 +1,6 @@
 <!-- <cn-code-edit></cn-code-edit> -->
-
-<nz-card>
+<cn-form-resolver [config]="configFormNew"></cn-form-resolver>
+<!-- <nz-card>
   <bsn-tree-table></bsn-tree-table>
    <nz-table #nzTable [nzData]="data">
     <thead>
@@ -32,19 +32,16 @@
     </nz-tree>`
   </div>
   <nz-popover [nzTitle]="'标题'" [(nzVisible)]="visible" [nzTrigger]="'click'" [nzPlacement]="'rightTop'">
-    <!-- <button nz-button nz-popover [nzType]="'primary'">点击</button> -->
-    <!--     <nz-tree nz-popover [nzNodes]="nodes" [nzOptions]="options"  (nzActivate)="onActivate($event)"
-    [nzAllowChildLinkage]="treeconfig.nzAllowChildLinkage" [nzAllowParentLinkage]="treeconfig.nzAllowParentLinkage" [nzCheckable]="treeconfig.nzCheckable"
-    [nzShowLine]="treeconfig.nzShowLine"
-    >
-    ></nz-tree> -->
+
     <ng-template #nzTemplate>
       <a>点击关闭</a>
       <p>内容</p>
       <p>内容</p>
     </ng-template>
   </nz-popover>
-</nz-card>
+</nz-card> -->
+
+
 <div nz-row [nzGutter]="16">
   <div nz-col [nzMd]="24">
     <nz-card>
@@ -109,14 +106,14 @@
     </nz-card>
   </div>
 </div>
-<div bsn-data-table [config]="config" [dataList]="dataList"></div>
+<!-- <div bsn-data-table [config]="config" [dataList]="dataList"></div> -->
 <!--<div bsn-data-table [config]="config1" [dataList]="dataList1"></div>
 
 <div bsn-table [config]="config2" [dataList]="dataList1"></div> -->
-<cn-form-resolver [config]="configForm"></cn-form-resolver>
+<!-- <cn-form-resolver [config]="configForm"></cn-form-resolver> -->
 
 
-<nz-table #nestedTable [nzData]="nestedTableData" [nzPageSize]="10" nzBordered>
+<!-- <nz-table #nestedTable [nzData]="nestedTableData" [nzPageSize]="10" nzBordered>
   <thead>
     <tr>
       <th nzShowExpand></th>
@@ -191,4 +188,4 @@
       </tr>
     </ng-template>
   </tbody>
-</nz-table>
+</nz-table> -->

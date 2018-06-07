@@ -1,6 +1,8 @@
 import {
   ComponentFactoryResolver, ComponentRef, Directive, Input, OnChanges, OnInit, Type,
-  ViewContainerRef
+  ViewContainerRef,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import {CnFormInputComponent} from '@shared/components/cn-form-input/cn-form-input.component';
 import {CnFormSubmitComponent} from '@shared/components/cn-form-submit/cn-form-submit.component';
@@ -30,12 +32,52 @@ const components: {[type: string]: Type<any>} = {
 export class FormResolverDirective implements OnInit, OnChanges {
   @Input() config;
   @Input() formGroup;
+  @Input() changeConfig;
+  @Output() updateValue = new EventEmitter();
   component: ComponentRef<any>;
   constructor(private resolver: ComponentFactoryResolver, private container: ViewContainerRef) { }
   ngOnChanges() {
     if (this.component) {
       this.component.instance.config = this.config;
       this.component.instance.formGroup = this.formGroup;
+    }
+    if (this.changeConfig) {
+      // 判断是否是自己的级联对象
+      this.changeConfig.forEach(changeConfig => {
+        if (this.config.name === changeConfig.name) {
+          
+          this.config = changeConfig;
+          this.container.clear();
+          if (!components[this.config.type]) {
+            const supportedTypes = Object.keys(components).join(', ');
+            throw new Error(
+              `不支持此类型的组件 (${this.config.type}).可支持的类型为: ${supportedTypes}`
+            );
+          }
+          const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
+          this.component = this.container.createComponent(comp);
+          this.component.instance.config = this.config;
+          if (this.config.type !== 'submit' || this.config.type !== 'button') {
+            this.component.instance.formGroup = this.formGroup;
+          }
+          if (this.config.type === 'search') {
+            // 测试事件上抛
+            (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
+              console.log('search');
+            });
+          }
+          // 级联数据接受 liu
+          if (this.component.instance.updateValue) {
+            this.component.instance.updateValue.subscribe(event => {
+              this.setValue(event);
+            });
+          }
+          console.log('变化' , this.changeConfig );
+         }
+      });
+
+      
+       
     }
   }
 
@@ -58,6 +100,22 @@ export class FormResolverDirective implements OnInit, OnChanges {
         console.log('search');
       });
     }
+    // 级联数据接受 liu
+    if (this.component.instance.updateValue) {
+      this.component.instance.updateValue.subscribe(event => {
+        this.setValue(event);
+      });
+    }
+   
 
   }
+
+
+    // 组件将值写回、级联数据-》回写 liu 
+    setValue(data?) {
+      console.log('级联数据回写触发', data);
+      this.updateValue.emit(data);
+      console.log('级联数据回写触发后', data);
+     }
+
 }

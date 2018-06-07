@@ -31,6 +31,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   _statusSubscription;
   _cascadeSubscription;
 
+  changeConfig;
   constructor(
     private formBuilder: FormBuilder,
     private _http: ApiService,
@@ -71,6 +72,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         this.load();
       }
     }
+
+    this.caseLoad(); // liu 20180521 测试
   }
 
   ngOnDestroy() {
@@ -598,6 +601,300 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     // console.log('初始化参数并load', this._tempParameters);
   }
 
+
   // endregion
+
+  cascadeList = {};
+  caseLoad() {
+
+    this.cascadeList = {};
+    // region: 解析开始
+    if (this.config.cascade)
+      this.config.cascade.forEach(c => {
+        this.cascadeList[c.name] = {}; // 将关系维护到一个对象中
+        // region: 解析具体对象开始
+        c.CascadeObjects.forEach(cobj => {// 具体对象
+          this.cascadeList[c.name][cobj.cascadeName] = {};
+
+
+          const dataType = [];
+          const valueType = [];
+          cobj['cascadeDateItems'].forEach(item => {
+            // 数据关联 （只是单纯的数据关联，内容只有ajax）
+            // cobj.data
+            const dataTypeItem = {};
+            if (item['caseValue']) {
+              // 取值， 解析 正则表达式
+              // item.case.regular; 正则
+              dataTypeItem['valueName'] = item.caseValue.valueName;
+              dataTypeItem['regular'] = item.caseValue.regular;
+            }
+            this.cascadeList[c.name][cobj.cascadeName]['type'] = item.data.type;
+            dataTypeItem['type'] = item.data.type;
+            if (item.data.type === 'option') {
+              // 静态数据集
+              this.cascadeList[c.name][cobj.cascadeName]['option'] = item.data.option_data.option;
+              dataTypeItem['option'] = item.data.option_data.option;
+            }
+            if (item.data.type === 'ajax') {
+              // 异步请求参数取值
+              this.cascadeList[c.name][cobj.cascadeName]['ajax'] = item.data.ajax_data.option;
+              dataTypeItem['ajax'] = item.data.ajax_data.option;
+            }
+            if (item.data.type === 'setValue') {
+              // 组件赋值
+              this.cascadeList[c.name][cobj.cascadeName]['setValue'] = item.data.setValue_data.option;
+              dataTypeItem['setValue'] = item.data.setValue_data.option;
+            }
+            if (item.data.type === 'show') {
+              // 页面显示控制
+              this.cascadeList[c.name][cobj.cascadeName]['show'] = item.data.show_data.option;
+              dataTypeItem['show'] = item.data.show_data.option;
+            }
+            if (item.data.type === 'relation') {
+              // 消息交互
+              this.cascadeList[c.name][cobj.cascadeName]['relation'] = item.data.relation_data.option;
+              dataTypeItem['relation'] = item.data.relation_data.option;
+            }
+          
+            dataType.push(dataTypeItem);
+
+          });
+
+          cobj['cascadeValueItems'].forEach(item => {
+          
+            const valueTypeItem = {};
+            if (item.caseValue) {
+              // 取值， 解析 正则表达式
+              // item.case.regular; 正则
+              valueTypeItem['valueName'] = item.caseValue.valueName;
+              valueTypeItem['regular'] = item.caseValue.regular;
+            }
+            this.cascadeList[c.name][cobj.cascadeName]['type'] = item.data.type;
+            valueTypeItem['type'] = item.data.type;
+            if (item.data.type === 'option') {
+              // 静态数据集
+              this.cascadeList[c.name][cobj.cascadeName]['option'] = item.data.option_data.option;
+              valueTypeItem['option'] = item.data.option_data.option;
+            }
+            if (item.data.type === 'ajax') {
+              // 异步请求参数取值
+              this.cascadeList[c.name][cobj.cascadeName]['ajax'] = item.data.ajax_data.option;
+              valueTypeItem['ajax'] = item.data.ajax_data.option;
+            }
+            if (item.data.type === 'setValue') {
+              // 组件赋值
+              this.cascadeList[c.name][cobj.cascadeName]['setValue'] = item.data.setValue_data.option;
+              valueTypeItem['setValue'] = item.data.setValue_data.option;
+            }
+            if (item.data.type === 'show') {
+              // 页面显示控制
+              this.cascadeList[c.name][cobj.cascadeName]['show'] = item.data.show_data.option;
+              valueTypeItem['show'] = item.data.show_data.option;
+            }
+            if (item.data.type === 'relation') {
+              // 消息交互
+              this.cascadeList[c.name][cobj.cascadeName]['relation'] = item.data.relation_data.option;
+              valueTypeItem['relation'] = item.data.relation_data.option;
+            }
+            valueType.push(valueTypeItem);
+
+          });
+
+          this.cascadeList[c.name][cobj.cascadeName]['dataType'] = dataType;
+          this.cascadeList[c.name][cobj.cascadeName]['valueType'] = valueType;
+
+        });
+        // endregion: 解析对象结束
+      });
+    // endregion： 解析结束
+
+    console.log('解析结果预览：', this.cascadeList);
+  }
+
+
+
+
+
+  valueChange(data?) {
+    console.log('解析结果预览：', this.cascadeList);
+    console.log('有操作', data);
+    // Enable
+
+    // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
+    // { name: this.config.name, value: name }
+    const sendCasade = data.name;
+    const receiveCasade = ' ';
+
+    // 第二步，根据配置，和返回值，来构建应答数据集合
+    // 第三步，
+    if (this.cascadeList[sendCasade]) { // 判断当前组件是否有级联
+
+      // const items = formItem.controls.filter(({ type }) => {
+      //   return type !== 'button' && type !== 'submit';
+      // });
+
+      const changeConfig_new = [];
+
+      for (const key in this.cascadeList[sendCasade]) {
+        // console.log('for in 配置' , key);
+        this.config.forms.forEach(formsItems => {
+          formsItems.controls.forEach(control => {
+            if (control.name === key) {
+              if (this.cascadeList[sendCasade][key]['dataType']) {
+                this.cascadeList[sendCasade][key]['dataType'].forEach(caseItem => {
+
+                  // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                  if (caseItem['type'] === 'option') {
+                    // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
+                    let Exist = false;
+                    changeConfig_new.forEach(config_new => {
+                      if (config_new.name === control.name) {
+                        Exist = true;
+                        config_new['options'] = caseItem['option'];
+                      }
+                    });
+                    if (!Exist) {
+                      control.options = caseItem['option'];
+                      control = JSON.parse(JSON.stringify(control));
+                      changeConfig_new.push(control);
+                    }
+
+                  }
+                  if (caseItem['type'] === 'ajax') {
+                    // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+                    // 解析参数 
+
+                    const caseCodeValue = {};
+                    caseItem['ajax'].forEach(ajaxItem => {
+                      if (ajaxItem['type'] === 'value') {
+                        caseCodeValue['name'] = data[ajaxItem['valueName']];
+                      }
+                      // 其他取值【日后扩展部分】
+                    });
+                    let Exist = false;
+                    changeConfig_new.forEach(config_new => {
+                      if (config_new.name === control.name) {
+                        Exist = true;
+                        config_new['caseCodeValue'] = caseCodeValue;
+                      }
+                    });
+                    if (!Exist) {
+                      control['caseCodeValue'] = caseCodeValue;
+                      control = JSON.parse(JSON.stringify(control));
+                      changeConfig_new.push(control);
+                    }
+
+                  }
+
+                  // endregion  解析结束
+
+                });
+
+
+              }
+              if (this.cascadeList[sendCasade][key]['valueType']) {
+
+                this.cascadeList[sendCasade][key]['valueType'].forEach(caseItem => {
+
+                  // region: 解析开始  正则表达
+                  const reg1 = new RegExp(caseItem.regular);
+                  const regularflag = reg1.test(data.value);
+                  console.log('正则结果：', regularflag);
+                  // endregion  解析结束 正则表达
+                  if (regularflag) {
+                    // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                    if (caseItem['type'] === 'option') {
+
+                      let Exist = false;
+                      changeConfig_new.forEach(config_new => {
+                        if (config_new.name === control.name) {
+                          Exist = true;
+                          config_new['options'] = caseItem['option'];
+                        }
+                      });
+                      if (!Exist) {
+                        control.options = caseItem['option'];
+                        control = JSON.parse(JSON.stringify(control));
+                        changeConfig_new.push(control);
+                      }
+                    }
+                    if (caseItem['type'] === 'ajax') {
+                      // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+
+                    }
+                    if (caseItem['type'] === 'show') {
+
+                      if (caseItem['show']) {
+                       //
+                       control['hidden'] = caseItem['show']['hidden'];
+                      }
+                    
+                     
+                    }
+
+                  }
+                  // endregion  解析结束
+
+                });
+
+
+              }
+
+
+            }
+          });
+        });
+      }
+
+
+
+      this.changeConfig = JSON.parse(JSON.stringify(changeConfig_new));
+
+
+    }
+
+
+
+    console.log('变更后的', this.config.forms);
+  }
+  // 级联变化，情况大致分为三种
+  // 1.值变化，其他组件值变化
+  // 2.值变化，其他组件启用，禁用；是否显示该字段
+  // 3.值变化，其他组件数据集变化
+  //  3.1 静态数据集变化
+  //  3.2 动态参数变化
+  //  3.3 路由+参数
+  // 4. 变化的时候，考虑默认值和原来值的问题
+  // 5. 特殊的可能日期的时间计算、或者起止时间选择是否合理的判断
+
+  // 目前解决方案，单项传递，每个组件值变化如果有级联关系，
+  // 触发级联，将级联结果传递到form，动态修改配置参数
+
+  // 结构定义
+  /**
+   *  是否级联{
+   *     父：ture，
+   *     子：false，
+   *     自己：false
+   * }
+   * 级联内容：[
+   *   {
+   *     级联对象：field，
+   *     类型：
+   *     数据集：{} 描述级联对象的应答
+   *    },
+   * 
+   * ]
+   * 
+   * 解析级联: 将每个列维护起来，值变化的时候动态获取
+   * 每个组件实现一个 output 用来传递级联信息。
+   *  应答描述；【重点】cascade
+   *  主要描述，级联对象，收到级联消息后的反应
+   *  特别复杂的处理，不同值-》对应不同应答。 需要一种规则语言。
+   *  将添加类别 cascadeValue  创建这个临时变量，动态从中取值，拼接数据
+   */
+
+
 }
 
