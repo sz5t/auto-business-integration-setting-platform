@@ -16,6 +16,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 export class SearchResolverComponent extends CnComponentBase implements OnInit, OnChanges {
 
   @Input() config;
+  @Input() permissions;
   @Input() dataList;
   @Input() ref;
   form: FormGroup;

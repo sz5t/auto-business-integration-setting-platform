@@ -1,4 +1,4 @@
-<div class="table-operations" *ngIf="config.toolbar">
+<!-- <div class="table-operations" *ngIf="config.toolbar">
     <ng-container *ngFor="let btn of config.toolbar">
         <button nz-button *ngIf="btn.type!=='group'" (click)="toolbarAction(btn)" [attr.disabled]="btn.disabled" class="editable-add-btn">
             <i class="{{btn.icon}}"></i>{{btn.text}}</button>
@@ -12,8 +12,9 @@
             </ul>
         </nz-dropdown-button>
     </ng-container>
-</div>
+</div> -->
 <!-- [nzDataSource]="dataList"nzAjaxData -->
+<bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions]="permissions.toolbar?permissions.toolbar:[]"></bsn-toolbar>
 <nz-table #nzTable 
     [nzData]="dataList" 
     [nzSize]="'small'" 
@@ -88,4 +89,3 @@
     </ng-template>
 </nz-table>
 
-<bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>

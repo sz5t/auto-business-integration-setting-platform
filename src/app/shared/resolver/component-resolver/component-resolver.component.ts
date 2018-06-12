@@ -1,3 +1,4 @@
+import { BsnStepComponent } from './../../business/bsn-step/bsn-step.component';
 import { BsnTreeTableComponent } from './../../business/bsn-tree-table/bsn-tree-table.component';
 import { BsnAsyncTreeComponent } from './../../business/bsn-async-tree/bsn-async-tree.component';
 import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-resolver.component';
@@ -19,7 +20,8 @@ const component: { [type: string]: Type<any> } = {
   form_view: FormResolverComponent,
   search_view: SearchResolverComponent,
   bsnTree: CnBsnTreeComponent,
-  bsnAsyncTree: BsnAsyncTreeComponent
+  bsnAsyncTree: BsnAsyncTreeComponent,
+  bsnStep: BsnStepComponent
 };
 @Component({
   selector: 'cn-component-resolver',
@@ -60,6 +62,9 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
     const comp = this.resolver.resolveComponentFactory<any>(component[this.config.config.component]);
     this.componentRef = this.container.createComponent(comp);
     this.componentRef.instance.config = this.config.config;
+    if (this.componentRef.instance.permissions) {
+      this.componentRef.instance.permissions = this.config.permissions;
+    }
     if (this.componentRef.instance.dataList) {
       this.componentRef.instance.dataList = this.config.dataList;
     }

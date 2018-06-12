@@ -815,6 +815,13 @@ export class MulitTableComponent implements OnInit {
                       }
                     ]
                   },
+                  permissions: {
+                    'viewId': 'parentTable',
+                    'columns': [],
+                    'toolbar': [],
+                    'formDialog': [],
+                    'windowDialog': []
+                  },
                   dataList: []
                 }
               ]
@@ -1614,6 +1621,13 @@ export class MulitTableComponent implements OnInit {
                         ]
                       }
                     ]
+                  },
+                  permissions: {
+                    'viewId': 'childTable',
+                    'columns': [],
+                    'toolbar': [],
+                    'formDialog': [],
+                    'windowDialog': []
                   },
                   dataList: []
                 }

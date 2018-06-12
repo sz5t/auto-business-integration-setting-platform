@@ -21,13 +21,59 @@ import { Observer } from 'rxjs/Observer';
 })
 export class BsnToolbarComponent implements OnInit {
     @Input() config;
+    @Input() permissions = [];
     @Input() viewId;
+    toolbarConfig;
     model;
     constructor(
         @Inject(BSN_COMPONENT_MODES) private state: Observer<BsnComponentMessage>
     ) { }
 
     ngOnInit() {
+        if (this.permissions.length > 0) {
+            this.toolbarConfig = this.getPermissions();
+        } else {
+            this.toolbarConfig = this.config;
+        }
+        
+    }
+
+    getPermissions() {
+        const stack = this.config;
+        const array = [];
+        while (stack.length !== 0) {
+            const s = stack.shift();
+            if (s.type === 'group') {
+                const groupBtn = JSON.parse(JSON.stringify(s));
+                groupBtn.group = [];
+                s.group.forEach(g => {
+                    this.permissions.forEach(p => {
+                        if (g.name === p.name) {
+                            if (!p.hidden) {
+                                if (p.disabled) {
+                                    g['disabled'] = p.disabled;
+                                }
+                                groupBtn.group.push(g);
+                            } 
+                        }
+                    });
+                });
+                array.push(groupBtn);
+            } else {
+                for (let i = 0, len = this.permissions.length; i < len; i++) {
+                    if (this.permissions[i].name === s.name) {
+                        if (!this.permissions[i].hidden) {
+                            if (this.permissions[i].disabled) {
+                                s['disabled'] = this.permissions[i].disabled;
+                            }
+                            array.push(s);
+                        }
+                    }
+                }
+            }
+
+        }
+        return array;
     }
 
     toolbarAction(btn) {
@@ -39,10 +85,10 @@ export class BsnToolbarComponent implements OnInit {
         // 消息的内容是什么？如何将消息与组件和数据进行关联
         this.state.next(
             new BsnComponentMessage(
-                BSN_COMPONENT_MODES[btn.action], 
-                this.viewId, 
-                { 
-                    type: btn.actionType ? btn.actionType : null, 
+                BSN_COMPONENT_MODES[btn.action],
+                this.viewId,
+                {
+                    type: btn.actionType ? btn.actionType : null,
                     name: btn.actionName ? btn.actionName : null
                 }
             )

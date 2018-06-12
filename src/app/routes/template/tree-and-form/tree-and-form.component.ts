@@ -88,6 +88,13 @@ export class TreeAndFormComponent implements OnInit {
                                             'relationReceiveContent': []
                                         }]
                                     },
+                                    permissions: {
+                                        'viewId': 'parentTable',
+                                        'columns': [],
+                                        'toolbar': [],
+                                        'formDialog': [],
+                                        'windowDialog': []
+                                      },
                                     dataList: []
                                 }
                             ]
@@ -291,11 +298,18 @@ export class TreeAndFormComponent implements OnInit {
                                             'cascadeMode': 'REFRESH_AS_CHILD',
                                             'params': [
                                               {
-                                                pid: 'key', cid: '_parentId'
+                                                pid: 'key', cid: '_id'
                                               }
                                             ]
                                           }]
                                     },
+                                    permissions: {
+                                        'viewId': 'tree_and_form_form',
+                                        'columns': [],
+                                        'toolbar': [],
+                                        'formDialog': [],
+                                        'windowDialog': []
+                                      },
                                     dataList: []
                                 }
                             ]

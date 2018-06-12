@@ -72,6 +72,13 @@ export class TreeAndMultiTableComponent implements OnInit {
                       'relationReceiveContent': []
                     }]
                   },
+                  permissions: {
+                    'viewId': 'tree_and_mulit_tree',
+                    'columns': [],
+                    'toolbar': [],
+                    'formDialog': [],
+                    'windowDialog': []
+                  },
                   dataList: []
                 }
               ]
@@ -425,6 +432,13 @@ export class TreeAndMultiTableComponent implements OnInit {
                                 },
                               ]
                             },
+                            permissions: {
+                              'viewId': 'tree_and_mulit_master',
+                              'columns': [],
+                              'toolbar': [],
+                              'formDialog': [],
+                              'windowDialog': []
+                            },
                             dataList: []
                           }
                         ]
@@ -746,6 +760,13 @@ export class TreeAndMultiTableComponent implements OnInit {
                                   'name': 'showDialog', 'class': 'editable-add-btn', 'text': '弹出框'
                                 },
                               ]
+                            },
+                            permissions: {
+                              'viewId': 'tree_and_mulit_slaver',
+                              'columns': [],
+                              'toolbar': [],
+                              'formDialog': [],
+                              'windowDialog': []
                             },
                             dataList: []
                           }

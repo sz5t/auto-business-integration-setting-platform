@@ -943,6 +943,13 @@ export class TreeTableComponent implements OnInit {
                       }
                     ]
                   },
+                  permissions: {
+                    'viewId': 'bsnTreeTable',
+                    'columns': [],
+                    'toolbar': [],
+                    'formDialog': [],
+                    'windowDialog': []
+                  },
                   dataList: []
                 }
               ]

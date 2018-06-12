@@ -794,6 +794,13 @@ export class TreeAndTabsComponent implements OnInit {
                           }
                         ]
                       },
+                      permissions: {
+                        'viewId': 'tree_and_tabs_table',
+                        'columns': [],
+                        'toolbar': [],
+                        'formDialog': [],
+                        'windowDialog': []
+                      },
                       dataList: []
                     }
                   ]
@@ -992,6 +999,13 @@ export class TreeAndTabsComponent implements OnInit {
                             relationReceiveContent: []
                           }
                         ]
+                      },
+                      permissions: {
+                        'viewId': 'tree_and_tabs_form',
+                        'columns': [],
+                        'toolbar': [],
+                        'formDialog': [],
+                        'windowDialog': []
                       },
                       dataList: []
                     }

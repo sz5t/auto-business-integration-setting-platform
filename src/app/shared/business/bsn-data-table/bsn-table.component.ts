@@ -42,6 +42,7 @@ const component: { [type: string]: Type<any> } = {
 export class BsnTableComponent extends CnComponentBase implements OnInit, OnDestroy {
 
     @Input() config; // dataTables 的配置参数
+    @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
 
     // region: 分页默认参数
@@ -97,6 +98,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     ) {
         super();
+        
     }
 
     // region: 生命周期事件
@@ -110,7 +112,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         //     this._relativeResolver.tempParameter = this._tempParameters;
         //     this._relativeResolver.resolverRelation();
         // }
-        
         this.resolverRelation();
         if (this.config.dataSet) {
             (async () => {

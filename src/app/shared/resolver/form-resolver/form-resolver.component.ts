@@ -16,6 +16,7 @@ import { Observer } from 'rxjs/Observer';
 export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges, OnDestroy {
 
   @Input() config;
+  @Input() permissions;
   @Input() dataList;
   @Input() ref;
   form: FormGroup;
@@ -145,6 +146,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
               // 解析参数
               if (relation.params && relation.params.length > 0) {
                 relation.params.forEach(param => {
+                  console.log(3);
                   this._tempParameters[param['cid']] = option.data[param['pid']];
                 });
               }
@@ -352,9 +354,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
   }
 
   async load() {
+   
     this.isSpinning = true;
     const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
     if (ajaxData) {
+      console.log('load', ajaxData);
       console.log('异步加载表单数据load', ajaxData);
       if (ajaxData.Data) {
         console.log('待赋值的表单数据', ajaxData.Data);

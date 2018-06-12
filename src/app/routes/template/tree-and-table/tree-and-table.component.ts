@@ -1039,6 +1039,13 @@ export class TreeAndTableComponent implements OnInit {
                       }
                     ]
                   },
+                  permissions: {
+                    'viewId': 'tree_and_table_table',
+                    'columns': [],
+                    'toolbar': [],
+                    'formDialog': [],
+                    'windowDialog': []
+                  },
                   dataList: []
                 }
               ]

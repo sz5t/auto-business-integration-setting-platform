@@ -52,6 +52,7 @@ import { CnGridTimePickerComponent } from './components/cn-grid-time-picker/cn-g
 import { CnGridCheckboxComponent } from './components/cn-grid-checkbox/cn-grid-checkbox.component';
 import { CnGridRangePickerComponent } from './components/cn-grid-range-picker/cn-grid-range-picker.component';
 import { BsnToolbarComponent } from './business/bsn-toolbar/bsn-toolbar.component';
+import { BsnStepComponent } from './business/bsn-step/bsn-step.component';
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -101,7 +102,9 @@ const COMPONENTS = [
     SettingLayoutEditorComponent,
     SearchResolverComponent,
     CnFormSearchComponent,
-    BsnToolbarComponent
+    BsnToolbarComponent,
+    BsnStepComponent,
+    BsnTreeTableComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -124,9 +127,7 @@ const DIRECTIVES = [
     declarations: [
         // your components
         ...COMPONENTS,
-        ...DIRECTIVES,
-        BsnTreeTableComponent,
-        BsnToolbarComponent
+        ...DIRECTIVES
     ],
     exports: [
         CommonModule,

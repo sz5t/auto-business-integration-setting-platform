@@ -16,10 +16,8 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        
         this.route.params.subscribe(params => {
             this.http.getLocalData(params.name).subscribe(data => {
-                console.log(data);
                 this.config = data;
             });
         });
