@@ -115,7 +115,7 @@ export class ModuleOperationComponent implements OnInit {
     public onChanges(values: any) {
 
         this._parentId = values.pop();
-        console.log(this._parentId);
+        // console.log(this._parentId);
     }
 
 }

@@ -78,7 +78,6 @@ export class RelativeResolver {
    * 1、
    */
   resolverRelation() {
-    console.log('relation config', this._reference.config.viewId);
     this._relations && this._relations.forEach(relation => {
       relation.relationSendContent && relation.relationSendContent.forEach(sendContent => {
         this.setMessage(sendContent);
@@ -95,7 +94,6 @@ export class RelativeResolver {
                   receiver: sendEvent.receiver,
                   parent: parent
                 };
-                console.log(this._reference.config.viewId, '-------------------------发出消息');
                 this._relativeService.sendMessage({ type: 'relation' }, receiver);
               }
             });
@@ -104,7 +102,6 @@ export class RelativeResolver {
       });
       if (relation.relationReceiveContent) {
         const subMessage = this._relativeService.getMessage().subscribe(value => {
-          console.log('get message', value, this._reference.config.viewId);
           switch (value.type.type) {
             case 'relation':
               if (value.data.receiver === this._reference.config.viewId) {

@@ -117,7 +117,7 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
                 // Metadata: JSON.stringify(this.config)
             };
             // 构建tab 对象
-            console.log(this._currentLyoutData);
+            // console.log(this._currentLyoutData);
 
             if (event) {
                 (async() => {

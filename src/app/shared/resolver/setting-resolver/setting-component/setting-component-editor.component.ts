@@ -590,7 +590,7 @@ export class SettingComponentEditorComponent implements OnInit, AfterViewInit, O
                 Metadata: JSON.stringify(this.config)
             };
 
-            console.log(this._currentComponentData);
+            // console.log(this._currentComponentData);
 
 
 

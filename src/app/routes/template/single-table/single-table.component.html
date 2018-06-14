@@ -1,4 +1,4 @@
-<page-header [title]="'单表示例'"></page-header>
+<page-header [title]=""></page-header>
 <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
     <nz-tab nzTitle="示例">
         <cn-layout-resolver [config]="config" ></cn-layout-resolver>
@@ -1318,3 +1318,18 @@
 
     </nz-tab>
 </nz-tabset>
+<div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+            <nz-card>
+                    <line-chart></line-chart>
+            </nz-card>
+                
+            
+        </div>
+        <div nz-col [nzSpan]="12">
+                <nz-card>
+                        <line-chart></line-chart>
+                </nz-card>
+                
+            </div>
+    </div>

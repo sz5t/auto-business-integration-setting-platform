@@ -218,7 +218,6 @@ export class BaseManagerComponent implements OnInit {
    */
   add1(event?) {
     this._randomBase.addModule().subscribe(response => {
-        console.log(1111);
       response.Data.ConfigData = JSON.stringify({group: false, link: 'system', icon: 'icon-speedometer'});
       this._dataSet = [ ...this._dataSet, response.Data];
       this.cacheMapData.set(response.Data.Id, {checked: false, dataItem: response.Data});
@@ -266,7 +265,7 @@ export class BaseManagerComponent implements OnInit {
         this.refreshData();
       } else if (data.length > 1 ) {
           this.msgSrv.warning('不能修改多条记录！');
-          //处理缓存选中的数据
+          // 处理缓存选中的数据
       this.cacheMapData.forEach( item => {
         item.dataItem.checked = false;
         item.checked = false;
@@ -286,7 +285,7 @@ export class BaseManagerComponent implements OnInit {
           if (response.Status === 200) {
             this.msgSrv.success(response.Message);
 
-            //移除缓存中的数据
+            // 移除缓存中的数据
             name.forEach( na => {
               this.cacheMapData.delete(na);
             });
@@ -449,7 +448,7 @@ export class BaseManagerComponent implements OnInit {
         });
       } else if (data.length > 1 ) {
         this.msgSrv.warning('不能修改多条记录！');
-        //处理缓存选中的数据
+        // 处理缓存选中的数据
         this.cacheMapData.forEach( item => {
           item.dataItem.checked = false;
           item.checked = false;
@@ -490,7 +489,7 @@ export class BaseManagerComponent implements OnInit {
             funcResPermissionsub.OpPermissions.push(new OpPermission(item, PermissionValue.Permitted));
         });
     }
-    //endregion
+    // endregion
 
 
     appPerMerge() {

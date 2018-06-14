@@ -713,7 +713,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       });
     // endregion： 解析结束
 
-    console.log('解析结果预览：', this.cascadeList);
+    // console.log('解析结果预览：', this.cascadeList);
   }
 
 

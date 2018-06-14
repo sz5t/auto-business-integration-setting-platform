@@ -61,7 +61,7 @@ export class CnGridSelectComponent implements OnInit {
               if (this.bsnData[param.valueName]) {
                 params[param.name] = this.bsnData[param.valueName];
               } else {
-                console.log('参数不全不能加载');
+                // console.log('参数不全不能加载');
                 tag = false;
                 return;
               }
@@ -80,7 +80,7 @@ export class CnGridSelectComponent implements OnInit {
           params[param.name] = componentValue[param.valueName];
         }
       });
-      console.log('ppppppppppp', p);
+     
       if (this.isString(p.url)) {
         url = APIResource[p.url];
       } else {
@@ -99,7 +99,7 @@ export class CnGridSelectComponent implements OnInit {
       }
     }
     if (p.ajaxType === 'get' && tag) {
-      console.log('get参数', params);
+    
       /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
        console.log("服务器返回执行成功返回",dd.Data);
@@ -108,11 +108,10 @@ export class CnGridSelectComponent implements OnInit {
 
       return this.apiService.getProj(url, params).toPromise();
     } else if (p.ajaxType === 'put') {
-      console.log('put参数', params);
+      // console.log('put参数', params);
       return this.apiService.putProj(url, params).toPromise();
     } else if (p.ajaxType === 'post') {
-      console.log('post参数', params);
-      console.log(url);
+      // console.log('post参数', params);
       return this.apiService.postProj(url, params).toPromise();
     } else {
       return null;

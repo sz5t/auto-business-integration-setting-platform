@@ -129,7 +129,7 @@ export class RoleManagerComponent implements OnInit {
     }
 
     update(data?) {
-        console.log('update');
+        // console.log('update');
     }
 
     delete() {

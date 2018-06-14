@@ -1,3 +1,5 @@
+import { LineChartComponent } from './chart/line-chart/line-chart.component';
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -6,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { AlainThemeModule } from '@delon/theme';
 import { DelonABCModule } from '@delon/abc';
 import { DelonACLModule } from '@delon/acl';
+import { ViserModule } from 'viser-ng';
 // i18n
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -53,12 +56,14 @@ import { CnGridCheckboxComponent } from './components/cn-grid-checkbox/cn-grid-c
 import { CnGridRangePickerComponent } from './components/cn-grid-range-picker/cn-grid-range-picker.component';
 import { BsnToolbarComponent } from './business/bsn-toolbar/bsn-toolbar.component';
 import { BsnStepComponent } from './business/bsn-step/bsn-step.component';
+
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
     UEditorModule,
     NgxTinymceModule,
+    ViserModule
     // NzSchemaFormModule
 ];
 // endregion
@@ -104,7 +109,8 @@ const COMPONENTS = [
     CnFormSearchComponent,
     BsnToolbarComponent,
     BsnStepComponent,
-    BsnTreeTableComponent
+    BsnTreeTableComponent,
+    LineChartComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

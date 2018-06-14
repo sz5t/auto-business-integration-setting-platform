@@ -50,7 +50,7 @@ export class BsnStepComponent implements OnInit {
       }
     
       done() {
-        console.log('done');
+        // console.log('done');
       }
 
       changeContent() {
@@ -76,6 +76,6 @@ export class BsnStepComponent implements OnInit {
 
       getViewCfg() {
         this.viewCfg = this.config.steps[this._current].viewCfg;
-        console.log(this.viewCfg);
+        // console.log(this.viewCfg);
       }
 }

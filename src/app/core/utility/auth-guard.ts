@@ -17,7 +17,6 @@ export class AuthGuard implements CanActivate {
           } else {
               const token: any = this.tokenService.get().token;
               // todo:token 只是用来判断是否匿名登录，需要完善：根据不同的token来进行具体模块的权限控制
-              // console.log(token.UserId,state.url);
               return true;
           }
 

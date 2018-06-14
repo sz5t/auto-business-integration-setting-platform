@@ -232,7 +232,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
                             if (this._tempValue[param.valueName]) {
                                 params[param.name] = this._tempValue[param.valueName];
                             } else {
-                                console.log('参数不全不能加载');
+                                // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }

@@ -26,7 +26,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   _selectedMultipleOption;
 
   ngOnInit() {
-    console.log('select加载固定数据', this.config);
+    // console.log('select加载固定数据', this.config);
     if (this.config['caseCodeValue']) {
       // caseCodeValue
        for (const key in this.config['caseCodeValue']) {
@@ -72,7 +72,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges() {
-    console.log('select加载固定数据ngOnChanges', this.config);
+    // console.log('select加载固定数据ngOnChanges', this.config);
   }
   ngAfterViewInit() {
     this.selectedByLoaded();
@@ -91,7 +91,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
               if (this.bsnData[param.valueName]) {
                 params[param.name] = this.bsnData[param.valueName];
               } else {
-                console.log('参数不全不能加载');
+                // console.log('参数不全不能加载');
                 tag = false;
                 return;
               }
@@ -131,7 +131,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     if (p.ajaxType === 'get' && tag) {
-      console.log('get参数', params);
+      // console.log('get参数', params);
       /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
        console.log("服务器返回执行成功返回",dd.Data);

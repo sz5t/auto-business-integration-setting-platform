@@ -10,7 +10,13 @@ import {Router} from '@angular/router';
     templateUrl: './sidebar.component.html'
 })
 export class SidebarComponent {
-    constructor(public settings: SettingsService ,private modal: NzModalService, private router: Router, private cacheService: CacheService, public msgSrv: NzMessageService,@Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+    constructor(
+        public settings: SettingsService ,
+        private modal: NzModalService, 
+        private router: Router, 
+        private cacheService: CacheService, 
+        public msgSrv: NzMessageService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     }
 
     logout() {
@@ -23,7 +29,7 @@ export class SidebarComponent {
                     this.tokenService.clear();
                     this.cacheService.clear();
                     this.router.navigateByUrl(this.tokenService.login_url);
-                }).catch(() => console.log('Oops errors!'))
+                }).catch(() => console.log('Oops errors!'));
             }});
     }
 }

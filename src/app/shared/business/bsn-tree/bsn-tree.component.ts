@@ -239,7 +239,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         e.checkedKeys.map(item => {
             checkItemList = checkItemList.concat(this.treeToListData(item));
         });
-        console.log(checkItemList);
+        // console.log(checkItemList);
     }
 
     ngOnDestroy() {
@@ -271,7 +271,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                             if (this._tempValue[param.valueName]) {
                                 params[param.name] = this._tempValue[param.valueName];
                             } else {
-                                console.log('参数不全不能加载');
+                                // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
@@ -312,13 +312,13 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             }
         }
         if (p.ajaxType === 'get' && tag) {
-            console.log('get参数', params);
+            // console.log('get参数', params);
             return this._http.getProj(url, params).toPromise();
         } else if (p.ajaxType === 'put') {
-            console.log('put参数', params);
+            // console.log('put参数', params);
             return this._http.putProj(url, params).toPromise();
         } else if (p.ajaxType === 'post') {
-            console.log('post参数', params);
+            // console.log('post参数', params);
             return this._http.postProj(url, params).toPromise();
         } else {
             return null;

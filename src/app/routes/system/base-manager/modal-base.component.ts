@@ -31,18 +31,18 @@ export class ModalBaseComponent implements OnInit {
     }
 
     handleOk(): void {
-        console.log('Button ok clicked!');
+
         this.isVisible = false;
     }
 
     handleCancel1(): void {
-        console.log('Button cancel clicked!');
+     
         this.isVisible = false;
     }
 
     copy(group?: any, item?: any) {
         this.iconFlag = group.prefix + item.k;
-        console.log(this.iconFlag);
+        // console.log(this.iconFlag);
 
     }
 

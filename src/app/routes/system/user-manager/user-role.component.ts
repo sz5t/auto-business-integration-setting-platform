@@ -47,12 +47,12 @@ export class UserRoleComponent implements OnInit {
 
     emitDataOutside() {
         if (this.roleList.length === 0) {
-            console.log('对当前用户的角色没有做任何更改，请修改后继续');
+            // console.log('对当前用户的角色没有做任何更改，请修改后继续');
         } else {
             const roles = this.roleList.pop();
             this.http.delete(`${APIResource.PrivRoleLink}`, {'LeftId': this.userList.pop()}).subscribe(
                 response => {
-                    console.log(response.Message);
+                    // console.log(response.Message);
                     if (response.Status === 200) {
                         const body = [];
                         roles.forEach(item => {

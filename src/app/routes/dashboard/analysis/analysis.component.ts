@@ -66,6 +66,6 @@ export class DashboardAnalysisComponent implements OnInit {
 
     _activeTab = 0;
     _tabChange(value: any) {
-        console.log('tab', this._activeTab, value);
+        // console.log('tab', this._activeTab, value);
     }
 }

@@ -63,7 +63,7 @@ export class FormResolverDirective implements OnInit, OnChanges {
           if (this.config.type === 'search') {
             // 测试事件上抛
             (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
-              console.log('search');
+              // console.log('search');
             });
           }
           // 级联数据接受 liu
@@ -72,7 +72,7 @@ export class FormResolverDirective implements OnInit, OnChanges {
               this.setValue(event);
             });
           }
-          console.log('变化' , this.changeConfig );
+          // console.log('变化' , this.changeConfig );
          }
       });
 
@@ -97,7 +97,7 @@ export class FormResolverDirective implements OnInit, OnChanges {
     if (this.config.type === 'search') {
       // 测试事件上抛
       (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
-        console.log('search');
+        // console.log('search');
       });
     }
     // 级联数据接受 liu
@@ -113,9 +113,9 @@ export class FormResolverDirective implements OnInit, OnChanges {
 
     // 组件将值写回、级联数据-》回写 liu 
     setValue(data?) {
-      console.log('级联数据回写触发', data);
+      // console.log('级联数据回写触发', data);
       this.updateValue.emit(data);
-      console.log('级联数据回写触发后', data);
+      // console.log('级联数据回写触发后', data);
      }
 
 }

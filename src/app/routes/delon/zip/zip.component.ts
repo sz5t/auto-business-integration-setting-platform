@@ -57,7 +57,7 @@ export class ZipComponent {
                 this.data = [];
             });
         }, (error: any) => {
-            console.warn(error);
+            // console.warn(error);
             this.msg.error(JSON.stringify(error));
         });
     }

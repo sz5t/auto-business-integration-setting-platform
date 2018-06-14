@@ -1038,7 +1038,6 @@ export class LayoutSettingComponent implements OnInit {
   }
 
   _submitForm($event) {
-    console.log($event);
     event.preventDefault();
     event.stopPropagation();
     const loadingMessage = this.message.loading('正在执行中...', { nzDuration: 0 }).messageId;

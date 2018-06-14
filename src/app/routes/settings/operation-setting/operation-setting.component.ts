@@ -1678,7 +1678,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   }
 
   createContextMenu(e) {
-    console.log(this.addTemplate);
+    // console.log(this.addTemplate);
     this.dropdown = this.nzDropdownService.create(e.event, this.addTemplate);
   }
 
@@ -1703,7 +1703,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
             if (temp) {
               if (temp.length > 0) {
                 result = [...result, ...temp];
-                console.log(result);
+                // console.log(result);
               }
             }
             if (!cdata.rows) {
@@ -1712,7 +1712,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
               const cobj = this.componentToArray(component, cdata.id, '');
               if (cobj) {
                 result = [...result, ...cobj];
-                console.log(result);
+                // console.log(result);
               }
             }
           });
@@ -1853,7 +1853,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
 
   // 点击树节
   onActivate(event: any) {
-    console.log('激活树节点', event);
+    // console.log('激活树节点', event);
     const receiver = {
       name: 'initParameters',
       receiver: 'operation_sqlColumns',
@@ -1863,7 +1863,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
         _moduleId: this._funcValue[this._funcValue.length - 1]
       }
     };
-    console.log('选中行发消息事件', receiver);
+    // console.log('选中行发消息事件', receiver);
     this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
 
   }
@@ -1921,7 +1921,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
       },
       () => {
         // 更新节点状态
-        console.log('update');
+        // console.log('update');
         node.treeModel.update();
       }
     );
@@ -2169,12 +2169,12 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   }
 
   onMouseAction(actionName, $event) {
-    console.log(this, actionName);
+    // console.log(this, actionName);
     this[actionName]($event);
   }
 
   clickNode = (e) => {
-    console.log('click node');
+    // console.log('click node');
   }
   // endregion
 
@@ -2202,7 +2202,7 @@ export class OperationSettingComponent extends CnComponentBase implements OnInit
   }
 
   expandNode = (e) => {
-    console.log('expandNode');
+    // console.log('expandNode');
     (async () => {
       if (e.node.getChildren().length === 0 && e.node.isExpanded) {
         const params = { ParentId: e.node.key };

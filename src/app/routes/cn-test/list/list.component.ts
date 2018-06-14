@@ -335,12 +335,12 @@ export class ListComponent implements OnInit {
         // 多选（check=select），如果是未勾选，第一次点击选中，再次点击取消选中
         // 多勾选单选中行（check》select）勾选和行选中各自独立，互不影响
         // console.log('行',data);
-        console.log('update', edit);
+        // console.log('update', edit);
 
     }
 
     userNameChange(data?) {
-        console.log('子页面', data);
+        // console.log('子页面', data);
         const index = this.list.findIndex(item => item.key === data.key);
         this.editCache[data.key].data[data.name] = data.data;
     }
@@ -811,12 +811,12 @@ export class ListComponent implements OnInit {
             }
         }; */
     onEvent(ev: any) {
-        console.log('onEvent,点击树节点', ev);
+        // console.log('onEvent,点击树节点', ev);
     }
     onActivate(ev: any) {
-        console.log('激活树节点', ev);
+        // console.log('激活树节点', ev);
         this.visible = false;
-        console.log(this.fn(this.nodestree, 0));
+        // console.log(this.fn(this.nodestree, 0));
     }
 
     // nzAutoExpandParent 是否自动展开父节点，当数字时展开最大节点 false
@@ -834,7 +834,7 @@ export class ListComponent implements OnInit {
     };
 
     nzContextMenu(ev: any) {
-        console.log('yj');
+        // console.log('yj');
 
     }
 
@@ -1235,7 +1235,7 @@ export class ListComponent implements OnInit {
     ];
 
     mouseAction(name: string, event: NzFormatEmitEvent): void {
-        console.log(name, event);
+        // console.log(name, event);
     }
 
 

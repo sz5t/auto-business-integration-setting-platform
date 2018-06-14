@@ -12,7 +12,7 @@ import { BsnDataTableComponent } from '@shared/business/bsn-data-table/bsn-data-
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { CnBsnTreeComponent } from '@shared/business/bsn-tree/bsn-tree.component';
-const component: { [type: string]: Type<any> } = {
+const components: { [type: string]: Type<any> } = {
   code_edit: CnCodeEditComponent,
   bsnDataTable: BsnDataTableComponent,
   bsnTable: BsnTableComponent,
@@ -53,13 +53,13 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
   }
 
   createBsnComponent() {
-    if (!component[this.config.config.component]) {
-      const supportedTypes = Object.keys(component).join(', ');
+    if (!components[this.config.config.component]) {
+      const supportedTypes = Object.keys(components).join(', ');
       throw new Error(
         `Trying to use an unsupported types (${this.config.config.component}).Supported types: ${supportedTypes}`
       );
     }
-    const comp = this.resolver.resolveComponentFactory<any>(component[this.config.config.component]);
+    const comp = this.resolver.resolveComponentFactory<any>(components[this.config.config.component]);
     this.componentRef = this.container.createComponent(comp);
     this.componentRef.instance.config = this.config.config;
     if (this.componentRef.instance.permissions) {

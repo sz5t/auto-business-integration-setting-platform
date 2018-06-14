@@ -147,8 +147,8 @@ export class BlockSettingComponent implements OnInit {
       // layout.map(lay => {
       //   this.resolveLayout(layoutData, lay);
       // });
-      console.log(layoutData);
-      this._layoutConfig = layoutData;
+      // console.log(layoutData);
+      // this._layoutConfig = layoutData;
     })();
   }
 
