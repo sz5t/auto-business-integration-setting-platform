@@ -1,3 +1,5 @@
+import { BarChartComponent } from './chart/bar-chart/bar-chart.component';
+import { TableChartComponent } from './../routes/template/table-chart/table-chart.component';
 import { LineChartComponent } from './chart/line-chart/line-chart.component';
 
 import { NgModule } from '@angular/core';
@@ -56,7 +58,6 @@ import { CnGridCheckboxComponent } from './components/cn-grid-checkbox/cn-grid-c
 import { CnGridRangePickerComponent } from './components/cn-grid-range-picker/cn-grid-range-picker.component';
 import { BsnToolbarComponent } from './business/bsn-toolbar/bsn-toolbar.component';
 import { BsnStepComponent } from './business/bsn-step/bsn-step.component';
-
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -110,7 +111,9 @@ const COMPONENTS = [
     BsnToolbarComponent,
     BsnStepComponent,
     BsnTreeTableComponent,
-    LineChartComponent
+    TableChartComponent,
+    LineChartComponent,
+    BarChartComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

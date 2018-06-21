@@ -25,7 +25,7 @@ export class ResourceTypeService {
     }
 
     addType(data?) {
-        data['ProjId'] = APIResource.AppProject;
+        data['ProjId'] = APIResource.AppProjId;
         data['DrmId']  = APIResource.AppDrmId;
         data['OwnerAssembly']  = APIResource.AppOwnerAssembly;
         data['OwnerNameSpace']  = APIResource.AppOwnerAssembly;
@@ -61,7 +61,7 @@ export class EntityProDefService {
 
     addEntity(data?) {
         data['Mapped'] = true;
-        data['ProjId'] = APIResource.AppProject;
+        data['ProjId'] = APIResource.AppProjId;
         return this.http.postProj(this.EntityProDefUrl, data);
     }
 

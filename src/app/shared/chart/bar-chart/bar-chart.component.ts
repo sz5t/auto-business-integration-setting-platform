@@ -10,10 +10,10 @@ import { Observer } from 'rxjs/Observer';
 import { Observable } from 'rxjs/Observable';
 import { Chart } from 'viser-ng/lib/Chart';
 @Component({
-  selector: 'line-chart',
+  selector: 'bar-chart',
   encapsulation: ViewEncapsulation.None,
   template: `
-    <v-chart #chartContainer [forceFit]="config.forceFit" [width]="config.width" [height]="config.height" [data]="data">
+    <v-chart #chartContainer [forceFit]="config.forceFit" [width]="config.width" [height]="config.height" [data]="data" [scale]="config.scale">
       <v-tooltip 
       [g2Tooltip]="g2Tooltip"
       [g2TooltipList]="g2TooltipList"
@@ -22,9 +22,7 @@ import { Chart } from 'viser-ng/lib/Chart';
       ></v-tooltip>
         <v-axis></v-axis>
         <v-legend></v-legend>
-        <v-line position="{{config.dataKey}}*{{config.value}}" [scale]="config.scale" [color]="config.key"></v-line>
-        <v-point position="{{config.dataKey}}*{{config.value}}" shape="{{config.sharp}}" [size]="config.size" [style]="config.style"></v-point>
-        
+        <v-bar position="{{config.dataKey}}*{{config.value}}" color="{{config.key}}" [adjust]="config.adjust"></v-bar>
     </v-chart>
   `,
   styles: [
@@ -32,7 +30,7 @@ import { Chart } from 'viser-ng/lib/Chart';
     `
   ]
 })
-export class LineChartComponent implements OnInit, AfterViewInit {
+export class BarChartComponent implements OnInit, AfterViewInit {
   @Input() layoutId;
   @Input() blockId;
   @Input() config;
@@ -111,7 +109,6 @@ export class LineChartComponent implements OnInit, AfterViewInit {
         const params = {
             ...this._buildParameters(this.config.ajaxConfig.params),
         };
-        // console.log('url params', params);
         (async () => {
             const loadData = await this._load(url, params);
             if (loadData && loadData.Status === 200) {
@@ -123,6 +120,7 @@ export class LineChartComponent implements OnInit, AfterViewInit {
             } else {
                 this.data = [];
             }
+
             this.loading = false;
         })();
   }

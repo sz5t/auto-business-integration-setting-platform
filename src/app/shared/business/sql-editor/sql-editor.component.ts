@@ -1,3 +1,4 @@
+import { CommonTools } from '../../../core/utility/common-tools';
 import { Component, OnInit, ViewChild, Input, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
@@ -62,6 +63,9 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     _relativeResolver;
     scriptName;
     loading = true;
+    scriptModelList = [];
+    scriptModel;
+    isModelloading = false;
     @Input() config;
     @ViewChild('editor') editor: CnCodeEditComponent;
 
@@ -82,8 +86,25 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             this._relativeResolver.initParameterEvents = [this.load];
             this._relativeResolver.resolverRelation();
         }
+        this.loadScriptMode();
     }
 
+    loadScriptMode() {
+        this.isModelloading = true;
+        this._http.getProj('http://192.168.1.8:8016/f277/Res/Values/DbCommandConfig/ResultModel').subscribe(
+            response => {
+                if (response && response.Status === 200) {
+                    this.scriptModelList = response.Data;
+                    console.log(this.scriptModelList);
+                }
+            },
+            error => {},
+            () => {
+                this.isModelloading = true;
+            }
+        );
+    }
+ 
     async load(condition?) {
         let param = {
             _page: this.pageIndex + 1,
@@ -96,7 +117,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             param = {...param, ...condition};
         }
 
-        const response  = await this._http.getProj(`${APIResource.SysDataLink}/${param['_moduleId']}/${APIResource.DbCommandConfig}`, param).toPromise();
+        const response  = await this._http.getProj(`${APIResource.SysDataLink}/${param['_moduleId']}/${APIResource.DbCommandConfig}?_representCustomer=eb43`, param).toPromise();
         if (response.Data && response.Status === 200) {
             this.tableData = response.Data.Rows;
             this.total = response.Data.Total;
@@ -177,19 +198,26 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     private async addSql(sql) {
+        const uuid = CommonTools.uuID(32);
         const params = {
             ScriptText: sql,
             Name: this.scriptName,
             Enabled: true,
             DbObjType: '脚本',
+            DbObjState: '尝试创建',
             NeedAlterDb: true,
             IssueFlag: '已发布',
             ShareScope: 'Project',
+            Id: uuid,
             // DrmId: '787008d9029c4b40847d08c32a18699d',
             ResultType: 'Dynamic',
-            ResultLength: 0
+            ResultLength: 0,
+            BuildState: '动态生成',
+            BuildMode: '自动',
+            ProjId: '002905c7bf57c54c9e5e65ec0e5fafe8',
+            ResultModel: this.scriptModel.Value
         };
-        return this._http.postProjSys(APIResource.DbCommandConfig, params).toPromise();
+        return this._http.postProjSys(`${APIResource.DbCommandConfig}/${uuid}?_withLink=true&_representCustomer=eb43`, params).toPromise();
     }
 
     private async addSqlRelative() {
@@ -227,12 +255,19 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             Name: this.scriptName,
             Enabled: true,
             DbObjType: '脚本',
+            DbObjState: '尝试创建',
             NeedAlterDb: true,
             IssueFlag: '已发布',
             ShareScope: 'Project',
+            ResultType: 'Dynamic',
+            ResultLength: 0,
+            BuildState: '动态生成',
+            BuildMode: '自动',
+            ProjId: '002905c7bf57c54c9e5e65ec0e5fafe8',
+            ResultModel: this.scriptModel.Value,
             DrmId: '787008d9029c4b40847d08c32a18699d'
         };
-        return this._http.putProjSys(APIResource.DbCommandConfig, params).toPromise();
+        return this._http.putProjSys(`${APIResource.DbCommandConfig}?_withLink=true&_representCustomer=eb43`, params).toPromise();
     }
 
     ngOnDestroy () {

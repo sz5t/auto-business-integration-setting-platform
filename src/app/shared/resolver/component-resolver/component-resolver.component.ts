@@ -1,3 +1,4 @@
+import { LineChartComponent } from './../../chart/line-chart/line-chart.component';
 import { BsnStepComponent } from './../../business/bsn-step/bsn-step.component';
 import { BsnTreeTableComponent } from './../../business/bsn-tree-table/bsn-tree-table.component';
 import { BsnAsyncTreeComponent } from './../../business/bsn-async-tree/bsn-async-tree.component';
@@ -5,13 +6,15 @@ import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-r
 import { BsnTableComponent } from './../../business/bsn-data-table/bsn-table.component';
 import {
   Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnInit, Type, ViewChild,
-  ViewContainerRef
+  ViewContainerRef,
+  ViewEncapsulation
 } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { BsnDataTableComponent } from '@shared/business/bsn-data-table/bsn-data-table.component';
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { CnBsnTreeComponent } from '@shared/business/bsn-tree/bsn-tree.component';
+import { BarChartComponent } from '@shared/chart/bar-chart/bar-chart.component';
 const components: { [type: string]: Type<any> } = {
   code_edit: CnCodeEditComponent,
   bsnDataTable: BsnDataTableComponent,
@@ -21,10 +24,13 @@ const components: { [type: string]: Type<any> } = {
   search_view: SearchResolverComponent,
   bsnTree: CnBsnTreeComponent,
   bsnAsyncTree: BsnAsyncTreeComponent,
-  bsnStep: BsnStepComponent
+  bsnStep: BsnStepComponent,
+  lineChart: LineChartComponent,
+  barChart: BarChartComponent
 };
 @Component({
   selector: 'cn-component-resolver',
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './component-resolver.component.html',
 })
 export class ComponentResolverComponent implements OnInit, OnChanges {

@@ -39,7 +39,7 @@ export class BsnToolbarComponent implements OnInit {
     }
 
     getPermissions() {
-        const stack = this.config;
+        const stack = JSON.parse(JSON.stringify(this.config));
         const array = [];
         while (stack.length !== 0) {
             const s = stack.shift();
@@ -77,6 +77,7 @@ export class BsnToolbarComponent implements OnInit {
     }
 
     toolbarAction(btn) {
+        console.log('send btn message');
         // const message = new BsnToolbarRelativeMessage();
         // message.action = this.TABLE_MODELS[btn.action];
         // message.messageData = this.config;

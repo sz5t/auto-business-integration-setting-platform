@@ -10,6 +10,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TreeAndMultiTableComponent } from './tree-and-multi-table/tree-and-multi-table.component';
 import { TreeAndFormComponent } from './tree-and-form/tree-and-form.component';
 import { DynamicTemplateComponent } from './dynamic-template/dynamic-template.component';
+import { TableChartComponent } from './table-chart/table-chart.component';
 
 const routes: Routes = [
   { path: 'singleTable', component: SingleTableComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'treeAndMulitTable', component: TreeAndMultiTableComponent },
   { path: 'treeAndTabs', component: TreeAndTabsComponent },
   { path: 'treeAndForm', component: TreeAndFormComponent },
+  { path: 'tableChart', component: TableChartComponent},
   { path: 'dynamicTemplate/:name', component: DynamicTemplateComponent}
 ];
 

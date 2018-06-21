@@ -4,6 +4,13 @@
         <nz-row nzGutter="8">
             <nz-col nzSpan="24" class="example-input">
                 脚本名称: <input nz-input type="text" [(ngModel)]="scriptName" nzSize="default"/>
+                脚本模式: 
+                <nz-select style="width: 120px" [nzSize]="'default'" [(ngModel)]="scriptModel" nzPlaceHolder="请选择脚本模式">
+                    <nz-option *ngFor="let item of scriptModelList" [nzValue]="item.Value" [nzLabel]="item.Name"></nz-option>
+                    <nz-option *ngIf="isModelloading" nzDisabled nzCustomContent>
+                        <i class="anticon anticon-loading anticon-spin loading-icon"></i>   加载数据...
+                      </nz-option>
+                </nz-select>
                 <nz-divider></nz-divider>
                 <cn-code-edit #editor></cn-code-edit>
             </nz-col>

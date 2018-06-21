@@ -153,14 +153,16 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 }
             }
 
+           
             const appPermissionResult = await this._getAppPermission();
             if (appPermissionResult.Data && appPermissionResult.Status === 200) {
                 if (this.type === 0) {
                     this.router.navigate(['/']);
                 } else {
                     const appper = appPermissionResult.Data;
-                    this.cacheService.set('AppPermission', appper);
-                    this.appPerMerge(appper);
+                    this.router.navigate(['/dashboard/analysis']);
+                    // this.cacheService.set('AppPermission', appper);
+                    // this.appPerMerge(appper);
                 }
             }
 
