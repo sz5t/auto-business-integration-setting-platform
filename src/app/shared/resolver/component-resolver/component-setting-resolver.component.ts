@@ -12,7 +12,7 @@ import { Validators } from '@angular/forms';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
 import { AppConfigPack_Block, AppConfigPack_ConfigType } from '../../../model/APIModel/AppConfigPack';
-import { NzMessageService, NzDropdownService, NzDropdownContextComponent } from 'ng-zorro-antd';
+import { NzMessageService, NzDropdownService, NzDropdownContextComponent, NzTreeNode } from 'ng-zorro-antd';
 import { TabsResolverComponent } from '@shared/resolver/tabs-resolver/tabs-resolver.component';
 const component: { [type: string]: Type<any> } = {
   bsnDataTable: BsnDataTableComponent,
@@ -628,4 +628,17 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
       });
     }
   }
+
+
+  // region: properties editor
+
+  editorContextMenu($event: MouseEvent, template: TemplateRef<void>, node: NzTreeNode): void {
+
+  }
+
+  nodeClick() {
+    
+  }
+  // endregion
+  
 }

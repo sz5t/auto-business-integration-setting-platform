@@ -1,7 +1,7 @@
 <!--<div class="content__title">
   <h1>布局设置</h1>
 </div>-->
-<page-header [title]=""></page-header>
+
 <div nz-row [nzGutter]="24">
   <nz-card nzTitle="模版选择">
     <form nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
@@ -16,7 +16,8 @@
       <nz-form-item>
         <nz-form-control [nzSm]="24" [nzXs]="24">
           <nz-select [(ngModel)]="_layoutValue" (ngModelChange)="_changeLayout($event)" [nzPlaceHolder]="'请选择布局类型'" [ngModelOptions]="{standalone: true}">
-            <nz-option *ngFor="let option of _layoutOptions" [nzLabel]="option.label" [nzValue]="option">
+            <nz-option nzCustomContent *ngFor="let option of _layoutOptions" [nzValue]="option">
+              <img src="{{option.value.img}}"/> {{option.label}}{{option.value.img}}
             </nz-option>
           </nz-select>
         </nz-form-control>

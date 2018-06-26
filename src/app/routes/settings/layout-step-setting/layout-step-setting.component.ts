@@ -1,3 +1,5 @@
+import { CommonTools } from './../../../core/utility/common-tools';
+import { CacheService } from '@delon/cache';
 import { Component, OnInit, LOCALE_ID } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ApiService } from '@core/utility/api-service';
@@ -21,6 +23,7 @@ export class LayoutStepSettingComponent implements OnInit {
         {
             value: {
                 id: 'area1',
+                img: './assets/img/1c.bmp',
                 rows: [
                     {
                         row: {
@@ -91,6 +94,7 @@ export class LayoutStepSettingComponent implements OnInit {
         {
             value: {
                 id: 'area1',
+                img: './assets/img/2u.bmp',
                 rows: [
                     {
                         row: {
@@ -215,6 +219,7 @@ export class LayoutStepSettingComponent implements OnInit {
         {
             value: {
                 title: '标题 1',
+                img: './assets/img/2e.bmp',
                 rows: [
                     {
                         row: {
@@ -345,6 +350,7 @@ export class LayoutStepSettingComponent implements OnInit {
         {
             value: {
                 title: '标题 1',
+                img: './assets/img/3l.bmp',
                 rows: [
                     {
                         row: {
@@ -548,6 +554,7 @@ export class LayoutStepSettingComponent implements OnInit {
         {
             value: {
                 title: '标题 1',
+                img: './assets/img/3u.bmp',
                 rows: [
                     {
                         row: {
@@ -732,6 +739,7 @@ export class LayoutStepSettingComponent implements OnInit {
         {
             value: {
                 title: '标题 1',
+                img: './assets/img/3t.bmp',
                 rows: [
                     {
                         row: {
@@ -926,7 +934,8 @@ export class LayoutStepSettingComponent implements OnInit {
     // 布局编辑表单配置对象
     _editorConfig;
     // 布局列表配置对象
-
+    _showGuide = false;
+    _btnText = '创建布局';
     // 布局ID
     _selectedLayoutId;
     _isShowExtend = false;
@@ -952,6 +961,8 @@ export class LayoutStepSettingComponent implements OnInit {
             { 'name': 'delete', 'class': 'editable-add-btn', 'text': '删除' },
         ]
     };
+    _configDesc;
+    _isShowPreview = false;
     // 布局列表数据
     total = 1;
     pageIndex = 1;
@@ -959,12 +970,18 @@ export class LayoutStepSettingComponent implements OnInit {
     loading = false;
     _tableDataSource = [];
     previewLayoutData = {};
+    _currentUser: any;
+    _bufferId;
+    _configSuccess;
     constructor(
         private apiService: ApiService,
         private formBuilder: FormBuilder,
+        private cacheService: CacheService,
         private message: NzMessageService) { }
 
     async ngOnInit() {
+        this._currentUser = this.cacheService.getNone('User');
+        this._bufferId = 'buffer_' + CommonTools.uuID(6);
         this._formGroup = this.formBuilder.group({});
         // const params = new HttpParams().set();
         const params = { _select: 'Id,Name,ParentId' };
@@ -980,11 +997,11 @@ export class LayoutStepSettingComponent implements OnInit {
 
     // 获取布局设置列表
     async getLayoutConfigData(params) {
-        return this.apiService.getProj(APIResource.LayoutSetting, params).toPromise();
+        return this.apiService.getProj('SinoForce.SysData.LayoutSettingBuffer', params).toPromise();
     }
 
     async getBlockConfigData(layoutId) {
-        return this.apiService.getProj(APIResource.BlockSetting, { LayoutId: layoutId }).toPromise();
+        return this.apiService.getProj('SinoForce.SysData.BlockSettingBuffer', { LayoutId: layoutId }).toPromise();
     }
 
     // 改变模块选项
@@ -1025,6 +1042,7 @@ export class LayoutStepSettingComponent implements OnInit {
                             if (this._selectedLayoutId === this._tableDataSource[i].Id) {
                                 this.previewLayoutData = JSON.parse(JSON.stringify(layoutMetadata));
                             }
+                            this._isShowPreview = false;
                         })();
 
                         this._tableDataSource[i]['data'] = layoutMetadata;
@@ -1046,7 +1064,20 @@ export class LayoutStepSettingComponent implements OnInit {
     }
 
     _onSelectionChange(selectedOptions: any[]) {
-        this._selectedModuleText = `【${selectedOptions.map(o => o.label).join(' / ')}】`;
+        this._selectedModuleText = `${selectedOptions.map(o => o.label).join(' / ')}`;
+    }
+
+    showGuide() {
+        this._showGuide = !this._showGuide;
+        if (this._showGuide === true) {
+            // 点击创建
+            // 判断是否继续创建
+            // 重新创建则清空数据
+            // 还是继续创建，直接切换即可
+        } else {
+            // 点击返回
+        }
+        this._configSuccess = '';
     }
 
     resetForm($event: MouseEvent) {
@@ -1082,13 +1113,13 @@ export class LayoutStepSettingComponent implements OnInit {
         };
 
         (async () => {
-            const layout = await this.addSettingLayout(configData);
+            const layout = await this.addSettingLayoutBuffer(configData);
             if (layout.Data && layout.Status === 200) {
                 for (let i = 0, len = blockDataList.length; i < len; i++) {
                     blockDataList[i]['LayoutId'] = layout.Data.Id;
                     blockDataList[i]['ParentId'] = moduleID;
                     blockDataList[i]['type'] = 'view';
-                    const block = await this.addBlockSetting(blockDataList[i]);
+                    const block = await this.addBlockSettingBuffer(blockDataList[i]);
                 }
 
 
@@ -1126,13 +1157,17 @@ export class LayoutStepSettingComponent implements OnInit {
         //   });
     }
 
-    async addSettingLayout(data) {
-        return this.apiService.postProj(APIResource.LayoutSetting, data).toPromise();
+    async addSettingLayoutBuffer(data) {
+        return this.apiService.postProj('SinoForce.SysData.LayoutSettingBuffer', data).toPromise();
 
     }
 
-    async addBlockSetting(data) {
-        return this.apiService.postProj(APIResource.BlockSetting, data).toPromise();
+    async addBlockSettingBuffer(data) {
+        return this.apiService.postProj('SinoForce.SysData.BlockSettingBuffer', data).toPromise();
+    }
+
+    async createLayout() {
+        return this.apiService.postProj('SinoForce.SysData.CreateLayout', {BufferId: this._bufferId}).toPromise();
     }
 
     private uuID(w) {
@@ -1274,32 +1309,39 @@ export class LayoutStepSettingComponent implements OnInit {
         return this.formBuilder.control({ disabled, value }, validation);
     }
 
+    // 返回上一步
     pre(): void {
         this.current -= 1;
     }
 
+    // 进行下一步
     next(): void {
         if (this.current === 0) {
-            this._saveLayout();
-        } else if (this.current === 1) {
-            this._saveBlock();
+            this._saveLayoutBuffer();
         }
         this.current += 1;
     }
 
     extend() {
-        this.current += 1;
+        // this.current += 1;
     }
 
     done(): void {
-        if (this.current === 1) {
-            this._saveBlock();
-        } else if (this.current === 2) {
-            // 保存扩展布局
-        }
+        (async() => {
+            const lay = await this.createLayout();
+            if (lay && lay.Status === 200) {
+                this._configSuccess = '布局配置成功';
+                this.current += 1;
+            } else {
+                this.message.create('error', lay.Message);
+            }
+            
+        })();
+        
     }
 
-    _saveLayout() {
+    _saveLayoutBuffer() {
+        this._isShowPreview = true;
         // 保存布局
         const loadingMessage = this.message.loading('正在执行中...', { nzDuration: 0 }).messageId;
         // 为每个区域设置标题
@@ -1307,6 +1349,7 @@ export class LayoutStepSettingComponent implements OnInit {
         // 获取模块ID，格式为将按照模块层级依次保存为数组形式，后续按照模块加载时，层级最后的ID即为对应加载模块ID
         const moduleID = this._funcValue[this._funcValue.length - 1];
         const layoutName = this._layoutValue.label;
+        const img = this._layoutValue.value.img;
         const copyLayout = JSON.parse(JSON.stringify(this._layoutValue.value));
         const blockDataList = this.overrideLayoutId(copyLayout);
         const metadata = JSON.stringify(copyLayout);
@@ -1318,17 +1361,23 @@ export class LayoutStepSettingComponent implements OnInit {
             Template: layoutName,
             Name: configName,
             Metadata: metadata,
-            Enabled: true
+            Enabled: true,
+            UserId: this._currentUser.Id,
+            TemplateImg: img,
+            BufferId: this._bufferId,
+            Description: this._configDesc
         };
         (async () => {
-            const layout = await this.addSettingLayout(configData);
+            const layout = await this.addSettingLayoutBuffer(configData);
             if (layout.Data && layout.Status === 200) {
                 this._selectedLayoutId = layout.Data.Id;
                 for (let i = 0, len = blockDataList.length; i < len; i++) {
                     blockDataList[i]['LayoutId'] = layout.Data.Id;
                     blockDataList[i]['ParentId'] = moduleID;
                     blockDataList[i]['Type'] = 'view';
-                    const block = await this.addBlockSetting(blockDataList[i]);
+                    blockDataList[i]['UserId'] = this._currentUser.Id;
+                    blockDataList[i]['BufferId'] = this._bufferId;
+                    const block = await this.addBlockSettingBuffer(blockDataList[i]);
                 }
                 this.message.create('success', '布局保存成功');
             } else {
@@ -1339,7 +1388,7 @@ export class LayoutStepSettingComponent implements OnInit {
         })();
     }
 
-    _saveBlock() {
+    _saveBlockBuffer() {
         // 保存区域设置
         this.overrideLayoutTitle(this._layoutValue.value.rows, this.value);
         const copyLayout = JSON.parse(JSON.stringify(this._layoutValue.value));
@@ -1351,7 +1400,7 @@ export class LayoutStepSettingComponent implements OnInit {
                 blockDataList[i]['LayoutId'] = this._selectedLayoutId;
                 blockDataList[i]['ParentId'] = moduleID;
                 blockDataList[i]['type'] = 'view';
-                const block = await this.addBlockSetting(blockDataList[i]);
+                const block = await this.addBlockSettingBuffer(blockDataList[i]);
                 if (block.Status === 200) {
                     this._isShowExtend = true;
                     this.message.create('success', `区域 [${block.Data.Title}] 保存成功`);
@@ -1366,5 +1415,10 @@ export class LayoutStepSettingComponent implements OnInit {
     _previewLayout() {
 
     }
+
+    _saveLayout() {
+
+    }
+    
 
 }
